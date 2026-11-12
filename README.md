@@ -38,6 +38,7 @@ pip install -r requirements.txt
 ```bash
 cp .env.example .env
 ```
+(sous Windows : `copy .env.example .env`, puis `notepad .env` pour l'éditer.)
 Dans `.env` : renseigner `SGO_CONSEILLER`, `SGO_CONTACT`, et le fournisseur.
 
 ### Option A : Ollama
@@ -59,8 +60,9 @@ OLLAMA_CONTEXT_LENGTH=16384 ollama serve
 2. Dans `.env` : `SGO_FOURNISSEUR=gemini` et `SGO_API_KEY=ta_clé`.
 
 ### Démarrer le chatbot
+Depuis le dossier du projet (Windows, Mac ou Linux) ; le fichier `.env` est lu automatiquement :
 ```bash
-set -a; . ./.env; set +a; uvicorn app.server:app --port 8000
+python -m uvicorn app.server:app --port 8000
 ```
 Ouvrir http://localhost:8000.
 

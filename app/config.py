@@ -4,6 +4,27 @@ import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def _charger_env(fichier: Path) -> None:
+    """Lit le fichier .env (lignes CLE=valeur) sans écraser les variables déjà définies.
+    Fonctionne sous Windows, Mac et Linux sans commande particulière."""
+    if not fichier.is_file():
+        return
+    for ligne in fichier.read_text(encoding="utf-8-sig").splitlines():
+        ligne = ligne.strip()
+        if not ligne or ligne.startswith("#") or "=" not in ligne:
+            continue
+        cle, valeur = ligne.split("=", 1)
+        cle, valeur = cle.strip(), valeur.strip()
+        if len(valeur) >= 2 and valeur[0] == valeur[-1] and valeur[0] in "\"'":
+            valeur = valeur[1:-1]
+        if cle and valeur and cle not in os.environ:
+            os.environ[cle] = valeur
+
+
+_charger_env(Path(os.getenv("SGO_ENV_FILE", ROOT / ".env")))
+
 KNOWLEDGE_DIR = ROOT / "knowledge"
 LOG_DIR = Path(os.getenv("SGO_LOG_DIR", ROOT / "logs"))
 
