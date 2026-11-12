@@ -99,6 +99,20 @@ class Assistant:
             appel["id"] = appel["id"] or f"appel_{uuid.uuid4().hex[:12]}"
         yield {"type": "_fin", "texte": "".join(texte), "appels": list(appels.values()), "fin": fin}
 
+    async def _diagnostic_modele(self) -> str:
+        """Le modèle demandé n'existe pas : on liste ceux que le compte peut utiliser."""
+        texte = f"modèle « {config.MODELE} » introuvable"
+        if config.FOURNISSEUR == "ollama":
+            return texte + f" : lancer « ollama pull {config.MODELE} » ou choisir un autre SGO_MODELE"
+        try:
+            page = await self.client.models.list()
+            noms = sorted(m.id.removeprefix("models/") for m in page.data)
+        except Exception:  # noqa: BLE001 — diagnostic au mieux, jamais bloquant
+            return texte + " : choisir un autre SGO_MODELE dans .env"
+        if config.FOURNISSEUR == "gemini":
+            noms = [n for n in noms if n.startswith("gemini") and "embedding" not in n] or noms
+        return texte + ". Modèles disponibles pour SGO_MODELE : " + ", ".join(noms[:15])
+
     async def repondre(self, conv_id: str | None, message: str) -> AsyncIterator[dict]:
         """Génère des événements : conversation, text, status, error, done."""
         conv_id, messages = self.conversations.get(conv_id)
@@ -161,9 +175,12 @@ class Assistant:
             return
         except openai.APIStatusError as e:
             del messages[n_avant:]
-            detail = "clé API refusée" if e.status_code in (401, 403) else (
-                "modèle introuvable (pour Ollama : lancer « ollama pull " + config.MODELE + " »)"
-                if e.status_code == 404 else f"erreur {e.status_code}")
+            if e.status_code in (401, 403):
+                detail = "clé API refusée"
+            elif e.status_code == 404:
+                detail = await self._diagnostic_modele()
+            else:
+                detail = f"erreur {e.status_code}"
             yield {"type": "error", "text": f"Le service d'IA est indisponible ({detail}). "
                    f"Vous pouvez contacter {config.CONSEILLER} : {config.CONTACT}"}
             return

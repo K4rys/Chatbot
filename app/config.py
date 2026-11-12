@@ -36,7 +36,7 @@ FOURNISSEURS = {
     "ollama": {"url": "http://localhost:11434/v1", "modele": "qwen2.5:7b", "cle": "ollama"},
     # Offre gratuite de l'API Gemini. Clé sur https://aistudio.google.com
     "gemini": {"url": "https://generativelanguage.googleapis.com/v1beta/openai/",
-               "modele": "gemini-2.5-flash", "cle": None},
+               "modele": "gemini-3.8-flash", "cle": None},
 }
 
 FOURNISSEUR = os.getenv("SGO_FOURNISSEUR", "ollama").lower()

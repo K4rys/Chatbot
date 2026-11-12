@@ -135,3 +135,29 @@ def test_api_http():
         assert c.post("/api/chat", json={"message": "  "}).status_code == 400
         r = c.post("/api/chat", json={"message": "Salut"})
         assert r.status_code == 200 and '"text": "Bonjour"' in r.text
+
+
+def _erreur_404():
+    import openai
+    e = openai.NotFoundError.__new__(openai.NotFoundError)  # indépendant de la version du SDK
+    Exception.__init__(e, "model not found")
+    e.status_code = 404
+    return e
+
+
+def test_modele_introuvable_liste_les_modeles(monkeypatch):
+    monkeypatch.setattr(config, "FOURNISSEUR", "gemini")
+
+    class Client404(FauxClient):
+        async def _create(self, **params):
+            raise _erreur_404()
+
+    client = Client404([])
+
+    async def lister():
+        return NS(data=[NS(id="models/gemini-3.8-flash"), NS(id="models/text-embedding-004")])
+    client.models = NS(list=lister)
+    evts = _collecter(Assistant(client), None, "x")
+    assert evts[-1]["type"] == "error"
+    assert "introuvable" in evts[-1]["text"] and "gemini-3.8-flash" in evts[-1]["text"]
+    assert "embedding" not in evts[-1]["text"]

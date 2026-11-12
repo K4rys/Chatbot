@@ -24,8 +24,9 @@ l'offre gratuite de Gemini, au choix par une ligne de configuration.
 | Qualité | Correcte avec un modèle 7B, meilleure avec un plus gros si ta machine suit | Bonne |
 | Contraintes | Machine assez puissante (16 Go de RAM conseillés), allumée 24 h/24 | Quotas journaliers ; Google peut changer l'offre ou retirer un modèle |
 
-Les noms de modèles par défaut (`qwen2.5:7b`, `gemini-2.5-flash`) étaient valables au moment
-de l'écriture ; s'ils n'existent plus, en choisir un autre avec `SGO_MODELE`.
+Les modèles par défaut (`qwen2.5:7b`, `gemini-3.8-flash`) peuvent être retirés par leur éditeur :
+en cas de « modèle introuvable », le chatbot affiche la liste des modèles disponibles sur ton compte ;
+en choisir un et l'indiquer dans `SGO_MODELE`.
 
 ## Lancer en local
 
