@@ -1,4 +1,4 @@
-anthropic>=2.8,<3
+openai>=1.40,<4   # client du protocole « compatible OpenAI » (Ollama, Gemini…), pas un service OpenAI
 fastapi>=0.115
 uvicorn>=0.30
 pytest>=8
