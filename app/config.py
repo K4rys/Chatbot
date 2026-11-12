@@ -33,16 +33,22 @@ LOG_DIR = Path(os.getenv("SGO_LOG_DIR", ROOT / "logs"))
 # SGO_MODELE pour tout autre service compatible.
 FOURNISSEURS = {
     # IA locale : gratuite, aucune donnée ne sort de la machine. https://ollama.com
-    "ollama": {"url": "http://localhost:11434/v1", "modele": "qwen2.5:7b", "cle": "ollama"},
+    "ollama": {"url": "http://localhost:11434/v1", "modele": "qwen2.5:7b", "cle": "ollama", "secours": []},
     # Offre gratuite de l'API Gemini. Clé sur https://aistudio.google.com
     "gemini": {"url": "https://generativelanguage.googleapis.com/v1beta/openai/",
-               "modele": "gemini-3.8-flash", "cle": None},
+               "modele": "gemini-3.8-flash", "cle": None,
+               # Utilisés si le modèle principal est saturé (503), en quota (429) ou retiré (404).
+               "secours": ["gemini-3.6-flash", "gemini-3.5-flash-lite"]},
 }
 
 FOURNISSEUR = os.getenv("SGO_FOURNISSEUR", "ollama").lower()
-_preset = FOURNISSEURS.get(FOURNISSEUR, {"url": None, "modele": None, "cle": None})
+_preset = FOURNISSEURS.get(FOURNISSEUR, {"url": None, "modele": None, "cle": None, "secours": []})
 API_URL = os.getenv("SGO_API_URL") or _preset["url"]
 MODELE = os.getenv("SGO_MODELE") or _preset["modele"]
+# Modèles de secours, séparés par des virgules (vide = aucun).
+_secours = os.getenv("SGO_MODELES_SECOURS")
+MODELES_SECOURS = ([m.strip() for m in _secours.split(",") if m.strip()] if _secours is not None
+                   else _preset["secours"])
 API_KEY = os.getenv("SGO_API_KEY") or _preset["cle"] or ""
 TEMPERATURE = float(os.getenv("SGO_TEMPERATURE", "0.3"))
 

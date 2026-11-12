@@ -161,3 +161,40 @@ def test_modele_introuvable_liste_les_modeles(monkeypatch):
     assert evts[-1]["type"] == "error"
     assert "introuvable" in evts[-1]["text"] and "gemini-3.8-flash" in evts[-1]["text"]
     assert "embedding" not in evts[-1]["text"]
+
+
+def _erreur(classe, code):
+    e = classe.__new__(classe)
+    Exception.__init__(e, "erreur simulée")
+    e.status_code = code
+    return e
+
+
+def test_bascule_sur_modele_de_secours_si_sature(monkeypatch):
+    import openai
+    monkeypatch.setattr(config, "MODELES_SECOURS", ["modele-secours"])
+
+    class ClientSature(FauxClient):
+        async def _create(self, **params):
+            self.appels.append(params["model"])
+            if params["model"] != "modele-secours":
+                raise _erreur(openai.InternalServerError, 503)
+            return await FauxClient._create(self, **params)
+
+    client = ClientSature([[chunk(content="Réponse de secours"), chunk(fin="stop")]])
+    client.appels = []
+    evts = _collecter(Assistant(client), None, "x")
+    assert evts[-1]["type"] == "done"
+    assert client.appels[0] == config.MODELE and client.appels[1] == "modele-secours"
+
+
+def test_tous_les_modeles_satures(monkeypatch):
+    import openai
+    monkeypatch.setattr(config, "MODELES_SECOURS", ["modele-secours"])
+
+    class ClientSature(FauxClient):
+        async def _create(self, **params):
+            raise _erreur(openai.InternalServerError, 503)
+
+    evts = _collecter(Assistant(ClientSature([])), None, "x")
+    assert evts[-1]["type"] == "error" and "surchargé" in evts[-1]["text"]

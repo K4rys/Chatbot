@@ -56,13 +56,14 @@ class Assistant:
     @property
     def client(self) -> openai.AsyncOpenAI:
         if self._client is None:
-            self._client = openai.AsyncOpenAI(base_url=config.API_URL, api_key=config.API_KEY, timeout=180)
+            self._client = openai.AsyncOpenAI(base_url=config.API_URL, api_key=config.API_KEY,
+                                              timeout=180, max_retries=3)
         return self._client
 
-    async def _tour(self, messages: list[dict]) -> AsyncIterator[dict]:
+    async def _tour(self, messages: list[dict], modele: str) -> AsyncIterator[dict]:
         """Un appel au modèle. Émet les morceaux de texte puis {"type": "_fin", ...}."""
         stream = await self.client.chat.completions.create(
-            model=config.MODELE,
+            model=modele,
             messages=[{"role": "system", "content": system_prompt()}, *messages],
             tools=TOOLS,
             temperature=config.TEMPERATURE,
@@ -135,12 +136,23 @@ class Assistant:
         try:
             for _ in range(config.MAX_TOURS_OUTILS):
                 fin = None
-                async for evt in self._tour(messages):
-                    if evt["type"] == "_fin":
-                        fin = evt
-                    else:
-                        texte_final.append(evt["text"])
-                        yield evt
+                modeles = [config.MODELE, *[m for m in config.MODELES_SECOURS if m != config.MODELE]]
+                for i, modele in enumerate(modeles):
+                    texte_emis = False
+                    try:
+                        async for evt in self._tour(messages, modele):
+                            if evt["type"] == "_fin":
+                                fin = evt
+                            else:
+                                texte_emis = True
+                                texte_final.append(evt["text"])
+                                yield evt
+                        break
+                    except (openai.RateLimitError, openai.InternalServerError, openai.NotFoundError):
+                        # Modèle saturé, en quota ou retiré : on passe au modèle de secours suivant,
+                        # sauf si une partie de la réponse est déjà affichée.
+                        if texte_emis or i == len(modeles) - 1:
+                            raise
 
                 if not fin["appels"]:
                     messages.append({"role": "assistant", "content": fin["texte"]})
@@ -179,6 +191,8 @@ class Assistant:
                 detail = "clé API refusée"
             elif e.status_code == 404:
                 detail = await self._diagnostic_modele()
+            elif e.status_code >= 500:
+                detail = "serveur du fournisseur surchargé, réessayez dans une minute"
             else:
                 detail = f"erreur {e.status_code}"
             yield {"type": "error", "text": f"Le service d'IA est indisponible ({detail}). "
