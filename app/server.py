@@ -9,6 +9,8 @@ import json
 
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from typing import Optional
+
 from pydantic import BaseModel
 
 from . import config
@@ -23,7 +25,7 @@ app.state.limiteur = LimiteurDebit(config.MESSAGES_PAR_HEURE_PAR_IP)
 
 class ChatRequest(BaseModel):
     message: str
-    conversation_id: str | None = None
+    conversation_id: Optional[str] = None
 
 
 def _sse(evt: dict) -> str:

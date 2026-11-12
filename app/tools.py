@@ -30,7 +30,7 @@ _OPTIONNELS = {
 }
 _ENTIERS = {"duree_mois", "mois_debut_travaux", "mois_fin_travaux"}
 
-SIMULER_OPERATION = {
+_FONCTION = {
     "name": "simuler_operation",
     "description": (
         "Calcule le bilan prévisionnel d'une opération de marchand de biens avec le modèle SGO IMMO "
@@ -41,8 +41,7 @@ SIMULER_OPERATION = {
         "décimal (15 % = 0.15). Appelle l'outil plusieurs fois pour comparer hypothèses client et "
         "hypothèses corrigées, ou plusieurs scénarios de sortie."
     ),
-    "eager_input_streaming": True,
-    "input_schema": {
+    "parameters": {
         "type": "object",
         "properties": {
             **{k: {"type": "integer" if k in _ENTIERS else "number", "description": d}
@@ -56,7 +55,8 @@ SIMULER_OPERATION = {
     },
 }
 
-TOOLS = [SIMULER_OPERATION]
+# Format « tools » du protocole compatible OpenAI (Ollama, Gemini, Mistral, Groq…).
+TOOLS = [{"type": "function", "function": _FONCTION}]
 
 
 def _arrondi(obj):
@@ -70,7 +70,7 @@ def _arrondi(obj):
 
 
 def simuler_operation(entree: dict) -> dict:
-    """Valide l'entrée (le flux d'entrée « eager » n'est pas validé par l'API) et calcule."""
+    """Valide l'entrée produite par le modèle (jamais fiable à 100 %) et calcule."""
     if not isinstance(entree, dict):
         raise ValueError("l'entrée doit être un objet JSON")
     inconnus = set(entree) - set(_OBLIGATOIRES) - set(_OPTIONNELS) - {"libelle"}
@@ -83,6 +83,11 @@ def simuler_operation(entree: dict) -> dict:
     for k, v in entree.items():
         if k == "libelle":
             continue
+        if isinstance(v, str):  # les petits modèles envoient parfois « "520000" » ou « "0,15" »
+            try:
+                v = float(v.replace(" ", "").replace(" ", "").replace(",", "."))
+            except ValueError:
+                raise ValueError(f"{k} doit être un nombre") from None
         if isinstance(v, bool) or not isinstance(v, (int, float)):
             raise ValueError(f"{k} doit être un nombre")
         if k in _ENTIERS and float(v) != int(v):
@@ -102,10 +107,14 @@ def simuler_operation(entree: dict) -> dict:
     return _arrondi(resultat)
 
 
-def executer(nom: str, entree) -> tuple[str, bool]:
-    """Renvoie (contenu, is_error)."""
+def executer(nom: str, arguments) -> tuple[str, bool]:
+    """Renvoie (contenu, erreur). `arguments` est le JSON texte produit par le modèle, ou un dict."""
     if nom != "simuler_operation":
         return f"Outil inconnu : {nom}", True
+    try:
+        entree = json.loads(arguments or "{}") if isinstance(arguments, str) else arguments
+    except json.JSONDecodeError:
+        return "Erreur : les paramètres ne sont pas un JSON valide. Rappelle l'outil avec un JSON correct.", True
     try:
         return json.dumps(simuler_operation(entree), ensure_ascii=False), False
     except (ValueError, TypeError) as e:
