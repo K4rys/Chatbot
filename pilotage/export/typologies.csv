@@ -1,0 +1,21 @@
+﻿Code,Typologie,Groupe,Choix,Nombre de tâches spécifiques
+ACHAT_REVENTE,Achat-revente simple,Nature de l'opération,multiple,0
+COPRO_EXISTANTE,Bien situé en copropriété existante,Nature de l'opération,multiple,1
+DIV_PARCELLAIRE,Division parcellaire,Nature de l'opération,multiple,24
+TAB,Détachement de terrain à bâtir,Nature de l'opération,multiple,23
+DIV_IMMEUBLE,Division d'immeuble,Nature de l'opération,multiple,41
+COPRO,Mise en copropriété,Nature de l'opération,multiple,31
+RENO_LOURDE,Rénovation lourde,Nature de l'opération,multiple,33
+SURELEVATION,Surélévation,Nature de l'opération,multiple,34
+PROMO_LEGERE,Promotion immobilière légère,Nature de l'opération,multiple,45
+PA,Opération avec permis d'aménager,Nature de l'opération,multiple,25
+STRUCT_SOC,Portage via SCI / SCCV / SAS dédiée,Structuration,multiple,5
+ASSOCIES,Opération avec associés,Structuration,multiple,3
+BANQUE,Financement bancaire,Financement,multiple,9
+FONDS_PROPRES,Fonds propres,Financement,multiple,0
+VENTE_TERME,Vente à terme / crédit vendeur,Financement,multiple,2
+LIBRE,Bien libre,Occupation du bien,unique,0
+OCCUPE,Bien occupé,Occupation du bien,unique,2
+VENTE_BLOC,Vente en bloc,Mode de sortie,multiple,1
+VENTE_UNITE,Vente à l'unité,Mode de sortie,multiple,0
+DECOUPE,Vente à la découpe,Mode de sortie,multiple,5

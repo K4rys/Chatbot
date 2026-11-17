@@ -35,6 +35,12 @@ async def index():
     return FileResponse(STATIC / "index.html")
 
 
+@app.get("/pilotage")
+async def pilotage():
+    """Checklist de pilotage d'opération MDB (application autonome, générée par pilotage/build.py)."""
+    return FileResponse(config.ROOT / "pilotage" / "index.html")
+
+
 @app.get("/api/config")
 async def public_config():
     return {"conseiller": config.CONSEILLER, "contact": config.CONTACT}

@@ -1,0 +1,783 @@
+<title>Pilotage Opération MDB</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : barre d'opération collante + onglets ; vues en pleine largeur ; panneau de détail à droite (plein écran sur mobile). */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #eef1f6; --line: #d6dce6; --line-strong: #b7c0cf;
+  --fg: #18202d; --fg-2: #4a5568; --fg-3: #6b7587;
+  --accent: #23508f; --accent-soft: #e2eaf6; --accent-fg: #ffffff;
+  --crit: #b4232c; --crit-soft: #fbe6e7; --warn: #a65f00; --warn-soft: #fbefdc; --ok: #1f7a45; --ok-soft: #e2f3e8;
+  --info: #23508f; --info-soft: #e2eaf6; --muted-soft: #eceff4;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #10151d; --surface: #171e29; --surface-2: #1d2633; --line: #2b3646; --line-strong: #3d4a5e;
+  --fg: #e6eaf1; --fg-2: #aab4c3; --fg-3: #8590a2;
+  --accent: #8fb3ec; --accent-soft: #1f3150; --accent-fg: #0f1724;
+  --crit: #f08c8f; --crit-soft: #3d1d22; --warn: #e9b162; --warn-soft: #3a2c16; --ok: #7ccf9b; --ok-soft: #173326;
+  --info: #8fb3ec; --info-soft: #1f3150; --muted-soft: #222c3a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #10151d; --surface: #171e29; --surface-2: #1d2633; --line: #2b3646; --line-strong: #3d4a5e;
+  --fg: #e6eaf1; --fg-2: #aab4c3; --fg-3: #8590a2;
+  --accent: #8fb3ec; --accent-soft: #1f3150; --accent-fg: #0f1724;
+  --crit: #f08c8f; --crit-soft: #3d1d22; --warn: #e9b162; --warn-soft: #3a2c16; --ok: #7ccf9b; --ok-soft: #173326;
+  --info: #8fb3ec; --info-soft: #1f3150; --muted-soft: #222c3a; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 14px; line-height: 1.45; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: .01em; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 10px; }
+.brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.brand h1 { font-size: 19px; font-weight: 700; white-space: nowrap; }
+.brand .op-meta { color: var(--fg-3); font-size: 12.5px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.top-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.save-state { font-size: 12px; color: var(--fg-3); }
+.save-state.bad { color: var(--warn); }
+nav.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+nav.tabs a { padding: 9px 12px 10px; color: var(--fg-2); text-decoration: none; font-weight: 500; border-bottom: 2px solid transparent; white-space: nowrap; }
+nav.tabs a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+nav.tabs a .count { font-family: var(--f-mono); font-size: 11px; background: var(--crit-soft); color: var(--crit); border-radius: 9px; padding: 1px 6px; margin-left: 4px; }
+
+main { padding-block: 18px 60px; display: grid; gap: 18px; }
+main > * { min-width: 0; }
+.btn { border: 1px solid var(--line-strong); background: var(--surface); color: var(--fg); border-radius: var(--r); padding: 6px 11px; cursor: pointer; font-weight: 500; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.btn.danger { color: var(--crit); border-color: var(--crit); }
+.btn.small { padding: 3px 8px; font-size: 12.5px; }
+select.inp, input.inp, textarea.inp { border: 1px solid var(--line-strong); background: var(--surface); border-radius: var(--r); padding: 6px 8px; min-width: 0; }
+textarea.inp { width: 100%; min-height: 90px; resize: vertical; }
+label.fld { display: grid; gap: 4px; font-size: 12px; color: var(--fg-2); font-weight: 500; }
+.lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--fg-3); font-weight: 600; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.panel > .ph { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 12px 14px 0; flex-wrap: wrap; }
+.panel > .ph h2 { font-size: 16px; font-weight: 600; }
+.panel > .pb { padding: 12px 14px 14px; }
+.example-note { background: var(--warn-soft); color: var(--warn); border-radius: var(--r); padding: 8px 12px; font-size: 13px; }
+
+/* Tableau de bord */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 2px; }
+.kpi .v { font-family: var(--f-display); font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.kpi .s { font-size: 12px; color: var(--fg-3); }
+.kpi.alert .v { color: var(--crit); }
+.progress { height: 6px; background: var(--muted-soft); border-radius: 3px; overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--accent); }
+.dash-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .dash-grid { grid-template-columns: 1fr; } }
+
+.milestones { display: grid; grid-template-columns: repeat(8, minmax(110px, 1fr)); gap: 0; overflow-x: auto; padding-bottom: 4px; }
+.ms { position: relative; padding: 26px 8px 4px 0; min-width: 0; }
+.ms::before { content: ""; position: absolute; left: 0; right: 0; top: 11px; height: 2px; background: var(--line); }
+.ms:last-child::before { right: auto; width: 12px; }
+.ms .dot { position: absolute; left: 0; top: 5px; width: 14px; height: 14px; transform: rotate(45deg); border: 2px solid var(--line-strong); background: var(--surface); }
+.ms.done .dot { background: var(--ok); border-color: var(--ok); }
+.ms.late .dot { background: var(--crit); border-color: var(--crit); }
+.ms.soon .dot { border-color: var(--warn); }
+.ms.off { opacity: .45; }
+.ms .code { font-family: var(--f-mono); font-size: 11px; color: var(--fg-3); }
+.ms .nm { font-weight: 600; font-size: 13px; line-height: 1.25; }
+.ms .dt { font-family: var(--f-mono); font-size: 12px; color: var(--fg-2); }
+.ms button { all: unset; cursor: pointer; display: grid; gap: 2px; }
+.ms button:focus-visible { outline: 2px solid var(--accent); }
+
+.alerts { display: grid; gap: 6px; }
+.alert-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 10px; border-radius: var(--r); background: var(--surface-2); cursor: pointer; border: 1px solid transparent; text-align: left; width: 100%; }
+.alert-row:hover { border-color: var(--line-strong); }
+.alert-row .tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.tag.crit { background: var(--crit-soft); color: var(--crit); }
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
+.tag.info { background: var(--info-soft); color: var(--info); }
+.alert-row .t { min-width: 0; }
+.alert-row .t b { font-weight: 600; }
+.alert-row .t span { display: block; font-size: 12px; color: var(--fg-3); }
+.empty { color: var(--fg-3); font-size: 13px; padding: 6px 0; }
+
+.catbars { display: grid; gap: 9px; }
+.catbar { display: grid; grid-template-columns: 22px minmax(0, 1fr) 70px; gap: 8px; align-items: center; font-size: 13px; }
+.catbar .c { font-family: var(--f-mono); font-weight: 500; color: var(--fg-3); }
+.catbar .n { display: grid; gap: 3px; min-width: 0; }
+.catbar .n span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.catbar .p { font-family: var(--f-mono); font-size: 12px; text-align: right; color: var(--fg-2); }
+
+/* Filtres */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filters .inp { max-width: 100%; }
+.filters input[type=search] { flex: 1 1 200px; }
+.chk { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--fg-2); cursor: pointer; white-space: nowrap; }
+.result-count { font-size: 12.5px; color: var(--fg-3); }
+
+/* Checklist */
+.cat-block { display: grid; gap: 0; }
+.cat-head { display: flex; align-items: baseline; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.cat-head h2 { font-size: 17px; }
+.cat-head .code { font-family: var(--f-mono); color: var(--accent); font-weight: 500; }
+.cat-head .meta { margin-left: auto; font-size: 12px; color: var(--fg-3); font-family: var(--f-mono); }
+.sc-head { padding: 9px 14px 4px; }
+.rows { display: grid; }
+.row { display: grid; grid-template-columns: 4px 46px minmax(0, 1fr) 150px 96px 132px 28px; gap: 10px; align-items: center; padding: 7px 14px 7px 0; border-bottom: 1px solid var(--line); }
+.row:last-child { border-bottom: 0; }
+.row .stripe { align-self: stretch; border-radius: 0 2px 2px 0; }
+.stripe.Critique { background: var(--crit); }
+.stripe.Important { background: var(--warn); }
+.stripe.Confort { background: var(--line-strong); }
+.row .id { font-family: var(--f-mono); font-size: 12px; color: var(--fg-3); }
+.row .main { min-width: 0; }
+.row .name { all: unset; cursor: pointer; font-weight: 500; display: block; }
+.row .name:hover { color: var(--accent); text-decoration: underline; }
+.row .name:focus-visible { outline: 2px solid var(--accent); }
+.row .sub { font-size: 12px; color: var(--fg-3); display: flex; gap: 8px; flex-wrap: wrap; }
+.row .sub .wait { color: var(--warn); }
+.row .sub .ready { color: var(--ok); }
+.row .resp { font-size: 12px; color: var(--fg-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .date { font-family: var(--f-mono); font-size: 12.5px; }
+.row .date.late { color: var(--crit); font-weight: 500; }
+.row .date small { display: block; color: var(--fg-3); font-size: 11px; }
+.row select { width: 100%; font-size: 12.5px; padding: 4px 6px; }
+.row.done .name { color: var(--fg-3); text-decoration: line-through; text-decoration-color: var(--line-strong); }
+.badge-ms { font-family: var(--f-mono); font-size: 10.5px; background: var(--accent-soft); color: var(--accent); padding: 1px 5px; border-radius: 3px; margin-left: 6px; vertical-align: 1px; }
+.badge-v { font-size: 10.5px; background: var(--warn-soft); color: var(--warn); padding: 1px 5px; border-radius: 3px; margin-left: 6px; vertical-align: 1px; }
+.st { border-radius: var(--r); }
+.st[data-s="En cours"] { background: var(--info-soft); color: var(--info); border-color: transparent; }
+.st[data-s="Bloqué"] { background: var(--crit-soft); color: var(--crit); border-color: transparent; }
+.st[data-s="En validation"] { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.st[data-s="Terminé"] { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+@media (max-width: 860px) {
+  .row { grid-template-columns: 4px 40px minmax(0, 1fr) 118px; grid-template-areas: "s i m st" "s i r d"; row-gap: 4px; }
+  .row .stripe { grid-area: s; } .row .id { grid-area: i; } .row .main { grid-area: m; }
+  .row .resp { grid-area: r; } .row .date { grid-area: d; text-align: right; } .row .stcell { grid-area: st; }
+  .row .valid { display: none; }
+}
+
+/* Planning */
+.gantt-wrap { overflow-x: auto; border-top: 1px solid var(--line); }
+.gantt { position: relative; }
+.g-axis { position: sticky; top: 0; height: 30px; border-bottom: 1px solid var(--line); background: var(--surface); z-index: 2; }
+.g-month { position: absolute; top: 0; height: 30px; border-left: 1px solid var(--line); font-size: 11px; color: var(--fg-3); padding: 8px 4px; font-family: var(--f-mono); white-space: nowrap; }
+.g-row { position: relative; height: 24px; border-bottom: 1px solid var(--surface-2); }
+.g-row.cat { height: 26px; background: var(--surface-2); }
+.g-label { position: sticky; left: 0; z-index: 1; display: inline-block; height: 100%; padding: 4px 8px; font-size: 12px; background: var(--surface); width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-right: 1px solid var(--line); cursor: pointer; }
+.g-row.cat .g-label { background: var(--surface-2); font-family: var(--f-display); font-weight: 600; font-size: 13px; cursor: default; }
+.g-bar { position: absolute; top: 6px; height: 12px; border-radius: 3px; background: var(--line-strong); min-width: 3px; cursor: pointer; }
+.g-bar[data-s="En cours"] { background: var(--info); }
+.g-bar[data-s="Bloqué"] { background: var(--crit); }
+.g-bar[data-s="En validation"] { background: var(--warn); }
+.g-bar[data-s="Terminé"] { background: var(--ok); }
+.g-bar.late { outline: 2px solid var(--crit); outline-offset: 1px; }
+.g-ms { position: absolute; top: 5px; width: 13px; height: 13px; transform: rotate(45deg); background: var(--accent); cursor: pointer; }
+.g-ms.done { background: var(--ok); }
+.g-today { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--crit); opacity: .6; z-index: 1; pointer-events: none; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--fg-2); }
+.legend i { display: inline-block; width: 12px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+
+/* Kanban */
+.kanban { display: grid; grid-template-columns: repeat(5, minmax(220px, 1fr)); gap: 12px; overflow-x: auto; padding-bottom: 6px; }
+.col { background: var(--surface-2); border-radius: var(--r); padding: 10px; display: grid; gap: 8px; align-content: start; min-height: 200px; }
+.col.over { outline: 2px dashed var(--accent); }
+.col h3 { font-size: 14px; display: flex; justify-content: space-between; }
+.col h3 span { font-family: var(--f-mono); color: var(--fg-3); font-weight: 400; }
+.card { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--line-strong); border-radius: var(--r); padding: 8px 10px; cursor: grab; display: grid; gap: 3px; text-align: left; width: 100%; }
+.card.Critique { border-left-color: var(--crit); }
+.card.Important { border-left-color: var(--warn); }
+.card .id { font-family: var(--f-mono); font-size: 11px; color: var(--fg-3); }
+.card .nm { font-weight: 500; font-size: 13px; }
+.card .ft { font-size: 11.5px; color: var(--fg-3); display: flex; justify-content: space-between; gap: 6px; }
+.card .ft .late { color: var(--crit); }
+
+/* Paramétrage */
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; align-items: start; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.typo-group { display: grid; gap: 6px; padding: 10px 0; border-top: 1px solid var(--line); }
+.typo-group:first-child { border-top: 0; padding-top: 0; }
+.typo-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.typo-list label { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-strong); border-radius: 16px; padding: 4px 10px; cursor: pointer; font-size: 13px; }
+.typo-list label:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.typo-list input { accent-color: var(--accent); margin: 0; }
+.inline-confirm { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--crit); }
+.ops-list { display: grid; gap: 6px; }
+.op-item { display: flex; gap: 8px; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--surface-2); border-radius: var(--r); flex-wrap: wrap; }
+.op-item.cur { outline: 2px solid var(--accent); }
+.op-item .t { min-width: 0; }
+.op-item .t b { display: block; }
+.op-item .t span { font-size: 12px; color: var(--fg-3); }
+.io { display: grid; gap: 8px; }
+.io textarea { font-family: var(--f-mono); font-size: 11.5px; min-height: 140px; }
+.hint { font-size: 12.5px; color: var(--fg-3); }
+
+/* Panneau de détail */
+.scrim { position: fixed; inset: 0; background: rgba(10, 15, 25, .35); z-index: 40; }
+aside.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--surface); z-index: 41; border-left: 1px solid var(--line); display: grid; grid-template-rows: auto 1fr; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.dr-head { padding: 14px 18px 12px; border-bottom: 1px solid var(--line); display: grid; gap: 6px; }
+.dr-head .top-line { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.dr-head h2 { font-size: 20px; }
+.dr-body { overflow-y: auto; padding: 14px 18px 30px; display: grid; gap: 16px; align-content: start; }
+.dr-sec { display: grid; gap: 5px; }
+.dr-sec p { margin: 0; }
+.dr-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { font-size: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 2px 8px; }
+.chip.link { cursor: pointer; font-family: var(--f-mono); }
+.chip.link.ok { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+.chip.link.wait { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.risk { background: var(--crit-soft); color: var(--crit); border-radius: var(--r); padding: 8px 10px; }
+.tip { background: var(--accent-soft); border-radius: var(--r); padding: 8px 10px; }
+.tip b { color: var(--accent); }
+.verif { background: var(--warn-soft); color: var(--warn); border-radius: var(--r); padding: 8px 10px; font-size: 13px; }
+.valid-box { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: var(--r); }
+.valid-box input { width: 18px; height: 18px; accent-color: var(--ok); }
+.toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: var(--r); font-size: 13px; z-index: 60; }
+footer.foot { font-size: 12px; color: var(--fg-3); padding-block: 0 30px; max-width: 900px; }
+@media (prefers-reduced-motion: no-preference) { aside.drawer { animation: slide .16s ease-out; } @keyframes slide { from { transform: translateX(24px); opacity: .6; } } }
+</style>
+
+<header class="top">
+  <div class="wrap top-row">
+    <div class="brand"><h1>Pilotage MDB</h1><span class="op-meta" id="opMeta"></span></div>
+    <div class="top-actions">
+      <label class="lbl" for="opSelect" style="position:absolute;left:-9999px">Opération</label>
+      <select class="inp" id="opSelect" aria-label="Opération"></select>
+      <span class="save-state" id="saveState"></span>
+    </div>
+  </div>
+  <nav class="tabs wrap" id="tabs" aria-label="Vues">
+    <a href="#tableau" data-v="tableau">Tableau de bord</a>
+    <a href="#checklist" data-v="checklist">Checklist</a>
+    <a href="#planning" data-v="planning">Planning</a>
+    <a href="#kanban" data-v="kanban">Kanban</a>
+    <a href="#parametrage" data-v="parametrage">Paramétrage</a>
+  </nav>
+</header>
+<main class="wrap" id="view"></main>
+<footer class="wrap foot" id="foot"></footer>
+<div id="overlay"></div>
+
+<script>
+const REF = /*__REFERENTIEL__*/null;
+(function () {
+"use strict";
+const STATUTS = REF.statuts, CRITS = REF.criticites;
+const CATS = Object.fromEntries(REF.categories.map(c => [c.code, c.nom]));
+const TYPO = Object.fromEntries(REF.typologies.map(t => [t.code, t]));
+const JALON_BY_TASK = Object.fromEntries(REF.jalons.map(j => [j.tache, j]));
+const KEY = "pilotage-mdb-v1";
+const DAY = 86400000;
+
+/* ---------- utilitaires ---------- */
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const toN = iso => { const [y, m, d] = iso.split("-").map(Number); return Date.UTC(y, m - 1, d) / DAY; };
+const toIso = n => new Date(n * DAY).toISOString().slice(0, 10);
+const todayIso = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const fmt = iso => iso ? iso.split("-").reverse().join("/") : "—";
+const uid = () => "op" + Math.random().toString(36).slice(2, 9);
+const $ = s => document.querySelector(s);
+
+/* ---------- état ---------- */
+let storageOk = true;
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) return JSON.parse(raw); } catch (e) { storageOk = false; }
+  return null;
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); storageOk = true; } catch (e) { storageOk = false; }
+  renderSaveState();
+}
+function exampleOp() {
+  const t = {};
+  const done = ["A01","A02","A03","A04","A05","A06","A07","A08","A09","A10","A12","A14","A15","A16","A17","A18","A19","A22","A23","A25","A26","A27","A28","A29","B01","B02","B04","B06","B07","B08","B10","B11","B12","B14","B15","C01","C02","C03","D01","D02","D03","E04","A11"];
+  done.forEach(id => t[id] = { statut: "Terminé", valide: true });
+  t.B10.valide = false;
+  t.D04 = { statut: "En cours", comm: "Accord de principe reçu de la banque n°1. Quote-part de mainlevée demandée : 110 % du prêt affecté au lot." };
+  t.C06 = { statut: "En cours", comm: "Dossier déposé, complétude confirmée." };
+  t.C09 = { statut: "Bloqué", comm: "La mairie demande une notice sur les surfaces minimales par logement." };
+  t.B16 = { statut: "En validation" };
+  t.E03 = { statut: "En cours" };
+  t.G14 = { statut: "En cours", comm: "Un seul locataire, bail 1989, échéance à vérifier." };
+  return { id: uid(), exemple: true, nom: "Exemple : division d'immeuble, 6 lots", adresse: "Adresse fictive, Île-de-France",
+    debut: toIso(toN(todayIso()) - 50), typos: ["DIV_IMMEUBLE","COPRO","RENO_LOURDE","STRUCT_SOC","ASSOCIES","BANQUE","OCCUPE","VENTE_UNITE"],
+    taches: t, custom: [] };
+}
+function blankOp(nom) {
+  return { id: uid(), nom: nom || "Nouvelle opération", adresse: "", debut: todayIso(), typos: ["ACHAT_REVENTE","BANQUE","LIBRE","VENTE_UNITE"], taches: {}, custom: [] };
+}
+let S = load();
+if (!S || !S.ops || !Object.keys(S.ops).length) { const ex = exampleOp(); S = { ops: { [ex.id]: ex }, current: ex.id }; }
+const UI = { view: "tableau", f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false }, open: null };
+const op = () => S.ops[S.current];
+
+/* ---------- moteur ---------- */
+function expandTypo(list) {
+  const out = new Set();
+  (list || []).forEach(c => (REF.alias[c] || [c]).forEach(x => out.add(x)));
+  return out;
+}
+function allTasks(o) { return REF.taches.concat(o.custom || []); }
+function compute(o) {
+  const sel = new Set(o.typos);
+  const tasks = allTasks(o);
+  const byId = Object.fromEntries(tasks.map(t => [t.id, t]));
+  const isActive = t => !t.typo || !t.typo.length || [...expandTypo(t.typo)].some(c => sel.has(c));
+  const active = tasks.filter(isActive);
+  const activeSet = new Set(active.map(t => t.id));
+  const memo = {};
+  function resolve(id, seen) {
+    if (memo[id]) return memo[id];
+    const t = byId[id]; if (!t) return [];
+    const out = new Set();
+    (t.dep || []).forEach(d => {
+      if (!byId[d] || seen.has(d)) return;
+      if (activeSet.has(d)) out.add(d);
+      else resolve(d, new Set([...seen, d])).forEach(x => out.add(x));
+    });
+    return (memo[id] = [...out]);
+  }
+  const deps = {}; active.forEach(t => deps[t.id] = resolve(t.id, new Set([t.id])));
+  const st = id => o.taches[id] || {};
+  // planning : ordre topologique
+  const start = {}, end = {}, cible = {}, order = [];
+  const visiting = new Set(), visited = new Set();
+  const debut = toN(o.debut || todayIso());
+  function visit(id) {
+    if (visited.has(id) || visiting.has(id)) return;
+    visiting.add(id);
+    deps[id].forEach(visit);
+    visiting.delete(id); visited.add(id); order.push(id);
+    const t = byId[id];
+    let s = debut;
+    deps[id].forEach(d => { const e = st(d).reelle ? toN(st(d).reelle) : cible[d]; if (e > s) s = e; });
+    start[id] = s; end[id] = s + Math.max(0, t.duree || 0);
+    cible[id] = st(id).cible ? toN(st(id).cible) : end[id];
+  }
+  active.forEach(t => visit(t.id));
+  const today = toN(todayIso());
+  const info = {};
+  active.forEach(t => {
+    const s = st(t.id), statut = s.statut || "À faire";
+    const pending = deps[t.id].filter(d => (st(d).statut || "À faire") !== "Terminé");
+    const late = statut !== "Terminé" && cible[t.id] < today;
+    info[t.id] = { statut, pending, late, ready: statut === "À faire" && !pending.length, start: start[t.id], cible: cible[t.id], override: !!s.cible, s };
+  });
+  // alertes
+  const alerts = [];
+  active.forEach(t => {
+    const i = info[t.id];
+    if (i.statut === "Bloqué") alerts.push({ lvl: "crit", tag: "Bloqué", id: t.id, msg: i.s.comm ? i.s.comm : "Tâche bloquée : préciser la cause en commentaire." });
+    if (i.late) alerts.push({ lvl: t.crit === "Critique" ? "crit" : "warn", tag: "Retard", id: t.id, msg: `Date cible dépassée de ${today - i.cible} j (${fmt(toIso(i.cible))}).` });
+    else if (i.statut !== "Terminé" && t.crit === "Critique" && i.cible - today <= 7 && i.cible >= today) alerts.push({ lvl: "warn", tag: "Échéance", id: t.id, msg: `Tâche critique due le ${fmt(toIso(i.cible))}.` });
+    if (["En cours","En validation","Terminé"].includes(i.statut) && i.pending.length) alerts.push({ lvl: "warn", tag: "Prérequis", id: t.id, msg: `Avancée alors que ${i.pending.join(", ")} n'est pas terminé.` });
+    if (i.statut === "Terminé" && !i.s.valide && t.crit === "Critique") alerts.push({ lvl: "info", tag: "Validation", id: t.id, msg: "Terminée mais validation finale non cochée." });
+  });
+  const rank = { crit: 0, warn: 1, info: 2 };
+  alerts.sort((a, b) => rank[a.lvl] - rank[b.lvl] || info[a.id].cible - info[b.id].cible);
+  const chrono = active.slice().sort((a, b) => info[a.id].start - info[b.id].start || info[a.id].cible - info[b.id].cible || a.id.localeCompare(b.id));
+  return { active, byId, deps, info, alerts, chrono, today };
+}
+
+/* ---------- rendu commun ---------- */
+let C = null;
+function refresh() { C = compute(op()); render(); }
+function renderSaveState() {
+  const el = $("#saveState");
+  el.textContent = storageOk ? "Enregistré dans ce navigateur" : "Stockage indisponible : exportez votre sauvegarde";
+  el.classList.toggle("bad", !storageOk);
+}
+function renderHeader() {
+  const o = op();
+  $("#opSelect").innerHTML = Object.values(S.ops).map(x => `<option value="${x.id}" ${x.id === o.id ? "selected" : ""}>${esc(x.nom)}</option>`).join("");
+  $("#opMeta").textContent = [o.adresse, "démarrage " + fmt(o.debut), o.typos.map(c => TYPO[c] ? TYPO[c].nom : c).join(" · ")].filter(Boolean).join(" — ");
+  document.querySelectorAll("#tabs a").forEach(a => {
+    a.setAttribute("aria-current", a.dataset.v === UI.view ? "page" : "false");
+    if (a.dataset.v === "tableau") {
+      const n = C.alerts.filter(x => x.lvl === "crit").length;
+      a.innerHTML = "Tableau de bord" + (n ? `<span class="count">${n}</span>` : "");
+    }
+  });
+  $("#foot").textContent = REF.avertissement + " Référentiel v" + REF.version + ".";
+}
+function render() {
+  renderHeader(); renderSaveState();
+  const v = $("#view");
+  const views = { tableau: viewDash, checklist: viewChecklist, planning: viewPlanning, kanban: viewKanban, parametrage: viewSettings };
+  v.innerHTML = (op().exemple ? `<div class="example-note">Opération d'exemple, avec des statuts fictifs pour montrer l'outil. Créez votre opération dans Paramétrage.</div>` : "") + views[UI.view]();
+  bindView();
+  renderDrawer();
+}
+function statusSelect(id, cls) {
+  const s = C.info[id].statut;
+  return `<select class="inp st ${cls || ""}" data-status="${id}" data-s="${esc(s)}" aria-label="Statut de ${id}">${STATUTS.map(x => `<option ${x === s ? "selected" : ""}>${x}</option>`).join("")}</select>`;
+}
+
+/* ---------- tableau de bord ---------- */
+function viewDash() {
+  const { active, info, alerts } = C;
+  const done = active.filter(t => info[t.id].statut === "Terminé").length;
+  const pct = active.length ? Math.round(done / active.length * 100) : 0;
+  const critOpen = active.filter(t => t.crit === "Critique" && info[t.id].statut !== "Terminé").length;
+  const blocked = active.filter(t => info[t.id].statut === "Bloqué").length;
+  const late = active.filter(t => info[t.id].late).length;
+  const endT = info["I08"] ? toIso(info["I08"].cible) : null;
+  const ms = REF.jalons.map(j => {
+    const i = info[j.tache];
+    if (!i) return `<div class="ms off"><span class="dot"></span><div class="code">${j.code}</div><div class="nm">${esc(j.nom)}</div><div class="dt">sans objet</div></div>`;
+    const cls = i.statut === "Terminé" ? "done" : i.late ? "late" : (i.cible - C.today <= 30 ? "soon" : "");
+    const d = i.statut === "Terminé" && i.s.reelle ? i.s.reelle : toIso(i.cible);
+    return `<div class="ms ${cls}"><span class="dot"></span><button data-open="${j.tache}"><span class="code">${j.code} · ${j.tache}</span><span class="nm">${esc(j.nom)}</span><span class="dt">${i.statut === "Terminé" ? "atteint " : ""}${fmt(d)}</span></button></div>`;
+  }).join("");
+  const next = C.chrono.filter(t => info[t.id].ready).slice(0, 8);
+  const cats = REF.categories.map(c => {
+    const ts = active.filter(t => t.cat === c.code); if (!ts.length) return "";
+    const d = ts.filter(t => info[t.id].statut === "Terminé").length;
+    return `<div class="catbar"><span class="c">${c.code}</span><div class="n"><span>${esc(c.nom)}</span><div class="progress"><i style="width:${Math.round(d / ts.length * 100)}%"></i></div></div><span class="p">${d}/${ts.length}</span></div>`;
+  }).join("");
+  return `
+  <section class="kpis" aria-label="Indicateurs">
+    <div class="kpi"><span class="lbl">Avancement</span><span class="v">${pct} %</span><div class="progress"><i style="width:${pct}%"></i></div><span class="s">${done} tâches terminées sur ${active.length} actives</span></div>
+    <div class="kpi ${critOpen ? "" : ""}"><span class="lbl">Critiques ouvertes</span><span class="v">${critOpen}</span><span class="s">à sécuriser</span></div>
+    <div class="kpi ${blocked ? "alert" : ""}"><span class="lbl">Bloquées</span><span class="v">${blocked}</span><span class="s">tâches</span></div>
+    <div class="kpi ${late ? "alert" : ""}"><span class="lbl">En retard</span><span class="v">${late}</span><span class="s">date cible dépassée</span></div>
+    <div class="kpi"><span class="lbl">Clôture prévue</span><span class="v mono" style="font-size:22px">${fmt(endT)}</span><span class="s">recalculée selon l'avancement</span></div>
+  </section>
+  <section class="panel"><div class="ph"><h2>Jalons</h2><span class="hint">Cliquer un jalon pour ouvrir la tâche</span></div><div class="pb"><div class="milestones">${ms}</div></div></section>
+  <div class="dash-grid">
+    <section class="panel"><div class="ph"><h2>Alertes</h2><span class="hint">${alerts.length} au total</span></div><div class="pb"><div class="alerts">${alerts.slice(0, 14).map(alertRow).join("") || `<div class="empty">Aucune alerte : rien en retard, rien de bloqué.</div>`}${alerts.length > 14 ? `<a href="#checklist" class="hint" data-alerts-only>Voir toutes les alertes dans la checklist</a>` : ""}</div></div></section>
+    <div style="display:grid;gap:18px;min-width:0">
+      <section class="panel"><div class="ph"><h2>Prochaines actions</h2><span class="hint">prérequis levés</span></div><div class="pb"><div class="alerts">${next.map(t => `<button class="alert-row" data-open="${t.id}"><span class="tag ${t.crit === "Critique" ? "crit" : t.crit === "Important" ? "warn" : "info"}">${t.crit}</span><span class="t"><b>${t.id} · ${esc(t.nom)}</b><span>${esc(t.resp.join(", "))}</span></span><span class="mono" style="font-size:12px">${fmt(toIso(info[t.id].cible))}</span></button>`).join("") || `<div class="empty">Aucune tâche prête.</div>`}</div></div></section>
+      <section class="panel"><div class="ph"><h2>Avancement par catégorie</h2></div><div class="pb"><div class="catbars">${cats}</div></div></section>
+    </div>
+  </div>`;
+}
+function alertRow(a) {
+  const t = C.byId[a.id];
+  return `<button class="alert-row" data-open="${a.id}"><span class="tag ${a.lvl}">${a.tag}</span><span class="t"><b>${a.id} · ${esc(t.nom)}</b><span>${esc(a.msg)}</span></span><span class="mono" style="font-size:12px;color:var(--fg-3)">${t.cat}</span></button>`;
+}
+
+/* ---------- filtres ---------- */
+function filtered() {
+  const f = UI.f, q = f.q.trim().toLowerCase();
+  const alertIds = new Set(C.alerts.map(a => a.id));
+  return C.chrono.filter(t => {
+    const i = C.info[t.id];
+    if (f.cat && t.cat !== f.cat) return false;
+    if (f.statut && i.statut !== f.statut) return false;
+    if (f.crit && t.crit !== f.crit) return false;
+    if (f.resp && !t.resp.includes(f.resp)) return false;
+    if (f.hideDone && i.statut === "Terminé") return false;
+    if (f.ready && !i.ready) return false;
+    if (f.alertsOnly && !alertIds.has(t.id)) return false;
+    if (q && !(t.id + " " + t.nom + " " + t.desc + " " + t.sc + " " + (i.s.comm || "")).toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+function filterBar(opts) {
+  const f = UI.f;
+  const resps = [...new Set(C.active.flatMap(t => t.resp))].sort((a, b) => a.localeCompare(b, "fr"));
+  const sel = (k, label, list, labelOf) => `<select class="inp" data-f="${k}" aria-label="${label}"><option value="">${label}</option>${list.map(v => `<option value="${esc(v)}" ${f[k] === v ? "selected" : ""}>${esc(labelOf ? labelOf(v) : v)}</option>`).join("")}</select>`;
+  return `<div class="filters">
+    <input type="search" class="inp" id="fq" placeholder="Rechercher (nom, description, commentaire)" value="${esc(f.q)}" aria-label="Rechercher">
+    ${opts.noCat ? "" : sel("cat", "Toutes catégories", REF.categories.map(c => c.code), c => c + " · " + CATS[c])}
+    ${opts.noStatus ? "" : sel("statut", "Tous statuts", STATUTS)}
+    ${sel("crit", "Toutes criticités", CRITS)}
+    ${sel("resp", "Tous responsables", resps)}
+    <label class="chk"><input type="checkbox" data-fb="hideDone" ${f.hideDone ? "checked" : ""}> Masquer terminées</label>
+    <label class="chk"><input type="checkbox" data-fb="ready" ${f.ready ? "checked" : ""}> Prêtes à démarrer</label>
+    <label class="chk"><input type="checkbox" data-fb="alertsOnly" ${f.alertsOnly ? "checked" : ""}> En alerte</label>
+  </div>`;
+}
+
+/* ---------- checklist ---------- */
+function viewChecklist() {
+  const list = filtered();
+  const blocks = REF.categories.map(c => {
+    const ts = list.filter(t => t.cat === c.code); if (!ts.length) return "";
+    const all = C.active.filter(t => t.cat === c.code);
+    const d = all.filter(t => C.info[t.id].statut === "Terminé").length;
+    return `<section class="panel cat-block"><div class="cat-head"><span class="code">${c.code}</span><h2>${esc(c.nom)}</h2><span class="meta">${d}/${all.length} terminées</span></div><div class="rows">${ts.map(rowHtml).join("")}</div></section>`;
+  }).join("");
+  return `<section class="panel"><div class="pb" style="display:grid;gap:8px">${filterBar({})}<span class="result-count">${list.length} tâches affichées sur ${C.active.length} actives · ordre chronologique calculé à partir des dépendances</span></div></section>${blocks || `<div class="empty">Aucune tâche ne correspond aux filtres.</div>`}`;
+}
+function rowHtml(t) {
+  const i = C.info[t.id], j = JALON_BY_TASK[t.id];
+  const wait = i.pending.length ? `<span class="wait">attend ${i.pending.slice(0, 4).join(", ")}${i.pending.length > 4 ? "…" : ""}</span>` : (i.statut === "À faire" ? `<span class="ready">prête</span>` : "");
+  return `<div class="row ${i.statut === "Terminé" ? "done" : ""}">
+    <span class="stripe ${t.crit}" title="${t.crit}"></span>
+    <span class="id">${t.id}</span>
+    <div class="main"><button class="name" data-open="${t.id}">${esc(t.nom)}</button>${j ? `<span class="badge-ms">${j.code}</span>` : ""}${t.verif ? `<span class="badge-v">à vérifier</span>` : ""}
+      <div class="sub"><span>${esc(t.sc)}</span>${wait}${i.s.comm ? `<span title="${esc(i.s.comm)}">· commentaire</span>` : ""}</div></div>
+    <span class="resp" title="${esc(t.resp.join(", "))}">${esc(t.resp.join(", "))}</span>
+    <span class="date ${i.late ? "late" : ""}">${fmt(toIso(i.cible))}${i.s.reelle ? `<small>réel ${fmt(i.s.reelle)}</small>` : ""}</span>
+    <span class="stcell">${statusSelect(t.id)}</span>
+    <span class="valid"><input type="checkbox" data-valid="${t.id}" ${i.s.valide ? "checked" : ""} ${i.statut !== "Terminé" ? "disabled" : ""} aria-label="Validation finale ${t.id}" title="Validation finale (tâche terminée)"></span>
+  </div>`;
+}
+
+/* ---------- planning ---------- */
+function viewPlanning() {
+  const list = filtered();
+  if (!list.length) return `<section class="panel"><div class="pb">${filterBar({})}</div></section><div class="empty">Aucune tâche.</div>`;
+  const min = Math.min(...list.map(t => C.info[t.id].start)) - 7;
+  const max = Math.max(...list.map(t => Math.max(C.info[t.id].cible, C.info[t.id].start))) + 21;
+  const days = max - min, px = Math.max(2.2, Math.min(6, 1400 / days)), LW = 230, W = LW + days * px;
+  const x = n => LW + (n - min) * px;
+  let months = "";
+  const d0 = new Date(min * DAY); let m = Date.UTC(d0.getUTCFullYear(), d0.getUTCMonth() + 1, 1) / DAY;
+  while (m < max) { const dt = new Date(m * DAY); months += `<span class="g-month" style="left:${x(m)}px">${String(dt.getUTCMonth() + 1).padStart(2, "0")}/${String(dt.getUTCFullYear()).slice(2)}</span>`; const nx = new Date(m * DAY); m = Date.UTC(nx.getUTCFullYear(), nx.getUTCMonth() + 1, 1) / DAY; }
+  let rows = "";
+  REF.categories.forEach(c => {
+    const ts = list.filter(t => t.cat === c.code); if (!ts.length) return;
+    rows += `<div class="g-row cat"><span class="g-label">${c.code} · ${esc(c.nom)}</span></div>`;
+    ts.forEach(t => {
+      const i = C.info[t.id], j = JALON_BY_TASK[t.id];
+      const s = i.start, e = Math.max(i.cible, s);
+      const mark = j ? `<span class="g-ms ${i.statut === "Terminé" ? "done" : ""}" data-open="${t.id}" style="left:${x(e) - 6}px" title="${j.code} ${esc(j.nom)} : ${fmt(toIso(e))}"></span>`
+        : `<span class="g-bar ${i.late ? "late" : ""}" data-open="${t.id}" data-s="${esc(i.statut)}" style="left:${x(s)}px;width:${Math.max(3, (e - s) * px)}px" title="${t.id} ${esc(t.nom)} : ${fmt(toIso(s))} → ${fmt(toIso(e))}"></span>`;
+      rows += `<div class="g-row"><span class="g-label" data-open="${t.id}" title="${esc(t.nom)}"><span class="mono" style="color:var(--fg-3)">${t.id}</span> ${esc(t.nom)}</span>${mark}</div>`;
+    });
+  });
+  const tdy = C.today >= min && C.today <= max ? `<span class="g-today" style="left:${x(C.today)}px" title="Aujourd'hui"></span>` : "";
+  return `<section class="panel"><div class="pb" style="display:grid;gap:8px">${filterBar({})}
+    <div class="legend"><span><i style="background:var(--line-strong)"></i>À faire</span><span><i style="background:var(--info)"></i>En cours</span><span><i style="background:var(--warn)"></i>En validation</span><span><i style="background:var(--crit)"></i>Bloqué</span><span><i style="background:var(--ok)"></i>Terminé</span><span><i style="background:var(--accent);transform:rotate(45deg);width:10px"></i>Jalon</span><span>Trait rouge : aujourd'hui</span></div>
+    <span class="hint">Les dates se recalculent : début d'une tâche = fin réelle ou cible de ses prérequis ; fin = début + durée type. Une date cible saisie à la main prime.</span></div>
+    <div class="gantt-wrap"><div class="gantt" style="width:${W}px"><div class="g-axis">${months}</div>${tdy}${rows}</div></div></section>`;
+}
+
+/* ---------- kanban ---------- */
+function viewKanban() {
+  const list = filtered();
+  const cols = STATUTS.map(s => {
+    const ts = list.filter(t => C.info[t.id].statut === s);
+    return `<div class="col" data-col="${esc(s)}"><h3>${esc(s)} <span>${ts.length}</span></h3>${ts.slice(0, 80).map(t => {
+      const i = C.info[t.id];
+      return `<button class="card ${t.crit}" draggable="true" data-drag="${t.id}" data-open="${t.id}"><span class="id">${t.id} · ${esc(CATS[t.cat])}</span><span class="nm">${esc(t.nom)}</span><span class="ft"><span>${esc(t.resp[0])}</span><span class="${i.late ? "late" : ""}">${fmt(toIso(i.cible))}</span></span></button>`;
+    }).join("")}${ts.length > 80 ? `<span class="hint">+${ts.length - 80} autres : affinez les filtres</span>` : ""}</div>`;
+  }).join("");
+  return `<section class="panel"><div class="pb" style="display:grid;gap:8px">${filterBar({ noStatus: true })}<span class="hint">Glisser une carte vers une colonne pour changer son statut, ou cliquer pour l'ouvrir.</span></div></section><div class="kanban">${cols}</div>`;
+}
+
+/* ---------- paramétrage ---------- */
+let confirmDel = false;
+function viewSettings() {
+  const o = op();
+  const groups = REF.groupes_typologies.map(g => {
+    const items = REF.typologies.filter(t => t.groupe === g.code);
+    const type = g.choix === "unique" ? "radio" : "checkbox";
+    return `<div class="typo-group"><span class="lbl">${esc(g.nom)}${g.choix === "unique" ? " (un seul choix)" : ""}</span><div class="typo-list">${items.map(t => `<label><input type="${type}" name="tg-${g.code}" data-typo="${t.code}" ${o.typos.includes(t.code) ? "checked" : ""}>${esc(t.nom)}</label>`).join("")}</div></div>`;
+  }).join("");
+  const ops = Object.values(S.ops).map(x => `<div class="op-item ${x.id === o.id ? "cur" : ""}"><div class="t"><b>${esc(x.nom)}</b><span>démarrage ${fmt(x.debut)} · ${x.typos.length} typologies</span></div><div style="display:flex;gap:6px">${x.id !== o.id ? `<button class="btn small" data-switch="${x.id}">Ouvrir</button>` : `<span class="hint">ouverte</span>`}</div></div>`).join("");
+  const nCustom = (o.custom || []).length;
+  return `<div class="set-grid">
+    <section class="panel"><div class="ph"><h2>Opération</h2></div><div class="pb" style="display:grid;gap:10px">
+      <div class="form-grid">
+        <label class="fld">Nom<input class="inp" id="s-nom" value="${esc(o.nom)}"></label>
+        <label class="fld">Adresse<input class="inp" id="s-adr" value="${esc(o.adresse)}"></label>
+        <label class="fld">Date de démarrage<input class="inp" type="date" id="s-debut" value="${esc(o.debut)}"></label>
+      </div>
+      <span class="hint">La date de démarrage sert de point de départ au calcul chronologique de toutes les dates cibles.</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="newOp">Nouvelle opération</button><button class="btn" id="dupOp">Dupliquer comme modèle</button>
+      ${confirmDel ? `<span class="inline-confirm">Supprimer définitivement ? <button class="btn small danger" id="delYes">Supprimer</button><button class="btn small" id="delNo">Annuler</button></span>` : `<button class="btn danger" id="delOp" ${Object.keys(S.ops).length < 2 ? "disabled title=\"Gardez au moins une opération\"" : ""}>Supprimer</button>`}</div>
+    </div></section>
+    <section class="panel"><div class="ph"><h2>Typologie</h2><span class="hint">${C.active.length} tâches actives sur ${allTasks(o).length}</span></div><div class="pb">${groups}</div></section>
+    <section class="panel"><div class="ph"><h2>Mes opérations</h2></div><div class="pb"><div class="ops-list">${ops}</div></div></section>
+    <section class="panel"><div class="ph"><h2>Ajouter une tâche spécifique</h2><span class="hint">${nCustom} ajoutée(s)</span></div><div class="pb" style="display:grid;gap:10px">
+      <div class="form-grid">
+        <label class="fld">Nom<input class="inp" id="c-nom" placeholder="Ex. : Accord du syndic pour l'échafaudage"></label>
+        <label class="fld">Catégorie<select class="inp" id="c-cat">${REF.categories.map(c => `<option value="${c.code}">${c.code} · ${esc(c.nom)}</option>`).join("")}</select></label>
+        <label class="fld">Criticité<select class="inp" id="c-crit">${CRITS.map(c => `<option>${c}</option>`).join("")}</select></label>
+        <label class="fld">Responsable<input class="inp" id="c-resp" value="MDB"></label>
+        <label class="fld">Dépend de (ID séparés par des virgules)<input class="inp" id="c-dep" placeholder="B08, C16"></label>
+        <label class="fld">Durée type (jours)<input class="inp" type="number" min="0" id="c-duree" value="5"></label>
+      </div>
+      <label class="fld">Description<textarea class="inp" id="c-desc" style="min-height:60px"></textarea></label>
+      <label class="fld">Risque si oubli<input class="inp" id="c-risque"></label>
+      <div><button class="btn primary" id="addTask">Ajouter à cette opération</button> <span class="hint" id="c-msg"></span></div>
+    </div></section>
+    <section class="panel" style="grid-column:1/-1"><div class="ph"><h2>Export et sauvegarde</h2></div><div class="pb io">
+      <span class="hint">CSV prêt à importer dans Notion (Importer → CSV) ou Airtable (Ajouter une table → CSV). JSON pour sauvegarder ou transférer vos opérations vers un autre navigateur.</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" data-export="csv">CSV de l'opération</button>
+        <button class="btn" data-export="json">Sauvegarde JSON (toutes opérations)</button>
+        <button class="btn" data-export="ref">Référentiel JSON</button>
+        <button class="btn" id="copyExport">Copier</button>
+        <button class="btn" id="dlExport">Télécharger</button>
+      </div>
+      <textarea class="inp" id="exportBox" readonly aria-label="Contenu exporté" placeholder="Choisissez un export ci-dessus."></textarea>
+      <span class="lbl">Importer une sauvegarde JSON</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input type="file" id="importFile" accept=".json,application/json"><button class="btn" id="importPaste">Importer le texte collé ci-dessus</button><span class="hint" id="importMsg"></span></div>
+    </div></section>
+  </div>`;
+}
+
+/* ---------- détail ---------- */
+function renderDrawer() {
+  const ov = $("#overlay");
+  if (!UI.open || !C.byId[UI.open]) { ov.innerHTML = ""; return; }
+  const t = C.byId[UI.open], i = C.info[t.id], j = JALON_BY_TASK[t.id];
+  if (!i) { ov.innerHTML = ""; return; }
+  const s = i.s;
+  const succ = C.active.filter(x => C.deps[x.id].includes(t.id)).map(x => x.id);
+  const depChip = id => `<span class="chip link ${(C.info[id] && C.info[id].statut === "Terminé") ? "ok" : "wait"}" data-open="${id}" title="${esc(C.byId[id].nom)}">${id}</span>`;
+  const typoTxt = (t.typo && t.typo.length) ? [...expandTypo(t.typo)].map(c => TYPO[c] ? TYPO[c].nom : c).join(", ") : "Toutes typologies";
+  ov.innerHTML = `<div class="scrim" data-close></div><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle">
+    <div class="dr-head"><div class="top-line"><span class="mono" style="color:var(--fg-3)">${t.id} · ${esc(CATS[t.cat])} › ${esc(t.sc)}</span><button class="btn small" data-close aria-label="Fermer">Fermer</button></div>
+      <h2 id="drTitle">${esc(t.nom)}</h2>
+      <div class="chips"><span class="chip"><span class="stripe ${t.crit}" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px"></span>${t.crit}</span>${j ? `<span class="chip">${j.code} · ${esc(j.nom)}</span>` : ""}${t.custom ? `<span class="chip">Tâche ajoutée</span>` : ""}</div></div>
+    <div class="dr-body">
+      <div class="dr-grid">
+        <label class="fld">Statut${statusSelect(t.id)}</label>
+        <label class="fld">Date cible ${i.override ? `<button class="btn small" id="resetCible" style="justify-self:start">Recalculer</button>` : `<span class="hint" style="font-weight:400">(calculée)</span>`}<input class="inp" type="date" id="d-cible" value="${toIso(i.cible)}"></label>
+        <label class="fld">Date réelle<input class="inp" type="date" id="d-reelle" value="${esc(s.reelle || "")}"></label>
+        <div class="fld"><span>Démarrage au plus tôt</span><span class="mono" style="display:block;color:var(--fg);font-weight:400;padding-top:6px">${fmt(toIso(i.start))} · ${t.duree || 0} j</span></div>
+      </div>
+      <label class="valid-box"><input type="checkbox" id="d-valide" ${s.valide ? "checked" : ""} ${i.statut !== "Terminé" ? "disabled" : ""}><span><b>Validation finale</b><br><span class="hint">${i.statut !== "Terminé" ? "Disponible une fois la tâche terminée." : "Je confirme que les pièces sont obtenues et classées."}</span></span></label>
+      <label class="fld">Commentaires<textarea class="inp" id="d-comm" placeholder="Décisions, interlocuteurs, pièces reçues…">${esc(s.comm || "")}</textarea></label>
+      <div class="dr-sec"><span class="lbl">Description opérationnelle</span><p>${esc(t.desc)}</p></div>
+      ${t.risque ? `<div class="dr-sec"><span class="lbl">Risque si oubli</span><p class="risk">${esc(t.risque)}</p></div>` : ""}
+      ${t.conseil ? `<div class="dr-sec"><span class="lbl">Pratique terrain</span><p class="tip">${esc(t.conseil)}</p></div>` : ""}
+      ${t.verif ? `<p class="verif">Référence ou règle susceptible d'évoluer : à confirmer avec le notaire, l'avocat ou l'expert-comptable de l'opération.</p>` : ""}
+      <div class="dr-grid">
+        <div class="dr-sec"><span class="lbl">Responsable</span><div class="chips">${t.resp.map(r => `<span class="chip">${esc(r)}</span>`).join("")}</div></div>
+        <div class="dr-sec"><span class="lbl">Déclenchement</span><p>${esc(t.decl || "—")}</p></div>
+        <div class="dr-sec"><span class="lbl">Prérequis</span><div class="chips">${C.deps[t.id].map(depChip).join("") || `<span class="hint">aucun</span>`}</div></div>
+        <div class="dr-sec"><span class="lbl">Débloque</span><div class="chips">${succ.map(depChip).join("") || `<span class="hint">aucune tâche</span>`}</div></div>
+      </div>
+      <div class="dr-sec"><span class="lbl">Documents associés</span><div class="chips">${(t.docs || []).map(d => `<span class="chip">${esc(d)}</span>`).join("") || `<span class="hint">—</span>`}</div></div>
+      <div class="dr-sec"><span class="lbl">Typologies concernées</span><p class="hint">${esc(typoTxt)}</p></div>
+      ${t.custom ? `<div><button class="btn danger small" id="delCustom">Retirer cette tâche ajoutée</button></div>` : ""}
+    </div></aside>`;
+  bindDrawer(t.id);
+}
+
+/* ---------- interactions ---------- */
+function setTask(id, patch) {
+  const o = op(); const cur = o.taches[id] || {};
+  const next = Object.assign({}, cur, patch);
+  if (patch.statut === "Terminé" && !next.reelle) next.reelle = todayIso();
+  if (patch.statut && patch.statut !== "Terminé") next.valide = false;
+  Object.keys(next).forEach(k => (next[k] === "" || next[k] === undefined) && delete next[k]);
+  o.taches[id] = next;
+  save(); refresh();
+}
+function toast(msg) { const d = document.createElement("div"); d.className = "toast"; d.textContent = msg; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
+function bindView() {
+  const v = $("#view");
+  v.querySelectorAll("[data-open]").forEach(el => el.addEventListener("click", e => { if (e.target.closest("select")) return; UI.open = el.dataset.open; renderDrawer(); }));
+  v.querySelectorAll("[data-status]").forEach(el => { el.addEventListener("click", e => e.stopPropagation()); el.addEventListener("change", () => setTask(el.dataset.status, { statut: el.value })); });
+  v.querySelectorAll("[data-valid]").forEach(el => el.addEventListener("change", () => setTask(el.dataset.valid, { valide: el.checked })));
+  v.querySelectorAll("[data-f]").forEach(el => el.addEventListener("change", () => { UI.f[el.dataset.f] = el.value; render(); }));
+  v.querySelectorAll("[data-fb]").forEach(el => el.addEventListener("change", () => { UI.f[el.dataset.fb] = el.checked; render(); }));
+  const fq = $("#fq"); if (fq) fq.addEventListener("input", () => { UI.f.q = fq.value; clearTimeout(fq._t); fq._t = setTimeout(() => { const pos = fq.selectionStart; render(); const n = $("#fq"); n.focus(); n.setSelectionRange(pos, pos); }, 220); });
+  v.querySelectorAll("[data-alerts-only]").forEach(el => el.addEventListener("click", () => { UI.f.alertsOnly = true; }));
+  // kanban
+  v.querySelectorAll("[data-drag]").forEach(el => el.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", el.dataset.drag); e.dataTransfer.effectAllowed = "move"; }));
+  v.querySelectorAll("[data-col]").forEach(col => {
+    col.addEventListener("dragover", e => { e.preventDefault(); col.classList.add("over"); });
+    col.addEventListener("dragleave", () => col.classList.remove("over"));
+    col.addEventListener("drop", e => { e.preventDefault(); const id = e.dataTransfer.getData("text/plain"); if (id) setTask(id, { statut: col.dataset.col }); });
+  });
+  if (UI.view === "parametrage") bindSettings();
+}
+function bindDrawer(id) {
+  const ov = $("#overlay");
+  ov.querySelectorAll("[data-close]").forEach(el => el.addEventListener("click", () => { UI.open = null; renderDrawer(); }));
+  ov.querySelectorAll("[data-open]").forEach(el => el.addEventListener("click", () => { UI.open = el.dataset.open; renderDrawer(); }));
+  ov.querySelectorAll("[data-status]").forEach(el => el.addEventListener("change", () => setTask(id, { statut: el.value })));
+  const g = s => ov.querySelector(s);
+  g("#d-cible").addEventListener("change", e => setTask(id, { cible: e.target.value }));
+  g("#d-reelle").addEventListener("change", e => setTask(id, { reelle: e.target.value }));
+  g("#d-valide").addEventListener("change", e => setTask(id, { valide: e.target.checked }));
+  g("#d-comm").addEventListener("change", e => setTask(id, { comm: e.target.value }));
+  const rc = g("#resetCible"); if (rc) rc.addEventListener("click", e => { e.preventDefault(); setTask(id, { cible: "" }); });
+  const dc = g("#delCustom"); if (dc) dc.addEventListener("click", () => { const o = op(); o.custom = o.custom.filter(t => t.id !== id); delete o.taches[id]; UI.open = null; save(); refresh(); });
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape" && UI.open) { UI.open = null; renderDrawer(); } });
+
+function csvCell(v) { const s = Array.isArray(v) ? v.join(", ") : String(v ?? ""); return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }
+function buildCsv() {
+  const o = op();
+  const head = ["ID","Tâche","Catégorie","Sous-catégorie","Description","Responsable","Déclenchement","Dépendances","Criticité","Risque si oubli","Documents","Typologies","Durée (j)","Jalon","Pratique terrain","À vérifier","Statut","Date début calculée","Date cible","Date réelle","Commentaires","Validation finale"];
+  const lines = [head.map(csvCell).join(",")];
+  C.chrono.forEach(t => {
+    const i = C.info[t.id], j = JALON_BY_TASK[t.id];
+    lines.push([t.id, t.nom, t.cat + " · " + CATS[t.cat], t.sc, t.desc, t.resp, t.decl, C.deps[t.id], t.crit, t.risque, t.docs || [], (t.typo && t.typo.length) ? t.typo : ["Toutes"], t.duree, j ? j.code + " " + j.nom : "", t.conseil || "", t.verif ? "Oui" : "Non", i.statut, toIso(i.start), toIso(i.cible), i.s.reelle || "", i.s.comm || "", i.s.valide ? "Oui" : "Non"].map(csvCell).join(","));
+  });
+  return "﻿" + lines.join("\n");
+}
+let lastExport = { name: "", type: "", text: "" };
+function bindSettings() {
+  const o = op(), g = s => document.querySelector(s);
+  g("#s-nom").addEventListener("change", e => { o.nom = e.target.value || "Opération"; o.exemple = false; save(); refresh(); });
+  g("#s-adr").addEventListener("change", e => { o.adresse = e.target.value; save(); refresh(); });
+  g("#s-debut").addEventListener("change", e => { if (e.target.value) { o.debut = e.target.value; save(); refresh(); } });
+  document.querySelectorAll("[data-typo]").forEach(el => el.addEventListener("change", () => {
+    const code = el.dataset.typo, grp = TYPO[code].groupe;
+    const gdef = REF.groupes_typologies.find(x => x.code === grp);
+    let list = o.typos.slice();
+    if (gdef.choix === "unique") list = list.filter(c => TYPO[c] && TYPO[c].groupe !== grp);
+    list = list.filter(c => c !== code); if (el.checked) list.push(code);
+    o.typos = list; save(); refresh();
+  }));
+  document.querySelectorAll("[data-switch]").forEach(el => el.addEventListener("click", () => { S.current = el.dataset.switch; confirmDel = false; save(); refresh(); }));
+  g("#newOp").addEventListener("click", () => { const n = blankOp(); S.ops[n.id] = n; S.current = n.id; save(); refresh(); toast("Opération créée"); });
+  g("#dupOp").addEventListener("click", () => { const n = JSON.parse(JSON.stringify(o)); n.id = uid(); n.nom = o.nom + " (copie)"; n.exemple = false; n.taches = {}; n.debut = todayIso(); S.ops[n.id] = n; S.current = n.id; save(); refresh(); toast("Copie créée : typologies et tâches ajoutées reprises, statuts remis à zéro"); });
+  const del = g("#delOp"); if (del) del.addEventListener("click", () => { confirmDel = true; render(); });
+  const yes = g("#delYes"); if (yes) yes.addEventListener("click", () => { delete S.ops[o.id]; S.current = Object.keys(S.ops)[0]; confirmDel = false; save(); refresh(); toast("Opération supprimée"); });
+  const no = g("#delNo"); if (no) no.addEventListener("click", () => { confirmDel = false; render(); });
+  g("#addTask").addEventListener("click", () => {
+    const nom = g("#c-nom").value.trim(); if (!nom) { g("#c-msg").textContent = "Donnez un nom à la tâche."; return; }
+    const n = (o.custom || []).length + 1; let id = "X" + String(n).padStart(2, "0");
+    while (C.byId[id]) id = "X" + String(Math.floor(Math.random() * 900) + 100);
+    const known = new Set(allTasks(o).map(t => t.id));
+    const dep = g("#c-dep").value.split(/[,\s;]+/).map(x => x.trim().toUpperCase()).filter(Boolean);
+    const bad = dep.filter(d => !known.has(d)); if (bad.length) { g("#c-msg").textContent = "ID inconnu : " + bad.join(", "); return; }
+    const cat = g("#c-cat").value;
+    o.custom = (o.custom || []).concat([{ id, cat, sc: "Spécifique opération", nom, desc: g("#c-desc").value.trim() || "Tâche ajoutée pour cette opération.", resp: g("#c-resp").value.split(",").map(x => x.trim()).filter(Boolean), decl: "", dep, crit: g("#c-crit").value, risque: g("#c-risque").value.trim(), docs: [], typo: [], duree: Math.max(0, parseInt(g("#c-duree").value, 10) || 0), custom: true }]);
+    save(); refresh(); toast(`Tâche ${id} ajoutée`);
+  });
+  const box = g("#exportBox");
+  document.querySelectorAll("[data-export]").forEach(el => el.addEventListener("click", () => {
+    const k = el.dataset.export, slug = o.nom.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (k === "csv") lastExport = { name: `${slug || "operation"}.csv`, type: "text/csv", text: buildCsv() };
+    if (k === "json") lastExport = { name: "pilotage-mdb-sauvegarde.json", type: "application/json", text: JSON.stringify({ format: "pilotage-mdb", version: 1, export: todayIso(), data: S }, null, 2) };
+    if (k === "ref") lastExport = { name: "referentiel-mdb.json", type: "application/json", text: JSON.stringify(REF, null, 2) };
+    box.value = lastExport.text;
+  }));
+  g("#copyExport").addEventListener("click", () => {
+    if (!box.value) { toast("Choisissez d'abord un export"); return; }
+    navigator.clipboard.writeText(box.value).then(() => toast("Copié dans le presse-papiers"), () => { box.focus(); box.select(); toast("Copie refusée : le texte est sélectionné, utilisez Ctrl+C"); });
+  });
+  g("#dlExport").addEventListener("click", () => {
+    if (!lastExport.text) { toast("Choisissez d'abord un export"); return; }
+    try { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([lastExport.text], { type: lastExport.type })); a.download = lastExport.name; document.body.appendChild(a); a.click(); a.remove(); toast("Téléchargement lancé. S'il ne démarre pas, utilisez Copier."); }
+    catch (e) { toast("Téléchargement impossible ici : utilisez Copier"); }
+  });
+  const doImport = text => {
+    try {
+      const j = JSON.parse(text); const data = j.data || j;
+      if (!data.ops || typeof data.ops !== "object") throw new Error("format");
+      Object.values(data.ops).forEach(x => { if (!x.id || !Array.isArray(x.typos) || typeof x.taches !== "object") throw new Error("format"); S.ops[x.id] = x; });
+      S.current = data.current && S.ops[data.current] ? data.current : Object.keys(data.ops)[0];
+      save(); refresh(); toast(`${Object.keys(data.ops).length} opération(s) importée(s)`);
+    } catch (e) { g("#importMsg").textContent = "Fichier non reconnu : il faut une sauvegarde JSON exportée par cet outil."; }
+  };
+  g("#importFile").addEventListener("change", e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => doImport(r.result); r.readAsText(f); });
+  g("#importPaste").addEventListener("click", () => { box.readOnly = false; if (box.value.trim()) doImport(box.value); else { box.focus(); g("#importMsg").textContent = "Collez le JSON dans la zone ci-dessus puis cliquez à nouveau."; } });
+}
+
+$("#opSelect").addEventListener("change", e => { S.current = e.target.value; UI.open = null; save(); refresh(); });
+function route() { const h = location.hash.replace("#", ""); UI.view = ["tableau","checklist","planning","kanban","parametrage"].includes(h) ? h : "tableau"; refresh(); window.scrollTo(0, 0); }
+window.addEventListener("hashchange", route);
+route();
+})();
+</script>

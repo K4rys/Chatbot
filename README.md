@@ -24,6 +24,7 @@ suivi d'opération (D). Il s'appuie sur Claude (API Anthropic).
 | `app/tools.py` | Outil `simuler_operation` exposé à l'IA. |
 | `app/agent.py` | Conversation avec Claude, streaming, garde-fous. |
 | `app/server.py`, `app/static/index.html` | Serveur web et page de chat. |
+| `pilotage/` | Checklist de pilotage d'opération MDB (135 tâches, typologies, jalons, planning). Servie sur `/pilotage`. Voir `pilotage/README.md`. |
 
 ## Lancer en local
 ```bash
