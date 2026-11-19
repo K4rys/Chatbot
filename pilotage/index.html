@@ -226,6 +226,35 @@ label.fld { display: grid; gap: 4px; font-size: 12px; color: var(--fg-2); font-w
 .io textarea { font-family: var(--f-mono); font-size: 11.5px; min-height: 140px; }
 .hint { font-size: 12.5px; color: var(--fg-3); }
 
+
+/* Portefeuille */
+.pf-wrap { overflow-x: auto; }
+table.pf { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 860px; }
+.pf th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--fg-3); font-weight: 600; text-align: center; padding: 8px 6px; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
+.pf th.l, .pf td.l { text-align: left; }
+.pf td { padding: 9px 6px; border-bottom: 1px solid var(--line); text-align: center; vertical-align: middle; font-variant-numeric: tabular-nums; }
+.pf tr:last-child td { border-bottom: 0; }
+.pf tfoot td { border-top: 1px solid var(--line-strong); font-weight: 600; color: var(--fg-2); }
+.pf .opn { all: unset; cursor: pointer; font-weight: 600; display: block; }
+.pf .opn:hover { color: var(--accent); text-decoration: underline; }
+.pf .opn:focus-visible { outline: 2px solid var(--accent); }
+.pf .sub { font-size: 12px; color: var(--fg-3); display: block; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf .pct { display: grid; gap: 4px; min-width: 120px; text-align: left; }
+.pf .pct b { font-family: var(--f-display); font-size: 17px; }
+.pf .pct span { font-size: 11.5px; color: var(--fg-3); }
+.cell { all: unset; cursor: pointer; display: inline-grid; place-items: center; min-width: 34px; height: 28px; border-radius: 5px; font-family: var(--f-mono); font-size: 13px; background: var(--surface-2); position: relative; }
+.cell:hover { outline: 1px solid var(--accent); }
+.cell:focus-visible { outline: 2px solid var(--accent); }
+.cell.zero { background: transparent; color: var(--fg-3); }
+.cell.hot { background: var(--crit-soft); color: var(--crit); font-weight: 600; }
+.cell.blk::after { content: ""; position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--crit); }
+.pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.pill.crit { background: var(--crit-soft); color: var(--crit); } .pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.muted { background: var(--muted-soft); color: var(--fg-3); }
+.pf .ms-next { text-align: left; font-size: 12.5px; white-space: nowrap; }
+.pf .ms-next span { display: block; font-family: var(--f-mono); font-size: 12px; color: var(--fg-3); }
+.legend-cats { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--fg-2); }
+.legend-cats b { font-family: var(--f-mono); color: var(--accent); font-weight: 500; margin-right: 4px; }
+
 /* Panneau de détail */
 .scrim { position: fixed; inset: 0; background: rgba(10, 15, 25, .35); z-index: 40; }
 aside.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--surface); z-index: 41; border-left: 1px solid var(--line); display: grid; grid-template-rows: auto 1fr; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
@@ -262,6 +291,7 @@ footer.foot { font-size: 12px; color: var(--fg-3); padding-block: 0 30px; max-wi
     </div>
   </div>
   <nav class="tabs wrap" id="tabs" aria-label="Vues">
+    <a href="#operations" data-v="operations">Opérations</a>
     <a href="#tableau" data-v="tableau">Tableau de bord</a>
     <a href="#checklist" data-v="checklist">Checklist</a>
     <a href="#planning" data-v="planning">Planning</a>
@@ -325,7 +355,7 @@ function blankOp(nom) {
 let S = load();
 if (!S || !S.ops || !Object.keys(S.ops).length) { const ex = exampleOp(); S = { ops: { [ex.id]: ex }, current: ex.id }; }
 SEED_OPS.forEach(o => { if (!S.ops[o.id]) { S.ops[o.id] = JSON.parse(JSON.stringify(o)); S.current = o.id; } });
-const UI = { view: "tableau", f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false, toValidate: false }, open: null };
+const UI = { view: "operations", showClosed: false, f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false, toValidate: false }, open: null };
 const op = () => S.ops[S.current];
 
 /* ---------- moteur ---------- */
@@ -408,7 +438,7 @@ function renderSaveState() {
 function renderHeader() {
   const o = op();
   $("#opSelect").innerHTML = Object.values(S.ops).map(x => `<option value="${x.id}" ${x.id === o.id ? "selected" : ""}>${esc(x.nom)}</option>`).join("");
-  $("#opMeta").textContent = [o.adresse, "démarrage " + fmt(o.debut), o.typos.map(c => TYPO[c] ? TYPO[c].nom : c).join(" · ")].filter(Boolean).join(" — ");
+  $("#opMeta").textContent = UI.view === "operations" ? `Portefeuille · ${Object.keys(S.ops).length} opération(s)` : [o.adresse, "démarrage " + fmt(o.debut), o.typos.map(c => TYPO[c] ? TYPO[c].nom : c).join(" · ")].filter(Boolean).join(" — ");
   document.querySelectorAll("#tabs a").forEach(a => {
     a.setAttribute("aria-current", a.dataset.v === UI.view ? "page" : "false");
     if (a.dataset.v === "tableau") {
@@ -421,14 +451,78 @@ function renderHeader() {
 function render() {
   renderHeader(); renderSaveState();
   const v = $("#view");
-  const views = { tableau: viewDash, checklist: viewChecklist, planning: viewPlanning, kanban: viewKanban, parametrage: viewSettings };
-  v.innerHTML = (op().exemple ? `<div class="example-note">Opération d'exemple, avec des statuts fictifs pour montrer l'outil. Créez votre opération dans Paramétrage.</div>` : "") + views[UI.view]();
+  const views = { operations: viewPortfolio, tableau: viewDash, checklist: viewChecklist, planning: viewPlanning, kanban: viewKanban, parametrage: viewSettings };
+  v.innerHTML = (op().exemple && UI.view !== "operations" ? `<div class="example-note">Opération d'exemple, avec des statuts fictifs pour montrer l'outil. Créez votre opération dans Paramétrage.</div>` : "") + views[UI.view]();
   bindView();
   renderDrawer();
 }
 function statusSelect(id, cls) {
   const s = C.info[id].statut;
   return `<select class="inp st ${cls || ""}" data-status="${id}" data-s="${esc(s)}" aria-label="Statut de ${id}">${STATUTS.map(x => `<option ${x === s ? "selected" : ""}>${x}</option>`).join("")}</select>`;
+}
+
+/* ---------- portefeuille d'opérations ---------- */
+function opStats(o) {
+  const c = o.id === S.current && C ? C : compute(o), i = c.info;
+  const done = c.active.filter(t => i[t.id].statut === "Terminé").length;
+  const cats = {};
+  REF.categories.forEach(k => {
+    const ts = c.active.filter(t => t.cat === k.code), open = ts.filter(t => i[t.id].statut !== "Terminé");
+    cats[k.code] = { total: ts.length, open: open.length,
+      hot: open.filter(t => i[t.id].late && t.crit === "Critique").length,
+      blk: open.filter(t => i[t.id].statut === "Bloqué").length };
+  });
+  const nextJ = REF.jalons.find(j => i[j.tache] && i[j.tache].statut !== "Terminé");
+  const reached = REF.jalons.filter(j => i[j.tache] && i[j.tache].statut === "Terminé").length;
+  const closed = !!(i.I08 && i.I08.statut === "Terminé");
+  return { o, c, done, total: c.active.length, pct: c.active.length ? Math.round(done / c.active.length * 100) : 0, cats, nextJ, reached,
+    nbJ: REF.jalons.filter(j => i[j.tache]).length, closed,
+    open: c.active.length - done, blocked: c.active.filter(t => i[t.id].statut === "Bloqué").length,
+    late: c.active.filter(t => i[t.id].late).length, critLate: c.active.filter(t => i[t.id].late && t.crit === "Critique").length,
+    toValidate: c.active.filter(t => i[t.id].statut === "Terminé" && !i[t.id].s.valide).length,
+    fin: i.I08 ? toIso(i.I08.cible) : null };
+}
+function viewPortfolio() {
+  const all = Object.values(S.ops).map(opStats).sort((a, b) => a.closed - b.closed || b.critLate - a.critLate || a.pct - b.pct);
+  const list = all.filter(x => UI.showClosed || !x.closed);
+  const enCours = all.filter(x => !x.closed && !x.o.exemple);
+  const sum = k => list.reduce((n, x) => n + x[k], 0);
+  const catHead = REF.categories.map(c => `<th title="${esc(c.nom)}">${c.code}</th>`).join("");
+  const rows = list.map(x => {
+    const cells = REF.categories.map(k => {
+      const v = x.cats[k.code];
+      if (!v.total) return `<td><span class="cell zero" title="Sans objet pour cette typologie">·</span></td>`;
+      const cls = v.open === 0 ? "zero" : v.hot ? "hot" : "";
+      const tip = `${k.nom} : ${v.open} ouverte(s) sur ${v.total}` + (v.hot ? `, ${v.hot} critique(s) en retard` : "") + (v.blk ? `, ${v.blk} bloquée(s)` : "");
+      return `<td><button class="cell ${cls} ${v.blk ? "blk" : ""}" data-goop="${x.o.id}" data-gocat="${k.code}" title="${esc(tip)}" aria-label="${esc(tip)}">${v.open === 0 ? "✓" : v.open}</button></td>`;
+    }).join("");
+    const j = x.nextJ;
+    return `<tr>
+      <td class="l"><button class="opn" data-goop="${x.o.id}">${esc(x.o.nom)}</button><span class="sub">${esc(x.o.adresse || "")}${x.o.exemple ? " · exemple" : ""}</span></td>
+      <td class="l"><div class="pct"><b>${x.pct} %</b><div class="progress"><i style="width:${x.pct}%"></i></div><span>${x.done}/${x.total} tâches · ${x.reached}/${x.nbJ} jalons</span></div></td>
+      ${cells}
+      <td>${x.open}</td>
+      <td>${x.blocked ? `<span class="pill crit">${x.blocked}</span>` : `<span class="pill muted">0</span>`}</td>
+      <td>${x.critLate ? `<span class="pill crit">${x.critLate} crit.</span>` : x.late ? `<span class="pill muted">${x.late}</span>` : `<span class="pill ok">0</span>`}</td>
+      <td class="ms-next">${x.closed ? `<span class="pill ok">Clôturée</span>` : j ? `${j.code} · ${esc(j.nom)}<span>${fmt(toIso(x.c.info[j.tache].cible))}</span>` : "—"}</td>
+    </tr>`;
+  }).join("");
+  const foot = list.length > 1 ? `<tfoot><tr><td class="l">Total (${list.length})</td><td class="l"></td>${REF.categories.map(k => `<td>${list.reduce((n, x) => n + x.cats[k.code].open, 0)}</td>`).join("")}<td>${sum("open")}</td><td>${sum("blocked")}</td><td>${sum("critLate")}</td><td></td></tr></tfoot>` : "";
+  const nClosed = all.filter(x => x.closed).length;
+  return `
+  <section class="kpis" aria-label="Portefeuille">
+    <div class="kpi"><span class="lbl">Opérations en cours</span><span class="v">${enCours.length}</span><span class="s">hors exemple${nClosed ? ` · ${nClosed} clôturée(s)` : ""}</span></div>
+    <div class="kpi"><span class="lbl">Tâches ouvertes</span><span class="v">${enCours.reduce((n, x) => n + x.open, 0)}</span><span class="s">sur les opérations en cours</span></div>
+    <div class="kpi ${enCours.some(x => x.critLate) ? "alert" : ""}"><span class="lbl">Critiques en retard</span><span class="v">${enCours.reduce((n, x) => n + x.critLate, 0)}</span><span class="s">toutes opérations</span></div>
+    <div class="kpi ${enCours.some(x => x.blocked) ? "alert" : ""}"><span class="lbl">Bloquées</span><span class="v">${enCours.reduce((n, x) => n + x.blocked, 0)}</span><span class="s">tâches</span></div>
+    <div class="kpi"><span class="lbl">À valider</span><span class="v">${enCours.reduce((n, x) => n + x.toValidate, 0)}</span><span class="s">terminées, validation finale à cocher</span></div>
+  </section>
+  <section class="panel"><div class="ph"><h2>Opérations</h2><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><label class="chk"><input type="checkbox" id="showClosed" ${UI.showClosed ? "checked" : ""}> Afficher les clôturées</label><button class="btn small primary" id="pfNew">Nouvelle opération</button></div></div>
+    <div class="pb" style="display:grid;gap:10px">
+      <span class="hint">Colonnes A à I : nombre de tâches ouvertes par catégorie. Rouge : au moins une tâche critique en retard ; point rouge : tâche bloquée ; ✓ : catégorie terminée ; · : sans objet. Cliquer un chiffre ouvre la checklist filtrée.</span>
+      <div class="pf-wrap"><table class="pf"><thead><tr><th class="l">Opération</th><th class="l">Avancement</th>${catHead}<th>Ouvertes</th><th>Bloquées</th><th>Retards</th><th class="l">Prochain jalon</th></tr></thead><tbody>${rows || `<tr><td colspan="16" class="l empty">Aucune opération en cours.</td></tr>`}</tbody>${foot}</table></div>
+      <div class="legend-cats">${REF.categories.map(c => `<span><b>${c.code}</b>${esc(c.nom)}</span>`).join("")}</div>
+    </div></section>`;
 }
 
 /* ---------- tableau de bord ---------- */
@@ -701,6 +795,13 @@ function bindView() {
     col.addEventListener("drop", e => { e.preventDefault(); const id = e.dataTransfer.getData("text/plain"); if (id) setTask(id, { statut: col.dataset.col }); });
   });
   if (UI.view === "parametrage") bindSettings();
+  v.querySelectorAll("[data-goop]").forEach(el => el.addEventListener("click", () => {
+    S.current = el.dataset.goop; UI.open = null; save();
+    if (el.dataset.gocat) { Object.assign(UI.f, { cat: el.dataset.gocat, statut: "", crit: "", resp: "", q: "", hideDone: true, ready: false, alertsOnly: false, toValidate: false }); location.hash = "checklist"; }
+    else location.hash = "tableau";
+  }));
+  const sc = $("#showClosed"); if (sc) sc.addEventListener("change", () => { UI.showClosed = sc.checked; render(); });
+  const pn = $("#pfNew"); if (pn) pn.addEventListener("click", () => { const n = blankOp(); S.ops[n.id] = n; S.current = n.id; save(); location.hash = "parametrage"; });
 }
 function bindDrawer(id) {
   const ov = $("#overlay");
@@ -792,7 +893,7 @@ function bindSettings() {
 }
 
 $("#opSelect").addEventListener("change", e => { S.current = e.target.value; UI.open = null; save(); refresh(); });
-function route() { const h = location.hash.replace("#", ""); UI.view = ["tableau","checklist","planning","kanban","parametrage"].includes(h) ? h : "tableau"; refresh(); window.scrollTo(0, 0); }
+function route() { const h = location.hash.replace("#", ""); UI.view = ["operations","tableau","checklist","planning","kanban","parametrage"].includes(h) ? h : "operations"; refresh(); window.scrollTo(0, 0); }
 window.addEventListener("hashchange", route);
 route();
 })();
