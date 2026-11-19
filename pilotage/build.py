@@ -19,6 +19,7 @@ GABARIT = ICI / "app.html"
 SORTIE_HTML = ICI / "index.html"
 EXPORT = ICI / "export"
 MARQUEUR = "/*__REFERENTIEL__*/null"
+MARQUEUR_OPS = "/*__OPERATIONS__*/[]"
 
 CHAMPS_OBLIGATOIRES = ("id", "cat", "sc", "nom", "desc", "resp", "dep", "crit", "risque", "typo", "duree")
 
@@ -83,12 +84,16 @@ def valider(ref: dict) -> list[str]:
     return erreurs
 
 
-def construire_html(ref: dict) -> str:
+def _js(obj) -> str:
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+
+
+def construire_html(ref: dict, operations: list[dict] | None = None) -> str:
+    """Gabarit + référentiel ; `operations` = opérations préchargées (au format de la sauvegarde JSON)."""
     gabarit = GABARIT.read_text(encoding="utf-8")
-    if MARQUEUR not in gabarit:
-        raise ValueError("Marqueur du référentiel absent du gabarit")
-    donnees = json.dumps(ref, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-    return gabarit.replace(MARQUEUR, donnees)
+    if MARQUEUR not in gabarit or MARQUEUR_OPS not in gabarit:
+        raise ValueError("Marqueur absent du gabarit")
+    return gabarit.replace(MARQUEUR, _js(ref)).replace(MARQUEUR_OPS, _js(operations or []))
 
 
 def page_autonome(fragment: str) -> str:
@@ -146,10 +151,24 @@ def exporter_csv(ref: dict) -> None:
 
 
 def main() -> None:
+    """Sans argument : build du dépôt. Avec `--operation op.json --sortie page.html` : page préchargée
+    d'opérations réelles, à générer hors du dépôt (données confidentielles)."""
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--operation", action="append", default=[], help="JSON d'une opération à précharger")
+    ap.add_argument("--sortie", help="Fichier HTML (fragment) à produire avec les opérations")
+    args = ap.parse_args()
     ref = charger()
     erreurs = valider(ref)
     if erreurs:
         raise SystemExit("Référentiel incohérent :\n- " + "\n- ".join(erreurs))
+    if args.operation:
+        if not args.sortie:
+            raise SystemExit("--sortie est obligatoire avec --operation")
+        ops = [json.loads(Path(f).read_text(encoding="utf-8")) for f in args.operation]
+        Path(args.sortie).write_text(construire_html(ref, ops), encoding="utf-8")
+        print(f"{len(ops)} opération(s) préchargée(s) → {args.sortie}")
+        return
     fragment = construire_html(ref)
     SORTIE_HTML.write_text(page_autonome(fragment), encoding="utf-8")
     exporter_csv(ref)

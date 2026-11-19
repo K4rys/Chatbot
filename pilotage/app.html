@@ -267,6 +267,7 @@ footer.foot { font-size: 12px; color: var(--fg-3); padding-block: 0 30px; max-wi
 
 <script>
 const REF = /*__REFERENTIEL__*/null;
+const SEED_OPS = /*__OPERATIONS__*/[];
 (function () {
 "use strict";
 const STATUTS = REF.statuts, CRITS = REF.criticites;
@@ -315,7 +316,8 @@ function blankOp(nom) {
 }
 let S = load();
 if (!S || !S.ops || !Object.keys(S.ops).length) { const ex = exampleOp(); S = { ops: { [ex.id]: ex }, current: ex.id }; }
-const UI = { view: "tableau", f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false }, open: null };
+SEED_OPS.forEach(o => { if (!S.ops[o.id]) { S.ops[o.id] = JSON.parse(JSON.stringify(o)); S.current = o.id; } });
+const UI = { view: "tableau", f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false, toValidate: false }, open: null };
 const op = () => S.ops[S.current];
 
 /* ---------- moteur ---------- */
@@ -358,6 +360,7 @@ function compute(o) {
     const t = byId[id];
     let s = debut;
     deps[id].forEach(d => { const e = st(d).reelle ? toN(st(d).reelle) : cible[d]; if (e > s) s = e; });
+    if (o.replan && (st(id).statut || "À faire") !== "Terminé" && toN(o.replan) > s) s = toN(o.replan);
     start[id] = s; end[id] = s + Math.max(0, t.duree || 0);
     cible[id] = st(id).cible ? toN(st(id).cible) : end[id];
   }
@@ -467,7 +470,7 @@ function alertRow(a) {
 /* ---------- filtres ---------- */
 function filtered() {
   const f = UI.f, q = f.q.trim().toLowerCase();
-  const alertIds = new Set(C.alerts.map(a => a.id));
+  const alertIds = new Set(C.alerts.filter(a => a.lvl !== "info").map(a => a.id));
   return C.chrono.filter(t => {
     const i = C.info[t.id];
     if (f.cat && t.cat !== f.cat) return false;
@@ -477,6 +480,7 @@ function filtered() {
     if (f.hideDone && i.statut === "Terminé") return false;
     if (f.ready && !i.ready) return false;
     if (f.alertsOnly && !alertIds.has(t.id)) return false;
+    if (f.toValidate && !(i.statut === "Terminé" && !i.s.valide)) return false;
     if (q && !(t.id + " " + t.nom + " " + t.desc + " " + t.sc + " " + (i.s.comm || "")).toLowerCase().includes(q)) return false;
     return true;
   });
@@ -494,6 +498,7 @@ function filterBar(opts) {
     <label class="chk"><input type="checkbox" data-fb="hideDone" ${f.hideDone ? "checked" : ""}> Masquer terminées</label>
     <label class="chk"><input type="checkbox" data-fb="ready" ${f.ready ? "checked" : ""}> Prêtes à démarrer</label>
     <label class="chk"><input type="checkbox" data-fb="alertsOnly" ${f.alertsOnly ? "checked" : ""}> En alerte</label>
+    <label class="chk"><input type="checkbox" data-fb="toValidate" ${f.toValidate ? "checked" : ""}> À valider</label>
   </div>`;
 }
 
@@ -585,6 +590,7 @@ function viewSettings() {
         <label class="fld">Date de démarrage<input class="inp" type="date" id="s-debut" value="${esc(o.debut)}"></label>
       </div>
       <span class="hint">La date de démarrage sert de point de départ au calcul chronologique de toutes les dates cibles.</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn" id="replan">Replanifier les tâches non terminées à partir d'aujourd'hui</button>${o.replan ? `<span class="hint">Replanifiée le ${fmt(o.replan)}</span><button class="btn small" id="unplan">Annuler</button>` : `<span class="hint">Utile pour une opération reprise en cours de route : les tâches ouvertes ne partent plus de dates théoriques passées.</span>`}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="newOp">Nouvelle opération</button><button class="btn" id="dupOp">Dupliquer comme modèle</button>
       ${confirmDel ? `<span class="inline-confirm">Supprimer définitivement ? <button class="btn small danger" id="delYes">Supprimer</button><button class="btn small" id="delNo">Annuler</button></span>` : `<button class="btn danger" id="delOp" ${Object.keys(S.ops).length < 2 ? "disabled title=\"Gardez au moins une opération\"" : ""}>Supprimer</button>`}</div>
     </div></section>
@@ -731,6 +737,8 @@ function bindSettings() {
   document.querySelectorAll("[data-switch]").forEach(el => el.addEventListener("click", () => { S.current = el.dataset.switch; confirmDel = false; save(); refresh(); }));
   g("#newOp").addEventListener("click", () => { const n = blankOp(); S.ops[n.id] = n; S.current = n.id; save(); refresh(); toast("Opération créée"); });
   g("#dupOp").addEventListener("click", () => { const n = JSON.parse(JSON.stringify(o)); n.id = uid(); n.nom = o.nom + " (copie)"; n.exemple = false; n.taches = {}; n.debut = todayIso(); S.ops[n.id] = n; S.current = n.id; save(); refresh(); toast("Copie créée : typologies et tâches ajoutées reprises, statuts remis à zéro"); });
+  g("#replan").addEventListener("click", () => { o.replan = todayIso(); save(); refresh(); toast("Tâches non terminées replanifiées à partir d'aujourd'hui"); });
+  const up = g("#unplan"); if (up) up.addEventListener("click", () => { delete o.replan; save(); refresh(); });
   const del = g("#delOp"); if (del) del.addEventListener("click", () => { confirmDel = true; render(); });
   const yes = g("#delYes"); if (yes) yes.addEventListener("click", () => { delete S.ops[o.id]; S.current = Object.keys(S.ops)[0]; confirmDel = false; save(); refresh(); toast("Opération supprimée"); });
   const no = g("#delNo"); if (no) no.addEventListener("click", () => { confirmDel = false; render(); });

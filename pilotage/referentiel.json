@@ -1,780 +1,3579 @@
 {
-  "version": "1.0.0",
-  "date": "2026-11-17",
-  "avertissement": "Référentiel opérationnel. Les références légales et délais cités sont ceux connus à la date de version ; les points marqués « À vérifier » doivent être confirmés par le notaire, l'avocat ou l'expert-comptable de l'opération. Ne constitue pas un conseil juridique ou fiscal.",
-  "statuts": ["À faire", "En cours", "Bloqué", "En validation", "Terminé"],
-  "criticites": ["Critique", "Important", "Confort"],
-  "categories": [
-    {"code": "A", "nom": "Acquisition"},
-    {"code": "B", "nom": "Juridique & Notarial"},
-    {"code": "C", "nom": "Urbanisme & Autorisations"},
-    {"code": "D", "nom": "Financement & Banque"},
-    {"code": "E", "nom": "Technique & Travaux"},
-    {"code": "F", "nom": "Administratif & Fiscal"},
-    {"code": "G", "nom": "Commercialisation"},
-    {"code": "H", "nom": "Gestion des ventes"},
-    {"code": "I", "nom": "Clôture d'opération"}
-  ],
-  "groupes_typologies": [
-    {"code": "nature", "nom": "Nature de l'opération", "choix": "multiple"},
-    {"code": "structure", "nom": "Structuration", "choix": "multiple"},
-    {"code": "financement", "nom": "Financement", "choix": "multiple"},
-    {"code": "occupation", "nom": "Occupation du bien", "choix": "unique"},
-    {"code": "sortie", "nom": "Mode de sortie", "choix": "multiple"}
-  ],
-  "typologies": [
-    {"code": "ACHAT_REVENTE", "nom": "Achat-revente simple", "groupe": "nature"},
-    {"code": "COPRO_EXISTANTE", "nom": "Bien situé en copropriété existante", "groupe": "nature"},
-    {"code": "DIV_PARCELLAIRE", "nom": "Division parcellaire", "groupe": "nature"},
-    {"code": "TAB", "nom": "Détachement de terrain à bâtir", "groupe": "nature"},
-    {"code": "DIV_IMMEUBLE", "nom": "Division d'immeuble", "groupe": "nature"},
-    {"code": "COPRO", "nom": "Mise en copropriété", "groupe": "nature"},
-    {"code": "RENO_LOURDE", "nom": "Rénovation lourde", "groupe": "nature"},
-    {"code": "SURELEVATION", "nom": "Surélévation", "groupe": "nature"},
-    {"code": "PROMO_LEGERE", "nom": "Promotion immobilière légère", "groupe": "nature"},
-    {"code": "PA", "nom": "Opération avec permis d'aménager", "groupe": "nature"},
-    {"code": "STRUCT_SOC", "nom": "Portage via SCI / SCCV / SAS dédiée", "groupe": "structure"},
-    {"code": "ASSOCIES", "nom": "Opération avec associés", "groupe": "structure"},
-    {"code": "BANQUE", "nom": "Financement bancaire", "groupe": "financement"},
-    {"code": "FONDS_PROPRES", "nom": "Fonds propres", "groupe": "financement"},
-    {"code": "VENTE_TERME", "nom": "Vente à terme / crédit vendeur", "groupe": "financement"},
-    {"code": "LIBRE", "nom": "Bien libre", "groupe": "occupation"},
-    {"code": "OCCUPE", "nom": "Bien occupé", "groupe": "occupation"},
-    {"code": "VENTE_BLOC", "nom": "Vente en bloc", "groupe": "sortie"},
-    {"code": "VENTE_UNITE", "nom": "Vente à l'unité", "groupe": "sortie"},
-    {"code": "DECOUPE", "nom": "Vente à la découpe", "groupe": "sortie"}
-  ],
-  "alias": {
-    "@TRAVAUX": ["RENO_LOURDE", "SURELEVATION", "PROMO_LEGERE", "DIV_IMMEUBLE", "COPRO"],
-    "@URBA": ["DIV_PARCELLAIRE", "TAB", "DIV_IMMEUBLE", "SURELEVATION", "PROMO_LEGERE", "PA", "RENO_LOURDE"],
-    "@FONCIER": ["DIV_PARCELLAIRE", "TAB", "PA", "PROMO_LEGERE"],
-    "@LOTS": ["DIV_IMMEUBLE", "COPRO", "DECOUPE", "PROMO_LEGERE"],
-    "@NEUF": ["SURELEVATION", "PROMO_LEGERE"]
+ "version": "1.1.0",
+ "date": "2026-11-19",
+ "avertissement": "Référentiel opérationnel. Les références légales et délais cités sont ceux connus à la date de version ; les points marqués « À vérifier » doivent être confirmés par le notaire, l'avocat ou l'expert-comptable de l'opération. Ne constitue pas un conseil juridique ou fiscal.",
+ "statuts": [
+  "À faire",
+  "En cours",
+  "Bloqué",
+  "En validation",
+  "Terminé"
+ ],
+ "criticites": [
+  "Critique",
+  "Important",
+  "Confort"
+ ],
+ "categories": [
+  {
+   "code": "A",
+   "nom": "Acquisition"
   },
-  "jalons": [
-    {"code": "J1", "nom": "Promesse signée", "tache": "B08"},
-    {"code": "J2", "nom": "Fin des conditions suspensives", "tache": "B17"},
-    {"code": "J3", "nom": "Acte authentique", "tache": "B19"},
-    {"code": "J4", "nom": "Autorisations purgées", "tache": "C16"},
-    {"code": "J5", "nom": "Début de commercialisation", "tache": "G11"},
-    {"code": "J6", "nom": "Premières ventes", "tache": "H05"},
-    {"code": "J7", "nom": "Remboursement du crédit", "tache": "I03"},
-    {"code": "J8", "nom": "Clôture de l'opération", "tache": "I08"}
+  {
+   "code": "B",
+   "nom": "Juridique & Notarial"
+  },
+  {
+   "code": "C",
+   "nom": "Urbanisme & Autorisations"
+  },
+  {
+   "code": "D",
+   "nom": "Financement & Banque"
+  },
+  {
+   "code": "E",
+   "nom": "Technique & Travaux"
+  },
+  {
+   "code": "F",
+   "nom": "Administratif & Fiscal"
+  },
+  {
+   "code": "G",
+   "nom": "Commercialisation"
+  },
+  {
+   "code": "H",
+   "nom": "Gestion des ventes"
+  },
+  {
+   "code": "I",
+   "nom": "Clôture d'opération"
+  }
+ ],
+ "groupes_typologies": [
+  {
+   "code": "nature",
+   "nom": "Nature de l'opération",
+   "choix": "multiple"
+  },
+  {
+   "code": "structure",
+   "nom": "Structuration",
+   "choix": "multiple"
+  },
+  {
+   "code": "financement",
+   "nom": "Financement",
+   "choix": "multiple"
+  },
+  {
+   "code": "occupation",
+   "nom": "Occupation du bien",
+   "choix": "unique"
+  },
+  {
+   "code": "sortie",
+   "nom": "Mode de sortie",
+   "choix": "multiple"
+  }
+ ],
+ "typologies": [
+  {
+   "code": "ACHAT_REVENTE",
+   "nom": "Achat-revente simple",
+   "groupe": "nature"
+  },
+  {
+   "code": "COPRO_EXISTANTE",
+   "nom": "Bien situé en copropriété existante",
+   "groupe": "nature"
+  },
+  {
+   "code": "DIV_PARCELLAIRE",
+   "nom": "Division parcellaire",
+   "groupe": "nature"
+  },
+  {
+   "code": "TAB",
+   "nom": "Détachement de terrain à bâtir",
+   "groupe": "nature"
+  },
+  {
+   "code": "DIV_IMMEUBLE",
+   "nom": "Division d'immeuble",
+   "groupe": "nature"
+  },
+  {
+   "code": "COPRO",
+   "nom": "Mise en copropriété",
+   "groupe": "nature"
+  },
+  {
+   "code": "RENO_LOURDE",
+   "nom": "Rénovation lourde",
+   "groupe": "nature"
+  },
+  {
+   "code": "SURELEVATION",
+   "nom": "Surélévation",
+   "groupe": "nature"
+  },
+  {
+   "code": "TRAVAUX_LEGERS",
+   "nom": "Travaux de rafraîchissement (sans structure)",
+   "groupe": "nature"
+  },
+  {
+   "code": "PROMO_LEGERE",
+   "nom": "Promotion immobilière légère",
+   "groupe": "nature"
+  },
+  {
+   "code": "PA",
+   "nom": "Opération avec permis d'aménager",
+   "groupe": "nature"
+  },
+  {
+   "code": "STRUCT_SOC",
+   "nom": "Portage via SCI / SCCV / SAS dédiée",
+   "groupe": "structure"
+  },
+  {
+   "code": "ASSOCIES",
+   "nom": "Opération avec associés",
+   "groupe": "structure"
+  },
+  {
+   "code": "BANQUE",
+   "nom": "Financement bancaire",
+   "groupe": "financement"
+  },
+  {
+   "code": "FONDS_PROPRES",
+   "nom": "Fonds propres",
+   "groupe": "financement"
+  },
+  {
+   "code": "VENTE_TERME",
+   "nom": "Vente à terme / crédit vendeur",
+   "groupe": "financement"
+  },
+  {
+   "code": "LIBRE",
+   "nom": "Bien libre",
+   "groupe": "occupation"
+  },
+  {
+   "code": "OCCUPE",
+   "nom": "Bien occupé",
+   "groupe": "occupation"
+  },
+  {
+   "code": "VENTE_BLOC",
+   "nom": "Vente en bloc",
+   "groupe": "sortie"
+  },
+  {
+   "code": "VENTE_UNITE",
+   "nom": "Vente à l'unité",
+   "groupe": "sortie"
+  },
+  {
+   "code": "DECOUPE",
+   "nom": "Vente à la découpe",
+   "groupe": "sortie"
+  }
+ ],
+ "alias": {
+  "@TRAVAUX": [
+   "RENO_LOURDE",
+   "SURELEVATION",
+   "PROMO_LEGERE",
+   "DIV_IMMEUBLE"
   ],
-  "taches": [
-    {"id": "A01", "cat": "A", "sc": "Prospection & pré-analyse", "nom": "Qualifier l'opportunité",
-     "desc": "Fiche d'opportunité : adresse, cadastre, surfaces, prix affiché, motivation vendeur, occupation, source (apporteur, agent, off-market). Contrôle rapide Géoportail de l'urbanisme, DVF et cadastre.",
-     "resp": ["MDB"], "decl": "Réception du dossier", "dep": [], "crit": "Important",
-     "risque": "Temps perdu sur un dossier non viable ; conflit d'apporteur si la source n'est pas tracée.",
-     "docs": ["Fiche d'opportunité", "Extrait cadastral", "Annonce / mandat"], "typo": [], "duree": 2,
-     "conseil": "Tracer par écrit l'apporteur et sa rémunération dès le premier échange : c'est la première source de litige en fin d'opération."},
-    {"id": "A02", "cat": "A", "sc": "Prospection & pré-analyse", "nom": "Visite technique et relevé d'état",
-     "desc": "Visite avec photos, relevé de l'état du clos-couvert, structure, humidité, réseaux, parties communes, accès. Vérifier l'occupation réelle (baux, squat, occupant sans titre).",
-     "resp": ["MDB", "Architecte"], "decl": "Après qualification", "dep": ["A01"], "crit": "Critique",
-     "risque": "Sous-estimation des travaux ou découverte tardive d'un occupant non déclaré.",
-     "docs": ["Rapport de visite", "Reportage photo"], "typo": [], "duree": 3,
-     "conseil": "Visiter avec l'entreprise générale ou le MOE habituel : un chiffrage à la visite vaut mieux qu'un ratio au m²."},
-    {"id": "A03", "cat": "A", "sc": "Prospection & pré-analyse", "nom": "Pré-bilan et prix d'achat maximal",
-     "desc": "Bilan à rebours : chiffre d'affaires de sortie net, moins marge cible, travaux, frais d'acquisition, frais financiers, honoraires, taxes, aléas (5 à 10 %) = prix d'achat maximal.",
-     "resp": ["MDB"], "decl": "Avant toute offre", "dep": ["A02", "A04"], "crit": "Critique",
-     "risque": "Offre au-dessus du prix soutenable ; marge absorbée par les frais oubliés (TA, PFAC, intérêts intercalaires).",
-     "docs": ["Bilan prévisionnel v0"], "typo": [], "duree": 2,
-     "conseil": "Raisonner en marge sur prix de revient ET en marge sur chiffre d'affaires : les banques regardent souvent la seconde."},
-    {"id": "A04", "cat": "A", "sc": "Prospection & pré-analyse", "nom": "Étude de marché de sortie",
-     "desc": "Comparables DVF récents (même typologie, même micro-secteur), délais d'écoulement, avis de deux agents locaux, profondeur de la demande par typologie de lot.",
-     "resp": ["MDB", "Agent immobilier"], "decl": "En parallèle de la visite", "dep": ["A01"], "crit": "Critique",
-     "risque": "Prix de sortie surestimé : erreur la plus coûteuse d'une opération.",
-     "docs": ["Extraits DVF", "Avis de valeur"], "typo": [], "duree": 3,
-     "conseil": "Retenir le prix de sortie que l'on accepterait en vente en 3 mois, pas le meilleur comparable."},
-    {"id": "A05", "cat": "A", "sc": "Validation offre", "nom": "Émettre l'offre d'achat écrite et conditionnée",
-     "desc": "Offre écrite à durée de validité courte, mentionnant prix, conditions suspensives envisagées (financement, urbanisme, audits), faculté de substitution et calendrier cible.",
-     "resp": ["MDB"], "decl": "Pré-bilan validé", "dep": ["A03", "A14"], "crit": "Critique",
-     "risque": "Une offre acceptée sans réserve peut valoir accord sur la chose et le prix (art. 1583 C. civ.) : engagement sans conditions protectrices.",
-     "docs": ["Offre d'achat signée"], "typo": [], "duree": 1,
-     "conseil": "Écrire « sous réserve de la signature d'un avant-contrat comportant les conditions suspensives usuelles et spécifiques » dans chaque offre."},
-    {"id": "A06", "cat": "A", "sc": "Validation offre", "nom": "Acceptation de l'offre et désignation des notaires",
-     "desc": "Obtenir l'acceptation écrite, désigner le notaire de l'opération (habitué des MDB), transmettre les coordonnées du vendeur et la liste de pièces.",
-     "resp": ["MDB", "Notaire"], "decl": "Offre acceptée", "dep": ["A05"], "crit": "Important",
-     "risque": "Notaire non spécialisé : délais allongés, régimes fiscaux MDB mal appliqués.",
-     "docs": ["Offre contresignée", "Liste de pièces notaire"], "typo": [], "duree": 2},
-    {"id": "A07", "cat": "A", "sc": "Négociation conditions suspensives", "nom": "Négocier les conditions suspensives",
-     "desc": "Financement (montant, durée, taux max), obtention d'une autorisation d'urbanisme purgée de recours et de retrait, purge des droits de préemption, absence de servitude ou pollution grevant le projet, libération des lieux, bornage/division, absence de prescription archéologique.",
-     "resp": ["MDB", "Notaire", "Avocat"], "decl": "Dès l'acceptation", "dep": ["A06"], "crit": "Critique",
-     "risque": "Rester engagé sur un bien inexploitable (refus de permis, recours, prêt refusé) ou perdre l'indemnité d'immobilisation.",
-     "docs": ["Liste des CS négociées"], "typo": [], "duree": 5,
-     "conseil": "Calibrer la CS d'urbanisme sur : délai d'instruction + 3 mois de purge + marge, avec prorogation automatique en cas de recours."},
-    {"id": "A08", "cat": "A", "sc": "Négociation conditions suspensives", "nom": "Négocier calendrier et indemnité d'immobilisation",
-     "desc": "Durée de la promesse, date butoir de réitération, montant de l'indemnité (souvent 5 à 10 %), séquestre ou caution bancaire, clause pénale.",
-     "resp": ["MDB", "Notaire"], "decl": "Avec les CS", "dep": ["A07"], "crit": "Important",
-     "risque": "Trésorerie immobilisée inutilement ; date butoir incompatible avec les délais d'urbanisme.",
-     "docs": ["Calendrier prévisionnel"], "typo": [], "duree": 2,
-     "conseil": "Proposer une caution bancaire à la place du séquestre pour préserver la trésorerie."},
-    {"id": "A09", "cat": "A", "sc": "Audit juridique", "nom": "Titre de propriété et origine trentenaire",
-     "desc": "Obtenir le titre, l'origine de propriété sur 30 ans, l'état hypothécaire, les servitudes publiées, les éventuelles inscriptions et publications de commandement.",
-     "resp": ["Notaire"], "decl": "Acceptation de l'offre", "dep": ["A06"], "crit": "Critique",
-     "risque": "Servitude, droit de passage ou inscription découverts après engagement.",
-     "docs": ["Titre de propriété", "État hypothécaire"], "typo": [], "duree": 10},
-    {"id": "A10", "cat": "A", "sc": "Audit juridique", "nom": "Audit de la copropriété existante",
-     "desc": "Règlement de copropriété et modificatifs, PV d'AG des 3 dernières années, carnet d'entretien, fiche synthétique, procédures en cours, impayés du syndicat, travaux votés ou à venir (PPPT), DTG.",
-     "resp": ["MDB", "Notaire", "Syndic"], "decl": "Avant la promesse", "dep": ["A06"], "crit": "Critique",
-     "risque": "Travaux lourds votés à charge, destination du lot incompatible avec le projet (usage, division), procédure du syndicat.",
-     "docs": ["RCP/EDD", "PV d'AG", "Fiche synthétique", "Pré-état daté"], "typo": ["COPRO_EXISTANTE"], "duree": 10,
-     "conseil": "Lire la clause de destination et les règles sur la division ou la réunion de lots : un projet de division peut exiger un vote d'AG."},
-    {"id": "A11", "cat": "A", "sc": "Audit juridique", "nom": "Audit des baux et des occupants",
-     "desc": "Baux, avenants, quittances, dépôts de garantie, congés délivrés, contentieux, régime (loi 1989, loi 1948, commercial, professionnel), âge et ressources des locataires protégés.",
-     "resp": ["MDB", "Avocat"], "decl": "Avant la promesse", "dep": ["A06"], "crit": "Critique",
-     "risque": "Locataire protégé impossible à faire partir, droit de préemption ignoré entraînant la nullité de ventes ultérieures.",
-     "docs": ["Baux", "État locatif", "Quittances"], "typo": ["OCCUPE"], "duree": 7,
-     "conseil": "Construire l'état locatif lot par lot avec la date à laquelle chaque lot peut réellement être libéré, et décoter la sortie en conséquence."},
-    {"id": "A12", "cat": "A", "sc": "Audit juridique", "nom": "Capacité et pouvoirs du vendeur",
-     "desc": "Régime matrimonial, indivision, succession non réglée, majeur protégé, société venderesse (Kbis, pouvoirs du signataire, décision d'associés), procédure collective.",
-     "resp": ["Notaire"], "decl": "Avant la promesse", "dep": ["A06"], "crit": "Important",
-     "risque": "Promesse signée par une personne sans pouvoir : nullité ou retard de plusieurs mois.",
-     "docs": ["Kbis", "Pouvoirs", "Livret de famille / état civil"], "typo": [], "duree": 5},
-    {"id": "A14", "cat": "A", "sc": "Audit urbanistique", "nom": "Note d'urbanisme pré-acquisition",
-     "desc": "Zonage PLU/PLUi, règlement de zone, OAP, emplacements réservés, servitudes d'utilité publique, périmètres ABF/SPR, PPR (inondation, mouvements de terrain), règles de stationnement, taxes applicables.",
-     "resp": ["MDB", "Architecte"], "decl": "Avant l'offre", "dep": ["A01"], "crit": "Critique",
-     "risque": "Projet non autorisable découvert après engagement (hauteur, emprise, stationnement, mixité sociale).",
-     "docs": ["Extrait PLU", "Règlement de zone", "Plan des SUP"], "typo": [], "duree": 3,
-     "conseil": "Vérifier si une révision ou modification du PLU est en cours : un sursis à statuer peut geler le projet."},
-    {"id": "A15", "cat": "A", "sc": "Audit urbanistique", "nom": "Régularité administrative de l'existant",
-     "desc": "Permis d'origine, déclarations antérieures, conformité, surfaces et changements de destination réalisés sans autorisation (combles, garage, local commercial transformé en logement), divisions antérieures.",
-     "resp": ["MDB", "Architecte", "Notaire"], "decl": "Avant la promesse", "dep": ["A14"], "crit": "Critique",
-     "risque": "Lots invendables ou décotés : notaire et banque de l'acquéreur bloquent un logement créé sans autorisation.",
-     "docs": ["Permis d'origine", "Certificat de conformité", "Demande de pièces en mairie"], "typo": [], "duree": 10,
-     "conseil": "Comparer la surface fiscale (taxe foncière) à la surface réelle : un écart signale souvent une extension non déclarée."},
-    {"id": "A16", "cat": "A", "sc": "Audit urbanistique", "nom": "Droits de préemption et périmètres de contrôle",
-     "desc": "DPU simple ou renforcé, ZAD, ENS, SAFER, préemption commerciale, zone soumise à autorisation préalable de division (art. L111-6-1 CCH), permis de louer, protection patrimoniale.",
-     "resp": ["Notaire", "MDB"], "decl": "Avant la promesse", "dep": ["A14"], "crit": "Important",
-     "risque": "Préemption par la commune, ou division interdite sans autorisation préalable.",
-     "docs": ["Note de renseignements d'urbanisme"], "typo": [], "duree": 5},
-    {"id": "A17", "cat": "A", "sc": "Audit technique", "nom": "Audit structure et clos-couvert",
-     "desc": "Diagnostic structurel par BET : planchers, charpente, murs porteurs, fondations (indispensable en surélévation), humidité, mérule, état des réseaux communs.",
-     "resp": ["BET", "Architecte"], "decl": "Avant la promesse ou sous CS", "dep": ["A02"], "crit": "Critique",
-     "risque": "Reprise en sous-œuvre ou renforcement non budgété : surcoût pouvant dépasser la marge.",
-     "docs": ["Rapport BET structure"], "typo": ["@TRAVAUX"], "duree": 15,
-     "conseil": "En surélévation, faire sonder les fondations avant la promesse : c'est le poste qui fait basculer le bilan."},
-    {"id": "A18", "cat": "A", "sc": "Audit technique", "nom": "Analyser les diagnostics du vendeur",
-     "desc": "DPE, amiante, plomb (avant 1949), termites, électricité et gaz (plus de 15 ans), ERP de moins de 6 mois, assainissement non collectif, mérule, bruit. Vérifier dates de validité et cohérence.",
-     "resp": ["MDB", "Diagnostiqueur"], "decl": "Avant la promesse", "dep": ["A06"], "crit": "Important",
-     "risque": "Amiante ou plomb non anticipés en phase travaux ; DPE de sortie défavorable.",
-     "docs": ["Dossier de diagnostic technique"], "typo": [], "duree": 5},
-    {"id": "A19", "cat": "A", "sc": "Audit technique", "nom": "Chiffrage travaux préliminaire",
-     "desc": "Estimation par lot de travaux par MOE ou entreprise générale, avec hypothèses de prestations et aléas.",
-     "resp": ["Architecte", "Entreprises"], "decl": "Après visite technique", "dep": ["A02"], "crit": "Critique",
-     "risque": "Budget travaux sous-évalué de 20 à 30 % : cas le plus fréquent de marge détruite.",
-     "docs": ["Estimation travaux par lot"], "typo": ["@TRAVAUX"], "duree": 10},
-    {"id": "A20", "cat": "A", "sc": "Audit technique", "nom": "Étude de sol et risque argiles",
-     "desc": "Étude géotechnique préalable (G1) à fournir par le vendeur d'un terrain non bâti constructible en zone d'exposition moyenne ou forte au retrait-gonflement des argiles (loi ELAN, art. L112-21 CCH). G2 pour le projet.",
-     "resp": ["BET", "MDB"], "decl": "Avant la promesse", "dep": ["A14"], "crit": "Critique",
-     "risque": "Fondations spéciales non budgétées ; vente de terrain sans l'étude obligatoire.",
-     "docs": ["Étude G1", "Étude G2"], "typo": ["@FONCIER", "SURELEVATION"], "duree": 20},
-    {"id": "A21", "cat": "A", "sc": "Audit technique", "nom": "Pollution des sols",
-     "desc": "Consultation CASIAS, SIS, ICPE, historique d'activité ; diagnostic de pollution si activité industrielle, garage, pressing ou cuve enterrée.",
-     "resp": ["MDB", "BET"], "decl": "Avant la promesse", "dep": ["A14"], "crit": "Important",
-     "risque": "Dépollution non budgétée ; responsabilité vis-à-vis des acquéreurs.",
-     "docs": ["Extrait Géorisques", "Diagnostic pollution"], "typo": ["@FONCIER", "RENO_LOURDE"], "duree": 10},
-    {"id": "A22", "cat": "A", "sc": "Vérifications servitudes / réseaux", "nom": "Servitudes de droit privé",
-     "desc": "Servitudes de passage, de vue, de tour d'échelle, de canalisations ; servitudes non publiées constatées sur place ; mitoyenneté.",
-     "resp": ["Notaire", "Géomètre"], "decl": "Avant la promesse", "dep": ["A09"], "crit": "Critique",
-     "risque": "Lot ou terrain enclavé, servitude de vue bloquant une ouverture ou une surélévation.",
-     "docs": ["Actes constitutifs de servitude", "Plan géomètre"], "typo": [], "duree": 7},
-    {"id": "A23", "cat": "A", "sc": "Vérifications servitudes / réseaux", "nom": "Réseaux et viabilisation",
-     "desc": "Capacité et position des réseaux : eau, eaux usées et pluviales, électricité (puissance disponible, renforcement Enedis), gaz, télécoms. Coûts et délais de raccordement.",
-     "resp": ["MDB", "Géomètre"], "decl": "Avant la promesse", "dep": ["A14"], "crit": "Critique",
-     "risque": "Raccordement de plusieurs mois ou extension de réseau à la charge de l'opération ; lots livrés sans compteur.",
-     "docs": ["Plans de réseaux", "Pré-étude Enedis"], "typo": ["@FONCIER", "DIV_IMMEUBLE", "SURELEVATION"], "duree": 10,
-     "conseil": "Demander une pré-étude de raccordement Enedis dès la promesse : le délai de raccordement dépasse souvent celui du chantier."},
-    {"id": "A24", "cat": "A", "sc": "Vérifications servitudes / réseaux", "nom": "Accès et voirie",
-     "desc": "Largeur et statut de l'accès (voie privée, publique, chemin rural), défense incendie, droit de passage à créer, permission de voirie.",
-     "resp": ["Géomètre", "MDB"], "decl": "Avant la promesse", "dep": ["A14"], "crit": "Important",
-     "risque": "Refus de permis pour accès insuffisant ; servitude de passage à négocier avec un voisin.",
-     "docs": ["Plan d'accès"], "typo": ["@FONCIER"], "duree": 5},
-    {"id": "A25", "cat": "A", "sc": "Audit fiscal", "nom": "Déterminer le régime de TVA de l'opération",
-     "desc": "Qualifier chaque vente : TVA sur la marge, TVA sur le prix total (immeuble neuf, terrain à bâtir, travaux assimilés à une production d'immeuble neuf), exonération avec ou sans option.",
-     "resp": ["Expert-comptable", "Avocat"], "decl": "Avant de figer le prix d'achat", "dep": ["A03"], "crit": "Critique",
-     "risque": "Prix de vente TTC calculés sur la mauvaise base : écart pouvant représenter une large part de la marge.",
-     "docs": ["Note fiscale TVA"], "typo": [], "duree": 5, "verif": true,
-     "conseil": "Les conditions de la TVA sur la marge ont évolué avec la jurisprudence européenne et du Conseil d'État : faire valider le régime par écrit pour chaque opération."},
-    {"id": "A26", "cat": "A", "sc": "Audit fiscal", "nom": "Choisir le régime de droits de mutation",
-     "desc": "Engagement de revendre dans les 5 ans (art. 1115 CGI) ou engagement de construire dans les 4 ans (art. 1594-0 G A I CGI) selon la nature de l'opération. Arbitrer en fonction du calendrier réaliste.",
-     "resp": ["Notaire", "Expert-comptable"], "decl": "Avant la promesse", "dep": ["A25"], "crit": "Critique",
-     "risque": "Non-respect de l'engagement : droits de droit commun, intérêts de retard et majoration.",
-     "docs": ["Note notaire sur les droits"], "typo": [], "duree": 3, "verif": true,
-     "conseil": "Faire chiffrer par le notaire les frais d'acquisition dans chaque régime : taux et conditions évoluent avec les lois de finances."},
-    {"id": "A27", "cat": "A", "sc": "Audit fiscal", "nom": "Simuler la fiscalité du résultat",
-     "desc": "Impôt sur les sociétés ou BIC à l'IR, structure porteuse, remontée de dividendes, intégration fiscale éventuelle.",
-     "resp": ["Expert-comptable"], "decl": "Avant le montage", "dep": ["A03"], "crit": "Important",
-     "risque": "Structure inadaptée ; une SCI qui exerce une activité commerciale bascule à l'IS.",
-     "docs": ["Simulation fiscale"], "typo": [], "duree": 5},
-    {"id": "A28", "cat": "A", "sc": "Stratégie de sortie", "nom": "Scénario de sortie principal et plan B",
-     "desc": "Sortie retenue (bloc, unité, découpe, revente en l'état, location puis vente), plan B qui rembourse la banque, prix plancher par lot.",
-     "resp": ["MDB"], "decl": "Avant la décision", "dep": ["A04", "A03"], "crit": "Critique",
-     "risque": "Absence de repli si le marché se retourne ou si le permis est refusé.",
-     "docs": ["Note de stratégie de sortie"], "typo": [], "duree": 2,
-     "conseil": "Tester le plan B : revente en l'état avec le permis obtenu doit couvrir au moins le prix d'achat et les frais."},
-    {"id": "A29", "cat": "A", "sc": "Stratégie de sortie", "nom": "Décision GO / NO GO",
-     "desc": "Revue de tous les audits, du bilan à jour et des risques ; décision formalisée (GO, GO sous conditions, NO GO) avec les conditions à faire figurer dans la promesse.",
-     "resp": ["MDB", "Associés"], "decl": "Audits terminés", "dep": ["A03", "A04", "A07", "A10", "A11", "A15", "A17", "A19", "A20", "A22", "A23", "A25", "A26", "A28"], "crit": "Critique",
-     "risque": "Signature par élan commercial alors qu'un audit est rouge.",
-     "docs": ["Compte rendu de décision"], "typo": [], "duree": 1},
-
-    {"id": "B01", "cat": "B", "sc": "Montage sociétaire", "nom": "Choisir la structure porteuse",
-     "desc": "SAS ou SARL MDB, SCCV pour la construction-vente, société ad hoc par opération ou structure existante. Fiscalité, responsabilité des associés, exigences bancaires.",
-     "resp": ["Avocat", "Expert-comptable"], "decl": "Avant la promesse", "dep": ["A27"], "crit": "Critique",
-     "risque": "Associés de SCCV tenus des dettes sociales ; SCI requalifiée à l'IS ; banque refusant la structure.",
-     "docs": ["Note de montage"], "typo": ["STRUCT_SOC"], "duree": 5},
-    {"id": "B02", "cat": "B", "sc": "Montage sociétaire", "nom": "Constituer la société",
-     "desc": "Statuts avec objet social couvrant l'achat-revente et la construction-vente, dépôt du capital, immatriculation, ouverture du compte bancaire, numéro de TVA.",
-     "resp": ["Avocat", "Expert-comptable"], "decl": "Structure choisie", "dep": ["B01"], "crit": "Critique",
-     "risque": "Société non immatriculée à la date de l'acte : substitution impossible.",
-     "docs": ["Statuts", "Kbis", "RIB"], "typo": ["STRUCT_SOC"], "duree": 15},
-    {"id": "B04", "cat": "B", "sc": "Pacte associés", "nom": "Rédiger le pacte d'associés",
-     "desc": "Apports, comptes courants et rémunération, répartition de la marge, gouvernance, majorités, rôle de chacun, cautions personnelles, sortie anticipée, décès, blocage, clause de non-concurrence.",
-     "resp": ["Avocat", "Associés"], "decl": "Avant la promesse", "dep": ["B01"], "crit": "Critique",
-     "risque": "Conflit d'associés en cours d'opération sans mécanisme de résolution : opération gelée.",
-     "docs": ["Pacte d'associés"], "typo": ["ASSOCIES"], "duree": 15,
-     "conseil": "Prévoir qui assume un dépassement de budget ou un appel de fonds supplémentaire : c'est là que les associés se fâchent."},
-    {"id": "B05", "cat": "B", "sc": "Pacte associés", "nom": "Conventions de comptes courants",
-     "desc": "Conventions écrites, taux de rémunération, blocage demandé par la banque, rang de remboursement.",
-     "resp": ["Expert-comptable", "Associés"], "decl": "Avant déblocage du prêt", "dep": ["B04"], "crit": "Important",
-     "risque": "Associé qui retire ses fonds en cours d'opération ; intérêts non déductibles.",
-     "docs": ["Conventions de compte courant"], "typo": ["ASSOCIES"], "duree": 5},
-    {"id": "B06", "cat": "B", "sc": "Promesse de vente", "nom": "Choisir promesse unilatérale ou compromis",
-     "desc": "Promesse unilatérale (option, indemnité d'immobilisation) ou compromis synallagmatique ; forme notariée ou sous seing privé.",
-     "resp": ["Notaire", "MDB"], "decl": "CS négociées", "dep": ["A08"], "crit": "Important",
-     "risque": "Promesse unilatérale sous seing privé non enregistrée dans les 10 jours : nullité (art. 1589-2 C. civ.).",
-     "docs": [], "typo": [], "duree": 1},
-    {"id": "B07", "cat": "B", "sc": "Promesse de vente", "nom": "Rédiger et relire l'avant-contrat",
-     "desc": "Désignation précise (lots, surfaces, cadastre), conditions suspensives, délais, faculté de substitution, indemnité, servitudes, état d'occupation, autorisations d'accès pour études et dépôt de permis.",
-     "resp": ["Notaire", "Avocat", "MDB"], "decl": "Forme choisie", "dep": ["B06", "A09"], "crit": "Critique",
-     "risque": "Clause manquante (autorisation de déposer le permis, accès pour sondages) bloquant la levée des CS.",
-     "docs": ["Projet d'avant-contrat"], "typo": [], "duree": 7,
-     "conseil": "Faire autoriser expressément le dépôt de la demande d'autorisation d'urbanisme et l'accès aux lieux pour sondages et géomètre."},
-    {"id": "B08", "cat": "B", "sc": "Promesse de vente", "nom": "Signer la promesse",
-     "desc": "Signature de l'avant-contrat, remise de l'indemnité ou de la caution, transmission au notaire de l'opération.",
-     "resp": ["MDB", "Notaire"], "decl": "GO validé", "dep": ["B07", "A29"], "crit": "Critique",
-     "risque": "Signature avant décision GO formelle.",
-     "docs": ["Promesse signée"], "typo": [], "duree": 1},
-    {"id": "B10", "cat": "B", "sc": "Promesse de vente", "nom": "Enregistrement et séquestre",
-     "desc": "Enregistrement de la promesse unilatérale dans les 10 jours si sous seing privé, versement au séquestre ou remise de la caution.",
-     "resp": ["Notaire"], "decl": "Promesse signée", "dep": ["B08"], "crit": "Critique",
-     "risque": "Nullité de la promesse unilatérale non enregistrée.",
-     "docs": ["Justificatif d'enregistrement", "Reçu de séquestre"], "typo": [], "duree": 10},
-    {"id": "B11", "cat": "B", "sc": "Substitution", "nom": "Exercer la faculté de substitution",
-     "desc": "Notifier la substitution au profit de la société porteuse dans les conditions de la promesse ; aligner le nom de l'emprunteur dans le dossier bancaire.",
-     "resp": ["Notaire", "MDB"], "decl": "Société immatriculée", "dep": ["B08", "B02"], "crit": "Critique",
-     "risque": "Prêt accordé à une entité différente de l'acquéreur ; substitution non prévue ou rémunérée requalifiée en cession.",
-     "docs": ["Notification de substitution"], "typo": ["STRUCT_SOC"], "duree": 5},
-    {"id": "B12", "cat": "B", "sc": "Garanties", "nom": "Cartographier les garanties dues aux acquéreurs",
-     "desc": "Vendeur professionnel présumé connaître les vices (clause d'exclusion de garantie inopposable) ; vendeur après travaux réputé constructeur (art. 1792-1 C. civ.) : décennale, biennale, parfait achèvement.",
-     "resp": ["Avocat", "MDB"], "decl": "Avant les travaux", "dep": ["B08"], "crit": "Critique",
-     "risque": "Mise en cause personnelle du MDB sans assurance adaptée, plusieurs années après la vente.",
-     "docs": ["Note garanties"], "typo": [], "duree": 3},
-    {"id": "B13", "cat": "B", "sc": "Garanties", "nom": "Consentir les sûretés bancaires",
-     "desc": "Hypothèque conventionnelle ou privilège de prêteur de deniers, caution personnelle du dirigeant, nantissement de parts ou de comptes, cession Dailly.",
-     "resp": ["Notaire", "Banque"], "decl": "Offre de prêt reçue", "dep": ["D04"], "crit": "Important",
-     "risque": "Caution personnelle illimitée signée sans mesurer l'exposition.",
-     "docs": ["Acte de caution", "Inscription hypothécaire"], "typo": ["BANQUE"], "duree": 5,
-     "conseil": "Négocier une caution limitée en montant et en durée, éteinte au remboursement du prêt."},
-    {"id": "B14", "cat": "B", "sc": "Purges", "nom": "Purger le droit de préemption urbain",
-     "desc": "Envoi de la DIA dès la signature ; suivi des demandes de pièces ou de visite qui suspendent le délai de 2 mois ; renonciation expresse ou tacite.",
-     "resp": ["Notaire"], "decl": "Promesse signée", "dep": ["B08"], "crit": "Critique",
-     "risque": "Retard de 2 mois minimum si la DIA part tard ; préemption.",
-     "docs": ["DIA", "Renonciation"], "typo": [], "duree": 60,
-     "conseil": "Demander au notaire d'envoyer la DIA dans la semaine de la signature, et relancer la mairie pour une renonciation expresse."},
-    {"id": "B15", "cat": "B", "sc": "Purges", "nom": "Purger les autres droits de préemption",
-     "desc": "SAFER, ENS, locataire commercial (art. L145-46-1 C. com.), locataires en cas de vente en bloc de plus de cinq logements (loi du 13 juin 2006, sauf engagement de proroger les baux), indivisaires.",
-     "resp": ["Notaire"], "decl": "Promesse signée", "dep": ["B08"], "crit": "Important",
-     "risque": "Nullité de la vente ou substitution d'un préempteur.",
-     "docs": ["Notifications", "Renonciations"], "typo": [], "duree": 60, "verif": true},
-    {"id": "B16", "cat": "B", "sc": "Purges", "nom": "Lever les conditions suspensives techniques",
-     "desc": "Résultats d'études (sol, pollution, structure), bornage, libération des lieux : constater par écrit leur réalisation ou y renoncer.",
-     "resp": ["MDB", "Notaire"], "decl": "Résultats d'études", "dep": ["B08", "A17", "A20", "A21"], "crit": "Important",
-     "risque": "Renonciation implicite à une CS par comportement ; délai de CS dépassé.",
-     "docs": ["Lettres de levée de CS"], "typo": [], "duree": 5},
-    {"id": "B17", "cat": "B", "sc": "Acte authentique", "nom": "Constater la réalisation des conditions suspensives",
-     "desc": "Toutes les CS levées : préemptions purgées, prêt obtenu, autorisation d'urbanisme purgée si exigée, CS techniques levées.",
-     "resp": ["Notaire", "MDB"], "decl": "Dernière CS levée", "dep": ["B14", "B15", "B16", "C16", "D04", "B11"], "crit": "Critique",
-     "risque": "Date butoir dépassée sans prorogation : promesse caduque.",
-     "docs": ["Attestations de levée"], "typo": [], "duree": 2,
-     "conseil": "Signer l'avenant de prorogation avant la date butoir, jamais après."},
-    {"id": "B18", "cat": "B", "sc": "Acte authentique", "nom": "Préparer l'acte authentique",
-     "desc": "Projet d'acte relu (régime fiscal MDB, engagement de revente ou de construire, désignation, servitudes), appel de fonds notaire, pouvoirs, déblocage du prêt programmé.",
-     "resp": ["Notaire", "MDB", "Banque"], "decl": "CS levées", "dep": ["B17"], "crit": "Critique",
-     "risque": "Engagement fiscal absent de l'acte : droits de droit commun.",
-     "docs": ["Projet d'acte", "Décompte notaire"], "typo": [], "duree": 10},
-    {"id": "B19", "cat": "B", "sc": "Acte authentique", "nom": "Signer l'acte authentique d'acquisition",
-     "desc": "Signature, paiement du prix et des frais, remise des clés ; point de départ des délais fiscaux d'engagement.",
-     "resp": ["Notaire", "MDB"], "decl": "Fonds disponibles", "dep": ["B18", "D05", "D08"], "crit": "Critique",
-     "risque": "Fonds non disponibles le jour J : report et pénalités.",
-     "docs": ["Acte authentique", "Attestation de propriété"], "typo": [], "duree": 1},
-    {"id": "B20", "cat": "B", "sc": "Acte authentique", "nom": "Prise de possession et assurances",
-     "desc": "État des lieux, relevé des compteurs, changement des serrures, assurance propriétaire non occupant dès le jour de l'acte, sécurisation contre les intrusions.",
-     "resp": ["MDB"], "decl": "Jour de l'acte", "dep": ["B19"], "crit": "Critique",
-     "risque": "Sinistre ou squat non couverts entre l'acte et le chantier.",
-     "docs": ["Attestation PNO", "PV d'état des lieux"], "typo": [], "duree": 1},
-    {"id": "B21", "cat": "B", "sc": "Acte authentique", "nom": "Publication et copie authentique",
-     "desc": "Publication au service de publicité foncière, réception de la copie authentique et de l'état hors formalité.",
-     "resp": ["Notaire"], "decl": "Après l'acte", "dep": ["B19"], "crit": "Confort",
-     "risque": "Reventes retardées faute de titre publié.",
-     "docs": ["Copie authentique publiée"], "typo": [], "duree": 60},
-
-    {"id": "C01", "cat": "C", "sc": "Analyse PLU", "nom": "Étude de capacité et faisabilité",
-     "desc": "Esquisse architecte : surface de plancher, nombre et typologie de lots, stationnement, espaces verts, règles de prospect et de hauteur.",
-     "resp": ["Architecte"], "decl": "Avant la promesse", "dep": ["A14"], "crit": "Critique",
-     "risque": "Programme non conforme au PLU ; chiffre d'affaires surestimé.",
-     "docs": ["Étude de capacité"], "typo": ["@URBA"], "duree": 15},
-    {"id": "C02", "cat": "C", "sc": "Analyse PLU", "nom": "Rendez-vous de pré-instruction",
-     "desc": "Présentation du projet au service instructeur et, si périmètre protégé, à l'Architecte des Bâtiments de France. Compte rendu écrit.",
-     "resp": ["Architecte", "MDB"], "decl": "Esquisse prête", "dep": ["C01"], "crit": "Important",
-     "risque": "Refus ou prescriptions lourdes découverts à l'instruction.",
-     "docs": ["Compte rendu de rendez-vous"], "typo": ["@URBA"], "duree": 20},
-    {"id": "C03", "cat": "C", "sc": "Certificat d'urbanisme", "nom": "Demander un certificat d'urbanisme opérationnel",
-     "desc": "CU opérationnel sur le projet précis ; il fige les règles d'urbanisme et les taxes pendant 18 mois (art. L410-1 C. urb.), sauf exceptions de sécurité ou salubrité publique.",
-     "resp": ["Architecte", "MDB"], "decl": "Avant la promesse si possible", "dep": ["A14"], "crit": "Important",
-     "risque": "Changement de PLU défavorable entre la promesse et le dépôt du permis.",
-     "docs": ["CU opérationnel"], "typo": ["@FONCIER", "DIV_IMMEUBLE"], "duree": 60},
-    {"id": "C04", "cat": "C", "sc": "DP / PC / PA", "nom": "Plan topographique et bornage",
-     "desc": "Lever topographique, bornage contradictoire avec les voisins, plan de division, document d'arpentage (DMPC).",
-     "resp": ["Géomètre"], "decl": "Promesse signée", "dep": ["B08"], "crit": "Critique",
-     "risque": "Surface réelle inférieure à l'annonce ; conflit de limites bloquant la division.",
-     "docs": ["Plan topographique", "PV de bornage", "DMPC"], "typo": ["@FONCIER", "SURELEVATION"], "duree": 30},
-    {"id": "C05", "cat": "C", "sc": "DP / PC / PA", "nom": "Déposer la déclaration préalable de division",
-     "desc": "Division foncière en vue de bâtir sans voie ni espace commun (art. L442-3 C. urb.). Instruction de droit commun : 1 mois.",
-     "resp": ["Géomètre", "MDB"], "decl": "Plan de division établi", "dep": ["C04"], "crit": "Critique",
-     "risque": "Division réalisée sans autorisation : terrain non constructible, vente annulable.",
-     "docs": ["Cerfa DP", "Plan de division"], "typo": ["DIV_PARCELLAIRE", "TAB"], "duree": 30},
-    {"id": "C06", "cat": "C", "sc": "DP / PC / PA", "nom": "Déposer le permis de construire",
-     "desc": "PC, PC valant division ou PC modificatif. Architecte obligatoire pour une personne morale. Instruction de droit commun : 3 mois (2 mois pour une maison individuelle), majorée en périmètre ABF.",
-     "resp": ["Architecte"], "decl": "Promesse signée et pré-instruction faite", "dep": ["C01", "C02", "B08"], "crit": "Critique",
-     "risque": "Dossier incomplet : le délai ne court qu'à partir de la complétude.",
-     "docs": ["Cerfa PC", "Plans PC1 à PC8", "Attestation RE2020 / thermique"], "typo": ["SURELEVATION", "PROMO_LEGERE", "DIV_IMMEUBLE", "RENO_LOURDE"], "duree": 90,
-     "conseil": "Déposer en main propre contre récépissé et suivre la complétude au jour près."},
-    {"id": "C07", "cat": "C", "sc": "DP / PC / PA", "nom": "Déposer le permis d'aménager",
-     "desc": "Lotissement avec voies ou espaces communs. Recours à un architecte ou paysagiste-concepteur au-delà de 2 500 m² de terrain (art. L441-4 C. urb.). Instruction : 3 mois.",
-     "resp": ["Géomètre", "Architecte"], "decl": "Promesse signée", "dep": ["C04", "C01"], "crit": "Critique",
-     "risque": "Lots vendus sans autorisation de lotir : nullité.",
-     "docs": ["Cerfa PA", "Programme et plans des travaux", "Règlement du lotissement"], "typo": ["PA"], "duree": 90},
-    {"id": "C08", "cat": "C", "sc": "DP / PC / PA", "nom": "Déposer la déclaration préalable de travaux",
-     "desc": "Modification de façade, menuiseries, toiture, création de surface limitée, changement de destination sans modification des structures porteuses ou de la façade. Instruction : 1 mois.",
-     "resp": ["Architecte", "MDB"], "decl": "Programme figé", "dep": ["C01", "B08"], "crit": "Important",
-     "risque": "Travaux non autorisés relevés par le notaire de l'acquéreur.",
-     "docs": ["Cerfa DP"], "typo": ["RENO_LOURDE", "DIV_IMMEUBLE", "COPRO"], "duree": 30},
-    {"id": "C09", "cat": "C", "sc": "DP / PC / PA", "nom": "Autorisation préalable de division de logement",
-     "desc": "Dans les zones délimitées par la commune ou l'EPCI (art. L111-6-1-1 et s. CCH), la création de plusieurs logements dans un immeuble existant est soumise à autorisation.",
-     "resp": ["MDB", "Architecte"], "decl": "Programme figé", "dep": ["A16", "B08"], "crit": "Critique",
-     "risque": "Sanctions et logements non conformes ; impossibilité de louer ou de vendre sereinement.",
-     "docs": ["Autorisation de division"], "typo": ["DIV_IMMEUBLE", "COPRO"], "duree": 30, "verif": true},
-    {"id": "C10", "cat": "C", "sc": "DP / PC / PA", "nom": "Suivre l'instruction",
-     "desc": "Récépissé, demande de pièces dans le premier mois (3 mois pour répondre), notification de majoration de délai, consultation des services, échanges avec l'instructeur.",
-     "resp": ["Architecte", "MDB"], "decl": "Dépôt effectué", "dep": ["C05", "C06", "C07", "C08", "C09"], "crit": "Important",
-     "risque": "Demande de pièces non traitée : rejet tacite ou décision d'opposition.",
-     "docs": ["Récépissé de dépôt", "Courriers de l'instructeur"], "typo": ["@URBA", "COPRO"], "duree": 5},
-    {"id": "C11", "cat": "C", "sc": "DP / PC / PA", "nom": "Obtenir l'autorisation",
-     "desc": "Arrêté de permis ou de non-opposition, ou décision tacite (demander le certificat attestant l'absence d'opposition). Analyser les prescriptions et les participations exigées.",
-     "resp": ["Mairie", "MDB"], "decl": "Fin d'instruction", "dep": ["C10"], "crit": "Critique",
-     "risque": "Prescription non lue (ABF, participation, réserve) qui modifie le bilan.",
-     "docs": ["Arrêté", "Certificat de non-opposition"], "typo": ["@URBA", "COPRO"], "duree": 1},
-    {"id": "C12", "cat": "C", "sc": "Affichage réglementaire", "nom": "Afficher sur le terrain et faire constater",
-     "desc": "Panneau conforme (art. R424-15 C. urb.) visible depuis la voie publique, affiché en continu ; trois constats de commissaire de justice (début, milieu, fin des 2 mois).",
-     "resp": ["MDB", "Commissaire de justice"], "decl": "Le jour de la notification", "dep": ["C11"], "crit": "Critique",
-     "risque": "Affichage incomplet ou interrompu : le délai de recours des tiers ne court pas.",
-     "docs": ["Constats d'affichage", "Photos datées"], "typo": ["@URBA", "COPRO"], "duree": 1},
-    {"id": "C13", "cat": "C", "sc": "Affichage réglementaire", "nom": "Transmission au contrôle de légalité",
-     "desc": "Vérifier la date de transmission en préfecture (départ du délai de déféré préfectoral) et l'affichage en mairie.",
-     "resp": ["Mairie", "MDB"], "decl": "Après l'arrêté", "dep": ["C11"], "crit": "Important",
-     "risque": "Déféré préfectoral non anticipé.",
-     "docs": ["Accusé de transmission"], "typo": ["@URBA", "COPRO"], "duree": 5},
-    {"id": "C14", "cat": "C", "sc": "Recours des tiers", "nom": "Délai de recours et de retrait",
-     "desc": "Recours des tiers : 2 mois à compter du premier jour d'affichage continu. Retrait par l'administration : 3 mois à compter de la décision (art. L424-5 C. urb.). Prévoir le délai de notification du recours (art. R600-1).",
-     "resp": ["MDB", "Avocat"], "decl": "Premier jour d'affichage", "dep": ["C12"], "crit": "Critique",
-     "risque": "Démarrage des travaux ou acte signé avant purge : risque d'annulation du permis.",
-     "docs": [], "typo": ["@URBA", "COPRO"], "duree": 92},
-    {"id": "C15", "cat": "C", "sc": "Recours des tiers", "nom": "Gérer un recours éventuel",
-     "desc": "Analyse de recevabilité (intérêt à agir, notification R600-1), recours gracieux ou contentieux, permis modificatif de régularisation, transaction à enregistrer (art. L600-8), prorogation de la promesse.",
-     "resp": ["Avocat", "MDB"], "decl": "Si recours", "dep": ["C14"], "crit": "Important",
-     "risque": "Promesse caduque pendant le contentieux ; transaction non enregistrée réputée sans cause.",
-     "docs": ["Recours", "Mémoire en défense", "Protocole transactionnel"], "typo": ["@URBA"], "duree": 1,
-     "conseil": "Marquer cette tâche « Terminé » sans action s'il n'y a pas de recours ; sinon elle bloque la purge."},
-    {"id": "C16", "cat": "C", "sc": "Attestations non-recours", "nom": "Obtenir les attestations de non-recours et de non-retrait",
-     "desc": "Attestation de la mairie (absence de recours gracieux et de retrait) et du greffe du tribunal administratif (absence de recours contentieux).",
-     "resp": ["MDB", "Notaire"], "decl": "Fin des délais", "dep": ["C14", "C15", "C13"], "crit": "Critique",
-     "risque": "Notaire et banque refusent de signer ou débloquer sans ces attestations.",
-     "docs": ["Attestation mairie", "Attestation greffe TA"], "typo": ["@URBA", "COPRO"], "duree": 10},
-    {"id": "C17", "cat": "C", "sc": "Attestations non-recours", "nom": "Déposer la DAACT",
-     "desc": "Déclaration attestant l'achèvement et la conformité des travaux, avec les attestations exigées (thermique/RE2020, accessibilité, parasismique selon le cas).",
-     "resp": ["Architecte", "MDB"], "decl": "Réception des travaux", "dep": ["E13"], "crit": "Important",
-     "risque": "Pas de point de départ du récolement ; acquéreurs et notaires réclament la conformité.",
-     "docs": ["DAACT", "Attestations"], "typo": ["@URBA"], "duree": 5},
-    {"id": "C18", "cat": "C", "sc": "Attestations non-recours", "nom": "Obtenir l'attestation de non-contestation de conformité",
-     "desc": "Délai de récolement : 3 mois, porté à 5 mois dans certains cas (périmètres protégés notamment).",
-     "resp": ["Mairie", "MDB"], "decl": "DAACT déposée", "dep": ["C17"], "crit": "Important",
-     "risque": "Contestation de conformité découverte au moment des ventes.",
-     "docs": ["Attestation de non-contestation"], "typo": ["@URBA"], "duree": 90},
-    {"id": "C19", "cat": "C", "sc": "DP / PC / PA", "nom": "Vente anticipée des lots de lotissement",
-     "desc": "Autorisation de vendre avant achèvement des travaux de finition, avec garantie d'achèvement ; ou DAACT des travaux du lotissement avant toute vente.",
-     "resp": ["MDB", "Notaire", "Banque"], "decl": "Avant les premières ventes", "dep": ["C16"], "crit": "Important",
-     "risque": "Ventes de lots impossibles avant achèvement des VRD.",
-     "docs": ["Arrêté de vente anticipée", "Garantie d'achèvement"], "typo": ["PA"], "duree": 30, "verif": true},
-
-    {"id": "D01", "cat": "D", "sc": "Business plan", "nom": "Business plan détaillé",
-     "desc": "Bilan complet, trésorerie mensuelle, TRI, sensibilités (prix de sortie -10 %, travaux +15 %, délai +6 mois).",
-     "resp": ["MDB", "Expert-comptable"], "decl": "Offre acceptée", "dep": ["A03", "A19"], "crit": "Critique",
-     "risque": "Dossier bancaire faible ; aucune visibilité sur le point mort.",
-     "docs": ["Bilan prévisionnel", "Plan de trésorerie"], "typo": [], "duree": 5},
-    {"id": "D02", "cat": "D", "sc": "Business plan", "nom": "Besoin de fonds propres et trésorerie",
-     "desc": "Fonds propres exigés, frais non financés (notaire, honoraires, études, taxes, intérêts intercalaires), décalages de TVA.",
-     "resp": ["MDB", "Expert-comptable"], "decl": "Business plan établi", "dep": ["D01"], "crit": "Critique",
-     "risque": "Tension de trésorerie en phase chantier ; incapacité à payer la taxe d'aménagement.",
-     "docs": ["Tableau des emplois et ressources"], "typo": [], "duree": 2},
-    {"id": "D03", "cat": "D", "sc": "Dossier bancaire", "nom": "Constituer et déposer le dossier bancaire",
-     "desc": "Présentation de l'opérateur et des opérations passées, liasses, promesse signée, études, devis, bilan, stratégie de sortie, pré-commercialisation éventuelle. Consulter plusieurs banques.",
-     "resp": ["MDB", "Courtier"], "decl": "Promesse signée", "dep": ["D01", "B08"], "crit": "Critique",
-     "risque": "Refus tardif qui fait échouer la CS de financement.",
-     "docs": ["Dossier bancaire", "Références d'opérations"], "typo": ["BANQUE"], "duree": 10},
-    {"id": "D04", "cat": "D", "sc": "Dossier bancaire", "nom": "Obtenir l'offre de prêt",
-     "desc": "Négocier : montant, durée (souvent 18 à 24 mois in fine), taux, frais, fonds propres minimum, quote-part de remboursement par lot vendu (prix de mainlevée), pré-commercialisation exigée, garanties.",
-     "resp": ["Banque", "MDB"], "decl": "Dossier déposé", "dep": ["D03"], "crit": "Critique",
-     "risque": "Prix de mainlevée trop élevé qui empêche de vendre les premiers lots.",
-     "docs": ["Offre de prêt", "Accord de principe"], "typo": ["BANQUE"], "duree": 45,
-     "conseil": "Négocier les prix de mainlevée par lot à ce stade : après la signature, la banque n'a plus de raison de céder."},
-    {"id": "D05", "cat": "D", "sc": "Garantie bancaire", "nom": "Lever les conditions préalables au déblocage",
-     "desc": "Garanties signées, cautions, comptes courants bloqués, attestations d'assurance, fonds propres justifiés.",
-     "resp": ["Banque", "MDB"], "decl": "Offre acceptée", "dep": ["D04", "B13"], "crit": "Critique",
-     "risque": "Fonds non débloqués le jour de l'acte.",
-     "docs": ["Check-list de déblocage banque"], "typo": ["BANQUE"], "duree": 10},
-    {"id": "D06", "cat": "D", "sc": "Garantie bancaire", "nom": "Garantie financière d'achèvement",
-     "desc": "Garantie extrinsèque d'achèvement obligatoire pour vendre en VEFA ; conditions de l'établissement garant (pré-commercialisation, fonds propres).",
-     "resp": ["Banque", "Assureur"], "decl": "Avant la première VEFA", "dep": ["D04"], "crit": "Critique",
-     "risque": "Contrats de VEFA impossibles à signer.",
-     "docs": ["Attestation GFA"], "typo": ["PROMO_LEGERE"], "duree": 30},
-    {"id": "D07", "cat": "D", "sc": "Garantie bancaire", "nom": "Caution pour l'indemnité d'immobilisation",
-     "desc": "Caution bancaire remplaçant le séquestre de l'indemnité d'immobilisation.",
-     "resp": ["Banque"], "decl": "Avant la promesse", "dep": ["A08"], "crit": "Confort",
-     "risque": "Trésorerie immobilisée inutilement.",
-     "docs": ["Acte de caution"], "typo": ["BANQUE"], "duree": 10},
-    {"id": "D08", "cat": "D", "sc": "Business plan", "nom": "Mobiliser les fonds propres et justifier leur origine",
-     "desc": "Appel des apports, virement sur le compte de la société, justificatifs d'origine des fonds exigés par le notaire et la banque au titre de la lutte anti-blanchiment.",
-     "resp": ["MDB", "Associés"], "decl": "Avant l'acte", "dep": ["D02"], "crit": "Critique",
-     "risque": "Acte repoussé faute de justificatifs d'origine des fonds.",
-     "docs": ["Relevés", "Justificatifs d'origine des fonds"], "typo": [], "duree": 10},
-    {"id": "D09", "cat": "D", "sc": "Appels de fonds", "nom": "Déblocages sur situations de travaux",
-     "desc": "Situations visées par le MOE, factures, demande de déblocage, suivi du reste à débloquer.",
-     "resp": ["MDB", "Architecte", "Banque"], "decl": "Chaque situation mensuelle", "dep": ["E09"], "crit": "Important",
-     "risque": "Retards de paiement des entreprises et arrêt de chantier.",
-     "docs": ["Situations de travaux", "Demandes de déblocage"], "typo": ["BANQUE", "@TRAVAUX"], "duree": 1},
-    {"id": "D10", "cat": "D", "sc": "Suivi intérêts", "nom": "Suivre intérêts, échéance et prorogation",
-     "desc": "Intérêts intercalaires, commissions de non-utilisation, date d'échéance ; demande de prorogation anticipée si les ventes glissent.",
-     "resp": ["MDB", "Banque"], "decl": "Mensuel dès le déblocage", "dep": ["B19"], "crit": "Critique",
-     "risque": "Prêt échu non remboursé : exigibilité, pénalités, dégradation de la relation bancaire.",
-     "docs": ["Tableau de suivi du prêt"], "typo": ["BANQUE"], "duree": 1,
-     "conseil": "Demander la prorogation au moins 3 mois avant l'échéance, avec un point de commercialisation chiffré."},
-    {"id": "D11", "cat": "D", "sc": "Mainlevées", "nom": "Mainlevées partielles à chaque vente",
-     "desc": "Accord de mainlevée de la banque pour chaque lot vendu, versement de la quote-part prévue, transmission au notaire de l'acquéreur.",
-     "resp": ["Banque", "Notaire"], "decl": "Chaque vente", "dep": ["H05"], "crit": "Important",
-     "risque": "Vente retardée faute d'accord de mainlevée à la date de signature.",
-     "docs": ["Accords de mainlevée"], "typo": ["BANQUE"], "duree": 10},
-    {"id": "D13", "cat": "D", "sc": "Business plan", "nom": "Structurer le crédit vendeur ou la vente à terme",
-     "desc": "Échéancier, intérêts, garanties (privilège du vendeur, action résolutoire, caution), exigibilité anticipée en cas de revente, traitement fiscal.",
-     "resp": ["Notaire", "Avocat"], "decl": "Négociation", "dep": ["A07"], "crit": "Critique",
-     "risque": "Revente des lots impossible tant que le privilège n'est pas levé.",
-     "docs": ["Clauses de crédit vendeur"], "typo": ["VENTE_TERME"], "duree": 10},
-
-    {"id": "E01", "cat": "E", "sc": "Diagnostics", "nom": "Repérages amiante et plomb avant travaux",
-     "desc": "Repérage amiante avant travaux (code du travail, art. R4412-97 et s.) et constat plomb avant travaux sur les zones concernées.",
-     "resp": ["Diagnostiqueur", "MDB"], "decl": "Avant la consultation des entreprises", "dep": ["B19"], "crit": "Critique",
-     "risque": "Arrêt de chantier, désamiantage non budgété, responsabilité pénale du donneur d'ordre.",
-     "docs": ["Rapport RAT", "Constat plomb"], "typo": ["@TRAVAUX"], "duree": 10,
-     "conseil": "Le faire sous condition suspensive avant l'acte quand le vendeur l'autorise : le désamiantage peut coûter plus que prévu."},
-    {"id": "E02", "cat": "E", "sc": "Diagnostics", "nom": "Diagnostics de vente par lot",
-     "desc": "DDT complet par lot après travaux : DPE, mesurage Carrez ou surface habitable, amiante, électricité, gaz, ERP. Audit énergétique pour les maisons ou immeubles en monopropriété concernés par les classes visées par la loi.",
-     "resp": ["Diagnostiqueur"], "decl": "Fin de chantier", "dep": ["E13"], "crit": "Important",
-     "risque": "Compromis non signables ; nullité ou diminution de prix pour erreur de surface.",
-     "docs": ["DDT par lot"], "typo": [], "duree": 10, "verif": true},
-    {"id": "E03", "cat": "E", "sc": "Diagnostics", "nom": "Étude thermique et DPE projeté",
-     "desc": "Fixer la classe énergétique cible par lot et les travaux nécessaires (isolation, ventilation, chauffage).",
-     "resp": ["BET", "Architecte"], "decl": "Conception", "dep": ["C01"], "crit": "Important",
-     "risque": "Lots classés F ou G : décote et impossibilité de mise en location selon le calendrier de la loi Climat et Résilience.",
-     "docs": ["Étude thermique", "DPE projeté"], "typo": ["@TRAVAUX"], "duree": 15},
-    {"id": "E04", "cat": "E", "sc": "Maîtrise d'œuvre", "nom": "Contractualiser la maîtrise d'œuvre",
-     "desc": "Contrat d'architecte ou de MOE (missions, honoraires, calendrier), attestation d'assurance décennale et RC professionnelle vérifiées.",
-     "resp": ["MDB", "Architecte"], "decl": "Avant le dépôt du permis", "dep": ["C01"], "crit": "Critique",
-     "risque": "Mission mal définie, pas de suivi de chantier ; MOE non assuré.",
-     "docs": ["Contrat de MOE", "Attestations d'assurance"], "typo": ["@TRAVAUX"], "duree": 10},
-    {"id": "E05", "cat": "E", "sc": "Maîtrise d'œuvre", "nom": "BET, contrôleur technique et coordonnateur SPS",
-     "desc": "BET structure et fluides, contrôle technique (souvent exigé par l'assureur DO), coordonnateur SPS obligatoire dès que plusieurs entreprises interviennent.",
-     "resp": ["MDB", "BET"], "decl": "Conception", "dep": ["E04"], "crit": "Important",
-     "risque": "Refus ou surprime de l'assureur DO ; infraction au code du travail.",
-     "docs": ["Contrats BET, CT, CSPS"], "typo": ["@TRAVAUX"], "duree": 10},
-    {"id": "E06", "cat": "E", "sc": "Assurances chantier", "nom": "Souscrire DO, CNR et TRC",
-     "desc": "Dommages-ouvrage obligatoire avant l'ouverture du chantier (art. L242-1 C. assur.), constructeur non réalisateur, tous risques chantier, RC maître d'ouvrage.",
-     "resp": ["MDB", "Assureur"], "decl": "Avant l'ouverture du chantier", "dep": ["E05", "E08"], "crit": "Critique",
-     "risque": "Ventes décotées ou bloquées, responsabilité personnelle du dirigeant, aucune préfinancement des désordres.",
-     "docs": ["Attestation DO", "Attestation CNR", "Police TRC"], "typo": ["@TRAVAUX"], "duree": 20,
-     "conseil": "Lancer la DO dès la consultation des entreprises : l'assureur demande le contrôle technique et les attestations de toutes les entreprises."},
-    {"id": "E07", "cat": "E", "sc": "Consultations entreprises", "nom": "Consulter les entreprises",
-     "desc": "DCE par lot, au moins trois offres comparables, vérification des attestations (décennale nominative et à jour, vigilance URSSAF au-delà de 5 000 € HT, Kbis).",
-     "resp": ["Architecte", "MDB"], "decl": "Permis obtenu ou en cours", "dep": ["E04", "E01"], "crit": "Critique",
-     "risque": "Entreprise non assurée ou travail dissimulé : solidarité financière du donneur d'ordre.",
-     "docs": ["DCE", "Tableau comparatif", "Attestations"], "typo": ["@TRAVAUX"], "duree": 30},
-    {"id": "E08", "cat": "E", "sc": "Marchés travaux", "nom": "Signer les marchés de travaux",
-     "desc": "Prix global et forfaitaire, délais et pénalités, retenue de garantie de 5 % ou caution, planning contractuel, sous-traitance déclarée, CCAP.",
-     "resp": ["MDB", "Entreprises", "Architecte"], "decl": "Consultation terminée", "dep": ["E07"], "crit": "Critique",
-     "risque": "Dérive de prix sans base contractuelle ; aucun levier sur les retards.",
-     "docs": ["Marchés signés", "CCAP"], "typo": ["@TRAVAUX"], "duree": 10},
-    {"id": "E09", "cat": "E", "sc": "Planning chantier", "nom": "Ouvrir le chantier",
-     "desc": "Déclaration d'ouverture de chantier, DT-DICT, panneau, installation de chantier, constat avant travaux des avoisinants (référé préventif si mitoyenneté sensible).",
-     "resp": ["MDB", "Architecte"], "decl": "Autorisations purgées et DO souscrite", "dep": ["E06", "E08", "C16"], "crit": "Critique",
-     "risque": "Travaux démarrés avant purge du permis ; litiges avec les voisins sans constat initial.",
-     "docs": ["DOC", "Constat avant travaux"], "typo": ["@TRAVAUX"], "duree": 5},
-    {"id": "E10", "cat": "E", "sc": "Planning chantier", "nom": "Piloter le chantier",
-     "desc": "Planning détaillé, réunions hebdomadaires, comptes rendus diffusés, suivi des avancements, gestion des interfaces entre lots.",
-     "resp": ["Architecte", "MDB", "Entreprises"], "decl": "Ouverture du chantier", "dep": ["E09"], "crit": "Important",
-     "risque": "Glissement de planning qui consomme la marge par les intérêts.",
-     "docs": ["Planning", "Comptes rendus de chantier"], "typo": ["@TRAVAUX"], "duree": 180},
-    {"id": "E11", "cat": "E", "sc": "Planning chantier", "nom": "Suivre budget et avenants",
-     "desc": "Tableau budget/engagé/payé par lot, avenants signés avant exécution, consommation de la provision pour aléas.",
-     "resp": ["MDB"], "decl": "Mensuel", "dep": ["E08"], "crit": "Critique",
-     "risque": "Travaux supplémentaires réclamés en fin de chantier sans accord écrit.",
-     "docs": ["Tableau de suivi budgétaire", "Avenants"], "typo": ["@TRAVAUX"], "duree": 1},
-    {"id": "E12", "cat": "E", "sc": "Planning chantier", "nom": "Raccordements et compteurs individuels",
-     "desc": "Demandes de raccordement et de compteurs individuels (électricité, eau, gaz, fibre), Consuel pour les installations nouvelles.",
-     "resp": ["MDB", "Entreprises"], "decl": "Dès l'autorisation obtenue", "dep": ["C11"], "crit": "Critique",
-     "risque": "Lots terminés mais non livrables, ventes repoussées de plusieurs mois.",
-     "docs": ["Demandes de raccordement", "Attestation Consuel"], "typo": ["@LOTS", "@FONCIER"], "duree": 120},
-    {"id": "E13", "cat": "E", "sc": "Réception travaux", "nom": "OPR et réception des travaux",
-     "desc": "Opérations préalables, PV de réception avec ou sans réserves : point de départ des garanties de parfait achèvement, biennale et décennale.",
-     "resp": ["MDB", "Architecte", "Entreprises"], "decl": "Fin des travaux", "dep": ["E10"], "crit": "Critique",
-     "risque": "Réception tacite mal datée ; réserves non consignées perdues.",
-     "docs": ["PV de réception", "Liste des réserves"], "typo": ["@TRAVAUX"], "duree": 5},
-    {"id": "E14", "cat": "E", "sc": "Levée réserves", "nom": "Lever les réserves",
-     "desc": "Suivi des réserves par entreprise, relances, PV de levée, libération de la retenue de garantie.",
-     "resp": ["Architecte", "Entreprises"], "decl": "Après réception", "dep": ["E13"], "crit": "Important",
-     "risque": "Acquéreurs livrés avec réserves ouvertes ; retenue libérée trop tôt.",
-     "docs": ["PV de levée des réserves"], "typo": ["@TRAVAUX"], "duree": 30},
-    {"id": "E15", "cat": "E", "sc": "Levée réserves", "nom": "Dossier des ouvrages exécutés",
-     "desc": "DOE, DIUO, notices, attestations Consuel et gaz, attestation thermique de fin de travaux, factures des entreprises.",
-     "resp": ["Architecte", "Entreprises"], "decl": "Après réception", "dep": ["E13"], "crit": "Important",
-     "risque": "Impossibilité de répondre aux acquéreurs et à l'assureur DO.",
-     "docs": ["DOE", "DIUO"], "typo": ["@TRAVAUX"], "duree": 30},
-
-    {"id": "F01", "cat": "F", "sc": "TVA applicable", "nom": "Assujettissement et options TVA",
-     "desc": "Numéro de TVA, régime d'imposition, option éventuelle pour la TVA sur les ventes d'immeubles anciens, déduction de la TVA sur travaux selon le régime retenu.",
-     "resp": ["Expert-comptable"], "decl": "Constitution de la structure", "dep": ["A25"], "crit": "Critique",
-     "risque": "TVA sur travaux non récupérée ou à reverser.",
-     "docs": ["Note TVA", "Option éventuelle"], "typo": [], "duree": 5, "verif": true},
-    {"id": "F02", "cat": "F", "sc": "TVA marge / TVA immobilière", "nom": "Valider l'assiette de TVA de chaque vente",
-     "desc": "Contrôler si les travaux font du bien un immeuble neuf au sens fiscal (art. 257 CGI : surélévation, atteinte majoritaire aux fondations, façades, structure, ou rénovation des deux tiers du second œuvre), ce qui impose la TVA sur le prix total.",
-     "resp": ["Expert-comptable", "Avocat"], "decl": "Programme travaux figé", "dep": ["A25", "C01"], "crit": "Critique",
-     "risque": "Requalification en production d'immeuble neuf : TVA sur prix total et obligations de constructeur.",
-     "docs": ["Note fiscale validée"], "typo": ["@TRAVAUX", "TAB", "DIV_PARCELLAIRE", "PA"], "duree": 10, "verif": true},
-    {"id": "F03", "cat": "F", "sc": "Régime fiscal opération", "nom": "Suivre l'échéance de l'engagement fiscal",
-     "desc": "Échéancier de l'engagement de revendre (5 ans) ou de construire (4 ans) à compter de l'acte ; justificatifs à conserver ; prorogation éventuelle à demander avant l'échéance.",
-     "resp": ["Expert-comptable", "MDB"], "decl": "Acte signé", "dep": ["B19"], "crit": "Critique",
-     "risque": "Rappel des droits de mutation avec intérêts et majoration.",
-     "docs": ["Échéancier fiscal"], "typo": [], "duree": 1, "verif": true},
-    {"id": "F04", "cat": "F", "sc": "Comptabilité opération", "nom": "Comptabilité analytique de l'opération",
-     "desc": "Suivi en stock, coûts incorporables (prix, frais, travaux, frais financiers selon option), affectation des honoraires.",
-     "resp": ["Expert-comptable"], "decl": "Acte signé", "dep": ["B19"], "crit": "Important",
-     "risque": "Marge réelle inconnue ; erreur de valorisation du stock.",
-     "docs": ["Plan analytique"], "typo": [], "duree": 5},
-    {"id": "F05", "cat": "F", "sc": "Comptabilité opération", "nom": "Rapprochement budget et réel mensuel",
-     "desc": "Comparer chaque mois le bilan prévisionnel et les dépenses réelles ; mettre à jour la marge attendue.",
-     "resp": ["MDB", "Expert-comptable"], "decl": "Mensuel", "dep": ["F04"], "crit": "Important",
-     "risque": "Dérive découverte en fin d'opération.",
-     "docs": ["Tableau budget/réel"], "typo": [], "duree": 1},
-    {"id": "F06", "cat": "F", "sc": "Déclarations fiscales", "nom": "Déclarations de TVA",
-     "desc": "Déclarations périodiques, TVA collectée sur les ventes selon le régime de chaque lot, cohérence avec les actes.",
-     "resp": ["Expert-comptable"], "decl": "Périodique", "dep": ["F01"], "crit": "Important",
-     "risque": "Pénalités et intérêts de retard.",
-     "docs": ["Déclarations CA3"], "typo": [], "duree": 1},
-    {"id": "F07", "cat": "F", "sc": "Déclarations fiscales", "nom": "Déclarations foncières",
-     "desc": "Déclaration d'occupation et déclarations liées aux travaux sur l'espace « Gérer mes biens immobiliers », taxe foncière, exposition aux taxes sur les logements vacants.",
-     "resp": ["MDB", "Expert-comptable"], "decl": "Acte signé, puis annuel", "dep": ["B19"], "crit": "Important",
-     "risque": "Amendes déclaratives ; taxe foncière ou taxe sur la vacance non provisionnées.",
-     "docs": ["Accusés de déclaration"], "typo": [], "duree": 5, "verif": true},
-    {"id": "F08", "cat": "F", "sc": "Déclarations fiscales", "nom": "CFE et liasse fiscale",
-     "desc": "Cotisation foncière des entreprises, liasse annuelle, comptes annuels.",
-     "resp": ["Expert-comptable"], "decl": "Annuel", "dep": ["F04"], "crit": "Confort",
-     "risque": "Pénalités de retard.",
-     "docs": ["Liasse fiscale"], "typo": [], "duree": 1},
-    {"id": "F09", "cat": "F", "sc": "Taxes urbanisme", "nom": "Taxe d'aménagement et archéologie préventive",
-     "desc": "Estimation dès le dépôt, provision en trésorerie. Déclaration sur « Gérer mes biens immobiliers » dans les 90 jours suivant l'achèvement ; paiement après achèvement selon le montant.",
-     "resp": ["MDB", "Expert-comptable"], "decl": "Autorisation obtenue", "dep": ["C11"], "crit": "Critique",
-     "risque": "Montant significatif oublié du bilan et appelé en fin d'opération.",
-     "docs": ["Simulation de taxe", "Avis d'imposition"], "typo": ["@URBA"], "duree": 1, "verif": true},
-    {"id": "F10", "cat": "F", "sc": "Taxe aménager / PFAC", "nom": "PFAC et participations d'urbanisme",
-     "desc": "Participation pour le financement de l'assainissement collectif (art. L1331-7 CSP), PUP, participations ZAC, coûts d'extension de réseaux.",
-     "resp": ["MDB"], "decl": "Autorisation obtenue", "dep": ["C11"], "crit": "Important",
-     "risque": "Participations non budgétées, exigibles au raccordement.",
-     "docs": ["Délibération PFAC", "Convention PUP"], "typo": ["@URBA"], "duree": 1},
-    {"id": "F11", "cat": "F", "sc": "Taxes urbanisme", "nom": "Taxes sur terrains devenus constructibles",
-     "desc": "Vérifier l'application des taxes sur la cession de terrains nus rendus constructibles (art. 1529 et 1605 nonies CGI) et leur répartition entre vendeur et acquéreur.",
-     "resp": ["Notaire"], "decl": "Avant la promesse", "dep": ["A26"], "crit": "Confort",
-     "risque": "Taxe mise à la charge de l'opération par une clause mal négociée.",
-     "docs": [], "typo": ["@FONCIER"], "duree": 2, "verif": true},
-    {"id": "F12", "cat": "F", "sc": "Déclarations fiscales", "nom": "Clôture fiscale de l'opération",
-     "desc": "Justificatifs du respect de l'engagement, dernières déclarations de TVA, régularisations éventuelles.",
-     "resp": ["Expert-comptable"], "decl": "Dernière vente", "dep": ["H10", "F03"], "crit": "Important",
-     "risque": "Contrôle fiscal sans pièces justificatives.",
-     "docs": ["Dossier de clôture fiscale"], "typo": [], "duree": 15},
-
-    {"id": "G01", "cat": "G", "sc": "Stratégie prix", "nom": "Grille de prix par lot",
-     "desc": "Prix par lot (surface, étage, exposition, extérieur, DPE, stationnement), prix plancher compatible avec les prix de mainlevée bancaires, marge de négociation.",
-     "resp": ["MDB", "Agent immobilier"], "decl": "Programme figé", "dep": ["A04", "C01"], "crit": "Critique",
-     "risque": "Lots les plus faciles vendus trop vite et trop bas ; derniers lots invendables.",
-     "docs": ["Grille de prix"], "typo": [], "duree": 3,
-     "conseil": "Commencer par vendre les lots les moins liquides tant que l'opération a de l'attrait."},
-    {"id": "G02", "cat": "G", "sc": "Mise en copropriété", "nom": "Plans, mesurages et tantièmes",
-     "desc": "Mission géomètre : plans des lots, mesurage Carrez ou Boutin, calcul des tantièmes de charges générales et spéciales.",
-     "resp": ["Géomètre"], "decl": "Plans figés", "dep": ["C11"], "crit": "Critique",
-     "risque": "Erreur de surface supérieure à 5 % : action en diminution du prix.",
-     "docs": ["Plans de lots", "Certificats de mesurage", "Tableau des tantièmes"], "typo": ["@LOTS"], "duree": 20},
-    {"id": "G03", "cat": "G", "sc": "Mise en copropriété", "nom": "Diagnostic technique global avant mise en copropriété",
-     "desc": "DTG obligatoire pour la mise en copropriété d'un immeuble construit depuis plus de 10 ans (art. L731-4 CCH).",
-     "resp": ["Diagnostiqueur"], "decl": "Avant l'EDD-RCP", "dep": ["B19"], "crit": "Critique",
-     "risque": "Mise en copropriété irrégulière ; acquéreurs mal informés.",
-     "docs": ["DTG"], "typo": ["COPRO", "DIV_IMMEUBLE"], "duree": 20},
-    {"id": "G04", "cat": "G", "sc": "RCP + EDD", "nom": "Rédiger l'état descriptif de division et le règlement de copropriété",
-     "desc": "Lots, parties communes et privatives, charges, destination de l'immeuble, usages (activité, location meublée de courte durée), servitudes internes, lots annexes.",
-     "resp": ["Notaire", "Géomètre"], "decl": "Mesurages faits", "dep": ["G02", "G03"], "crit": "Critique",
-     "risque": "Règlement mal rédigé : contentieux entre copropriétaires et dévalorisation des lots.",
-     "docs": ["EDD-RCP"], "typo": ["@LOTS"], "duree": 20},
-    {"id": "G05", "cat": "G", "sc": "RCP + EDD", "nom": "Publier et organiser la copropriété",
-     "desc": "Publication de l'EDD-RCP, immatriculation au registre des copropriétés, syndic désigné, compte bancaire séparé, assurance de l'immeuble, budget prévisionnel.",
-     "resp": ["Notaire", "Syndic", "MDB"], "decl": "EDD-RCP signé", "dep": ["G04"], "crit": "Critique",
-     "risque": "Premières ventes impossibles avant publication.",
-     "docs": ["EDD-RCP publié", "Contrat de syndic", "Attestation d'assurance"], "typo": ["@LOTS"], "duree": 45},
-    {"id": "G06", "cat": "G", "sc": "Mise en copropriété", "nom": "Règlement de lotissement et ASL",
-     "desc": "Règlement ou cahier des charges, statuts de l'association syndicale libre pour les voies et réseaux communs, rétrocession éventuelle à la commune.",
-     "resp": ["Notaire", "Géomètre"], "decl": "Autorisation obtenue", "dep": ["C11"], "crit": "Important",
-     "risque": "Voies communes sans gestionnaire ; acquéreurs et banques réticents.",
-     "docs": ["Statuts d'ASL", "Cahier des charges"], "typo": ["PA", "DIV_PARCELLAIRE"], "duree": 30},
-    {"id": "G07", "cat": "G", "sc": "Mandats", "nom": "Mandats de commercialisation",
-     "desc": "Choix vente directe ou mandats (exclusif ou simple), honoraires et charge, durée, carte professionnelle de l'agent. Le MDB qui vend ses propres biens n'a pas besoin de carte T.",
-     "resp": ["MDB", "Agent immobilier"], "decl": "Grille de prix arrêtée", "dep": ["G01"], "crit": "Important",
-     "risque": "Double commission, mandat nul (registre, mentions obligatoires).",
-     "docs": ["Mandats signés"], "typo": [], "duree": 5},
-    {"id": "G08", "cat": "G", "sc": "Marketing", "nom": "Plan marketing",
-     "desc": "Photos professionnelles, home staging, visites virtuelles, plaquette, annonces, plan de diffusion.",
-     "resp": ["MDB", "Agent immobilier"], "decl": "Avant le lancement", "dep": ["G07"], "crit": "Confort",
-     "risque": "Délai d'écoulement allongé.",
-     "docs": ["Plaquette", "Annonces"], "typo": [], "duree": 10},
-    {"id": "G09", "cat": "G", "sc": "Marketing", "nom": "Dossier acquéreur type",
-     "desc": "Data room par lot : titre, diagnostics, autorisations et attestations de non-recours, PV de réception, attestation DO, plans, EDD-RCP, budget de copropriété, garanties.",
-     "resp": ["MDB", "Notaire"], "decl": "Avant le lancement", "dep": ["G01"], "crit": "Critique",
-     "risque": "Compromis retardés par les demandes de pièces du notaire de l'acquéreur.",
-     "docs": ["Dossier acquéreur"], "typo": [], "duree": 10,
-     "conseil": "Un dossier complet dès la première visite raccourcit le délai compromis-acte de plusieurs semaines."},
-    {"id": "G10", "cat": "G", "sc": "Pré-commercialisation", "nom": "Pré-commercialisation et réservations",
-     "desc": "Contrats de réservation en VEFA (dépôt de garantie plafonné selon le délai de réalisation, art. R261-28 CCH), ou lettres d'intention en vente classique.",
-     "resp": ["MDB", "Notaire"], "decl": "Permis obtenu", "dep": ["G01", "C11"], "crit": "Important",
-     "risque": "Pré-commercialisation exigée par la banque ou le garant non atteinte.",
-     "docs": ["Contrats de réservation"], "typo": ["PROMO_LEGERE", "@LOTS"], "duree": 60},
-    {"id": "G11", "cat": "G", "sc": "Pré-commercialisation", "nom": "Lancer la commercialisation",
-     "desc": "Mise en ligne, premières visites, suivi hebdomadaire des contacts, visites et offres.",
-     "resp": ["MDB", "Agent immobilier"], "decl": "Grille et dossier prêts", "dep": ["G08", "G09"], "crit": "Important",
-     "risque": "Lancement tardif qui allonge le portage.",
-     "docs": ["Tableau de suivi commercial"], "typo": [], "duree": 1},
-    {"id": "G12", "cat": "G", "sc": "Compromis acquéreurs", "nom": "Signer les avant-contrats acquéreurs",
-     "desc": "Qualification financière préalable de l'acquéreur, avant-contrat, notification du délai de rétractation de 10 jours à l'acquéreur non professionnel d'un logement (art. L271-1 CCH).",
-     "resp": ["MDB", "Notaire", "Agent immobilier"], "decl": "Offre acceptée", "dep": ["G11", "G05", "G14"], "crit": "Critique",
-     "risque": "Notification irrégulière : le délai de rétractation ne court pas.",
-     "docs": ["Avant-contrats", "Preuves de notification"], "typo": [], "duree": 30},
-    {"id": "G13", "cat": "G", "sc": "Compromis acquéreurs", "nom": "Vente en bloc à un investisseur",
-     "desc": "Data room investisseur, lettre d'intention, négociation de la décote de bloc, purge des droits des locataires en cas de vente de plus de cinq logements.",
-     "resp": ["MDB", "Notaire"], "decl": "Stratégie bloc retenue", "dep": ["G09"], "crit": "Important",
-     "risque": "Décote non anticipée dans le bilan ; droits des locataires ignorés.",
-     "docs": ["Data room", "Lettre d'intention"], "typo": ["VENTE_BLOC"], "duree": 45, "verif": true},
-    {"id": "G14", "cat": "G", "sc": "Compromis acquéreurs", "nom": "Droits des locataires en place",
-     "desc": "Première vente après division : offre de vente au locataire (art. 10 loi du 31 décembre 1975). Congé pour vente à l'échéance du bail (art. 15 loi du 6 juillet 1989), avec les restrictions applicables après acquisition d'un logement occupé.",
-     "resp": ["Avocat", "Notaire"], "decl": "Avant toute vente d'un lot occupé", "dep": ["A11"], "crit": "Critique",
-     "risque": "Vente annulable ; congé nul qui prolonge le bail de plusieurs années.",
-     "docs": ["Offres de vente notifiées", "Congés"], "typo": ["OCCUPE"], "duree": 60, "verif": true,
-     "conseil": "Faire valider chaque congé par un avocat : délais, forme et protection des locataires âgés à faibles ressources sont la première source de nullité."},
-
-    {"id": "H01", "cat": "H", "sc": "Financements acquéreurs", "nom": "Suivre le financement des acquéreurs",
-     "desc": "Attestation du courtier ou de la banque, dépôt des demandes dans le délai prévu, offres de prêt, délai de la CS de prêt (au moins un mois), relances.",
-     "resp": ["MDB", "Courtier"], "decl": "Avant-contrat signé", "dep": ["G12"], "crit": "Critique",
-     "risque": "Ventes qui tombent tardivement ; lot immobilisé plusieurs mois.",
-     "docs": ["Attestations de financement", "Offres de prêt"], "typo": [], "duree": 45},
-    {"id": "H02", "cat": "H", "sc": "Suivi notarial", "nom": "Suivi notarial des ventes",
-     "desc": "Pièces au notaire de l'acquéreur, pré-état daté et état daté, purge du DPU sur les lots (copropriété de moins de 10 ans), questionnaire, projet d'acte.",
-     "resp": ["Notaire", "Syndic"], "decl": "Avant-contrat signé", "dep": ["G12"], "crit": "Important",
-     "risque": "Retard d'acte de plusieurs semaines faute de pièce.",
-     "docs": ["Pré-état daté", "État daté", "DIA"], "typo": [], "duree": 60},
-    {"id": "H03", "cat": "H", "sc": "Appels de fonds", "nom": "Appels de fonds VEFA",
-     "desc": "Appels selon l'échelonnement plafonné (art. R261-14 CCH : 35 % à l'achèvement des fondations, 70 % au hors d'eau, 95 % à l'achèvement), attestations de l'architecte.",
-     "resp": ["MDB", "Notaire", "Architecte"], "decl": "Chaque stade", "dep": ["G12", "E10"], "crit": "Important",
-     "risque": "Appel non conforme : contestation et retard de paiement.",
-     "docs": ["Attestations d'avancement", "Appels de fonds"], "typo": ["PROMO_LEGERE"], "duree": 1},
-    {"id": "H05", "cat": "H", "sc": "Réitérations", "nom": "Signer les premiers actes de vente",
-     "desc": "Réitération par acte authentique, encaissement, mainlevée, remise des clés si le lot est livré.",
-     "resp": ["Notaire", "MDB"], "decl": "CS acquéreur levées", "dep": ["H01", "H02", "E02", "E14"], "crit": "Critique",
-     "risque": "Acte reporté pour pièce manquante ou mainlevée absente.",
-     "docs": ["Actes de vente"], "typo": [], "duree": 1},
-    {"id": "H06", "cat": "H", "sc": "Réitérations", "nom": "Suivre une vente à terme",
-     "desc": "Échéancier, indexation, garanties, relances, levée du privilège au paiement complet.",
-     "resp": ["MDB", "Notaire"], "decl": "Vente à terme signée", "dep": ["H05"], "crit": "Important",
-     "risque": "Impayés sans mise en œuvre rapide de la clause résolutoire.",
-     "docs": ["Échéancier"], "typo": ["VENTE_TERME"], "duree": 1},
-    {"id": "H08", "cat": "H", "sc": "Livraison lots", "nom": "Livrer les lots",
-     "desc": "Remise des clés, PV de livraison, réserves de l'acquéreur, notices et garanties remises, relevés de compteurs. En VEFA : dénonciation des vices apparents dans le mois suivant la prise de possession.",
-     "resp": ["MDB"], "decl": "Acte signé", "dep": ["H05"], "crit": "Important",
-     "risque": "Réserves non documentées qui se transforment en litige.",
-     "docs": ["PV de livraison"], "typo": [], "duree": 5},
-    {"id": "H09", "cat": "H", "sc": "Livraison lots", "nom": "Service après-vente et garanties",
-     "desc": "Registre des réclamations, transmission aux entreprises (parfait achèvement), déclaration DO si nécessaire.",
-     "resp": ["MDB", "Entreprises", "Assureur"], "decl": "Après livraison", "dep": ["H08"], "crit": "Important",
-     "risque": "Mise en cause directe du MDB par les acquéreurs.",
-     "docs": ["Registre SAV"], "typo": [], "duree": 365},
-    {"id": "H10", "cat": "H", "sc": "Réitérations", "nom": "Vendre le dernier lot",
-     "desc": "Dernier acte de vente signé ; fin de la commercialisation.",
-     "resp": ["Notaire", "MDB"], "decl": "Dernier compromis", "dep": ["H05"], "crit": "Critique",
-     "risque": "Dernier lot qui porte toute la marge et le reste à rembourser.",
-     "docs": ["Dernier acte de vente"], "typo": [], "duree": 120},
-
-    {"id": "I01", "cat": "I", "sc": "Calcul marge réelle", "nom": "Bilan de clôture réel",
-     "desc": "Marge réelle, TRI, durée de portage, écarts par poste avec le prévisionnel et causes.",
-     "resp": ["MDB", "Expert-comptable"], "decl": "Dernière vente", "dep": ["H10", "F05"], "crit": "Critique",
-     "risque": "Leçons perdues ; distribution sur une marge erronée.",
-     "docs": ["Bilan de clôture"], "typo": [], "duree": 15},
-    {"id": "I02", "cat": "I", "sc": "Clôture bancaire", "nom": "Clôture bancaire",
-     "desc": "Mainlevée générale des inscriptions, libération des cautions personnelles et nantissements, clôture des comptes dédiés.",
-     "resp": ["Banque", "Notaire", "MDB"], "decl": "Crédit remboursé", "dep": ["I03"], "crit": "Important",
-     "risque": "Caution personnelle toujours active après remboursement.",
-     "docs": ["Mainlevée générale", "Lettre de libération de caution"], "typo": ["BANQUE"], "duree": 30},
-    {"id": "I03", "cat": "I", "sc": "Remboursement financements", "nom": "Rembourser les financements",
-     "desc": "Solde du prêt bancaire, remboursement des comptes courants et des financements participatifs ou obligataires selon leur rang.",
-     "resp": ["MDB", "Banque"], "decl": "Ventes suffisantes", "dep": ["D11", "H10"], "crit": "Critique",
-     "risque": "Intérêts qui continuent de courir ; ordre de remboursement contraire aux conventions.",
-     "docs": ["Attestation de remboursement"], "typo": [], "duree": 10},
-    {"id": "I04", "cat": "I", "sc": "Distribution résultats", "nom": "Distribuer le résultat",
-     "desc": "Approbation des comptes, affectation du résultat, dividendes, fiscalité de la distribution, répartition prévue au pacte.",
-     "resp": ["Expert-comptable", "Associés"], "decl": "Comptes arrêtés", "dep": ["I01", "I03"], "crit": "Important",
-     "risque": "Distribution avant constitution d'une réserve pour SAV ou litiges.",
-     "docs": ["PV d'AG", "Tableau de répartition"], "typo": ["ASSOCIES", "STRUCT_SOC"], "duree": 30,
-     "conseil": "Conserver une réserve pour la garantie de parfait achèvement et les litiges en cours avant de distribuer."},
-    {"id": "I05", "cat": "I", "sc": "Distribution résultats", "nom": "Sort de la société dédiée",
-     "desc": "Dissolution-liquidation ou mise en sommeil. Les associés d'une SCCV restent tenus des dettes sociales : mesurer l'exposition aux garanties décennales avant de liquider.",
-     "resp": ["Avocat", "Expert-comptable"], "decl": "Après distribution", "dep": ["I04"], "crit": "Confort",
-     "risque": "Liquidation prématurée alors que des recours en garantie restent possibles.",
-     "docs": ["Décision de dissolution"], "typo": ["STRUCT_SOC"], "duree": 60},
-    {"id": "I06", "cat": "I", "sc": "Archivage dossier", "nom": "Archiver le dossier",
-     "desc": "Archivage structuré au moins 10 ans (décennale) : actes, autorisations, marchés, PV de réception, DO, DOE, attestations, correspondances, pièces fiscales.",
-     "resp": ["MDB"], "decl": "Dernière vente", "dep": ["H10"], "crit": "Important",
-     "risque": "Impossibilité de se défendre dans un litige décennal ou un contrôle.",
-     "docs": ["Index d'archivage"], "typo": [], "duree": 10},
-    {"id": "I07", "cat": "I", "sc": "Retour d'expérience opération", "nom": "Retour d'expérience",
-     "desc": "Écarts de délais et de coûts, partenaires à conserver ou écarter, points de la checklist à enrichir pour les opérations suivantes.",
-     "resp": ["MDB", "Associés"], "decl": "Bilan de clôture fait", "dep": ["I01"], "crit": "Confort",
-     "risque": "Les mêmes erreurs se répètent.",
-     "docs": ["Note de retour d'expérience"], "typo": [], "duree": 5},
-    {"id": "I08", "cat": "I", "sc": "Retour d'expérience opération", "nom": "Clôturer l'opération",
-     "desc": "Toutes les tâches terminées et validées ; opération archivée.",
-     "resp": ["MDB"], "decl": "Toutes tâches validées", "dep": ["I01", "I02", "I03", "I04", "I05", "I06", "I07", "F12"], "crit": "Critique",
-     "risque": "Opération jamais formellement close.",
-     "docs": [], "typo": [], "duree": 1}
+  "@URBA": [
+   "DIV_PARCELLAIRE",
+   "TAB",
+   "DIV_IMMEUBLE",
+   "SURELEVATION",
+   "PROMO_LEGERE",
+   "PA",
+   "RENO_LOURDE"
+  ],
+  "@FONCIER": [
+   "DIV_PARCELLAIRE",
+   "TAB",
+   "PA",
+   "PROMO_LEGERE"
+  ],
+  "@LOTS": [
+   "DIV_IMMEUBLE",
+   "COPRO",
+   "DECOUPE",
+   "PROMO_LEGERE"
+  ],
+  "@NEUF": [
+   "SURELEVATION",
+   "PROMO_LEGERE"
   ]
+ },
+ "jalons": [
+  {
+   "code": "J1",
+   "nom": "Promesse signée",
+   "tache": "B08"
+  },
+  {
+   "code": "J2",
+   "nom": "Fin des conditions suspensives",
+   "tache": "B17"
+  },
+  {
+   "code": "J3",
+   "nom": "Acte authentique",
+   "tache": "B19"
+  },
+  {
+   "code": "J4",
+   "nom": "Autorisations purgées",
+   "tache": "C16"
+  },
+  {
+   "code": "J5",
+   "nom": "Début de commercialisation",
+   "tache": "G11"
+  },
+  {
+   "code": "J6",
+   "nom": "Premières ventes",
+   "tache": "H05"
+  },
+  {
+   "code": "J7",
+   "nom": "Remboursement du crédit",
+   "tache": "I03"
+  },
+  {
+   "code": "J8",
+   "nom": "Clôture de l'opération",
+   "tache": "I08"
+  }
+ ],
+ "taches": [
+  {
+   "id": "A01",
+   "cat": "A",
+   "sc": "Prospection & pré-analyse",
+   "nom": "Qualifier l'opportunité",
+   "desc": "Fiche d'opportunité : adresse, cadastre, surfaces, prix affiché, motivation vendeur, occupation, source (apporteur, agent, off-market). Contrôle rapide Géoportail de l'urbanisme, DVF et cadastre.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Réception du dossier",
+   "dep": [],
+   "crit": "Important",
+   "risque": "Temps perdu sur un dossier non viable ; conflit d'apporteur si la source n'est pas tracée.",
+   "docs": [
+    "Fiche d'opportunité",
+    "Extrait cadastral",
+    "Annonce / mandat"
+   ],
+   "typo": [],
+   "duree": 2,
+   "conseil": "Tracer par écrit l'apporteur et sa rémunération dès le premier échange : c'est la première source de litige en fin d'opération."
+  },
+  {
+   "id": "A02",
+   "cat": "A",
+   "sc": "Prospection & pré-analyse",
+   "nom": "Visite technique et relevé d'état",
+   "desc": "Visite avec photos, relevé de l'état du clos-couvert, structure, humidité, réseaux, parties communes, accès. Vérifier l'occupation réelle (baux, squat, occupant sans titre).",
+   "resp": [
+    "MDB",
+    "Architecte"
+   ],
+   "decl": "Après qualification",
+   "dep": [
+    "A01"
+   ],
+   "crit": "Critique",
+   "risque": "Sous-estimation des travaux ou découverte tardive d'un occupant non déclaré.",
+   "docs": [
+    "Rapport de visite",
+    "Reportage photo"
+   ],
+   "typo": [],
+   "duree": 3,
+   "conseil": "Visiter avec l'entreprise générale ou le MOE habituel : un chiffrage à la visite vaut mieux qu'un ratio au m²."
+  },
+  {
+   "id": "A03",
+   "cat": "A",
+   "sc": "Prospection & pré-analyse",
+   "nom": "Pré-bilan et prix d'achat maximal",
+   "desc": "Bilan à rebours : chiffre d'affaires de sortie net, moins marge cible, travaux, frais d'acquisition, frais financiers, honoraires, taxes, aléas (5 à 10 %) = prix d'achat maximal.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Avant toute offre",
+   "dep": [
+    "A02",
+    "A04"
+   ],
+   "crit": "Critique",
+   "risque": "Offre au-dessus du prix soutenable ; marge absorbée par les frais oubliés (TA, PFAC, intérêts intercalaires).",
+   "docs": [
+    "Bilan prévisionnel v0"
+   ],
+   "typo": [],
+   "duree": 2,
+   "conseil": "Raisonner en marge sur prix de revient ET en marge sur chiffre d'affaires : les banques regardent souvent la seconde."
+  },
+  {
+   "id": "A04",
+   "cat": "A",
+   "sc": "Prospection & pré-analyse",
+   "nom": "Étude de marché de sortie",
+   "desc": "Comparables DVF récents (même typologie, même micro-secteur), délais d'écoulement, avis de deux agents locaux, profondeur de la demande par typologie de lot.",
+   "resp": [
+    "MDB",
+    "Agent immobilier"
+   ],
+   "decl": "En parallèle de la visite",
+   "dep": [
+    "A01"
+   ],
+   "crit": "Critique",
+   "risque": "Prix de sortie surestimé : erreur la plus coûteuse d'une opération.",
+   "docs": [
+    "Extraits DVF",
+    "Avis de valeur"
+   ],
+   "typo": [],
+   "duree": 3,
+   "conseil": "Retenir le prix de sortie que l'on accepterait en vente en 3 mois, pas le meilleur comparable."
+  },
+  {
+   "id": "A05",
+   "cat": "A",
+   "sc": "Validation offre",
+   "nom": "Émettre l'offre d'achat écrite et conditionnée",
+   "desc": "Offre écrite à durée de validité courte, mentionnant prix, conditions suspensives envisagées (financement, urbanisme, audits), faculté de substitution et calendrier cible.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Pré-bilan validé",
+   "dep": [
+    "A03",
+    "A14"
+   ],
+   "crit": "Critique",
+   "risque": "Une offre acceptée sans réserve peut valoir accord sur la chose et le prix (art. 1583 C. civ.) : engagement sans conditions protectrices.",
+   "docs": [
+    "Offre d'achat signée"
+   ],
+   "typo": [],
+   "duree": 1,
+   "conseil": "Écrire « sous réserve de la signature d'un avant-contrat comportant les conditions suspensives usuelles et spécifiques » dans chaque offre."
+  },
+  {
+   "id": "A06",
+   "cat": "A",
+   "sc": "Validation offre",
+   "nom": "Acceptation de l'offre et désignation des notaires",
+   "desc": "Obtenir l'acceptation écrite, désigner le notaire de l'opération (habitué des MDB), transmettre les coordonnées du vendeur et la liste de pièces.",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "Offre acceptée",
+   "dep": [
+    "A05"
+   ],
+   "crit": "Important",
+   "risque": "Notaire non spécialisé : délais allongés, régimes fiscaux MDB mal appliqués.",
+   "docs": [
+    "Offre contresignée",
+    "Liste de pièces notaire"
+   ],
+   "typo": [],
+   "duree": 2
+  },
+  {
+   "id": "A07",
+   "cat": "A",
+   "sc": "Négociation conditions suspensives",
+   "nom": "Négocier les conditions suspensives",
+   "desc": "Financement (montant, durée, taux max), obtention d'une autorisation d'urbanisme purgée de recours et de retrait, purge des droits de préemption, absence de servitude ou pollution grevant le projet, libération des lieux, bornage/division, absence de prescription archéologique.",
+   "resp": [
+    "MDB",
+    "Notaire",
+    "Avocat"
+   ],
+   "decl": "Dès l'acceptation",
+   "dep": [
+    "A06"
+   ],
+   "crit": "Critique",
+   "risque": "Rester engagé sur un bien inexploitable (refus de permis, recours, prêt refusé) ou perdre l'indemnité d'immobilisation.",
+   "docs": [
+    "Liste des CS négociées"
+   ],
+   "typo": [],
+   "duree": 5,
+   "conseil": "Calibrer la CS d'urbanisme sur : délai d'instruction + 3 mois de purge + marge, avec prorogation automatique en cas de recours."
+  },
+  {
+   "id": "A08",
+   "cat": "A",
+   "sc": "Négociation conditions suspensives",
+   "nom": "Négocier calendrier et indemnité d'immobilisation",
+   "desc": "Durée de la promesse, date butoir de réitération, montant de l'indemnité (souvent 5 à 10 %), séquestre ou caution bancaire, clause pénale.",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "Avec les CS",
+   "dep": [
+    "A07"
+   ],
+   "crit": "Important",
+   "risque": "Trésorerie immobilisée inutilement ; date butoir incompatible avec les délais d'urbanisme.",
+   "docs": [
+    "Calendrier prévisionnel"
+   ],
+   "typo": [],
+   "duree": 2,
+   "conseil": "Proposer une caution bancaire à la place du séquestre pour préserver la trésorerie."
+  },
+  {
+   "id": "A09",
+   "cat": "A",
+   "sc": "Audit juridique",
+   "nom": "Titre de propriété et origine trentenaire",
+   "desc": "Obtenir le titre, l'origine de propriété sur 30 ans, l'état hypothécaire, les servitudes publiées, les éventuelles inscriptions et publications de commandement.",
+   "resp": [
+    "Notaire"
+   ],
+   "decl": "Acceptation de l'offre",
+   "dep": [
+    "A06"
+   ],
+   "crit": "Critique",
+   "risque": "Servitude, droit de passage ou inscription découverts après engagement.",
+   "docs": [
+    "Titre de propriété",
+    "État hypothécaire"
+   ],
+   "typo": [],
+   "duree": 10
+  },
+  {
+   "id": "A10",
+   "cat": "A",
+   "sc": "Audit juridique",
+   "nom": "Audit de la copropriété existante",
+   "desc": "Règlement de copropriété et modificatifs, PV d'AG des 3 dernières années, carnet d'entretien, fiche synthétique, procédures en cours, impayés du syndicat, travaux votés ou à venir (PPPT), DTG.",
+   "resp": [
+    "MDB",
+    "Notaire",
+    "Syndic"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A06"
+   ],
+   "crit": "Critique",
+   "risque": "Travaux lourds votés à charge, destination du lot incompatible avec le projet (usage, division), procédure du syndicat.",
+   "docs": [
+    "RCP/EDD",
+    "PV d'AG",
+    "Fiche synthétique",
+    "Pré-état daté"
+   ],
+   "typo": [
+    "COPRO_EXISTANTE"
+   ],
+   "duree": 10,
+   "conseil": "Lire la clause de destination et les règles sur la division ou la réunion de lots : un projet de division peut exiger un vote d'AG."
+  },
+  {
+   "id": "A11",
+   "cat": "A",
+   "sc": "Audit juridique",
+   "nom": "Audit des baux et des occupants",
+   "desc": "Baux, avenants, quittances, dépôts de garantie, congés délivrés, contentieux, régime (loi 1989, loi 1948, commercial, professionnel), âge et ressources des locataires protégés.",
+   "resp": [
+    "MDB",
+    "Avocat"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A06"
+   ],
+   "crit": "Critique",
+   "risque": "Locataire protégé impossible à faire partir, droit de préemption ignoré entraînant la nullité de ventes ultérieures.",
+   "docs": [
+    "Baux",
+    "État locatif",
+    "Quittances"
+   ],
+   "typo": [
+    "OCCUPE"
+   ],
+   "duree": 7,
+   "conseil": "Construire l'état locatif lot par lot avec la date à laquelle chaque lot peut réellement être libéré, et décoter la sortie en conséquence."
+  },
+  {
+   "id": "A12",
+   "cat": "A",
+   "sc": "Audit juridique",
+   "nom": "Capacité et pouvoirs du vendeur",
+   "desc": "Régime matrimonial, indivision, succession non réglée, majeur protégé, société venderesse (Kbis, pouvoirs du signataire, décision d'associés), procédure collective.",
+   "resp": [
+    "Notaire"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A06"
+   ],
+   "crit": "Important",
+   "risque": "Promesse signée par une personne sans pouvoir : nullité ou retard de plusieurs mois.",
+   "docs": [
+    "Kbis",
+    "Pouvoirs",
+    "Livret de famille / état civil"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "A14",
+   "cat": "A",
+   "sc": "Audit urbanistique",
+   "nom": "Note d'urbanisme pré-acquisition",
+   "desc": "Zonage PLU/PLUi, règlement de zone, OAP, emplacements réservés, servitudes d'utilité publique, périmètres ABF/SPR, PPR (inondation, mouvements de terrain), règles de stationnement, taxes applicables.",
+   "resp": [
+    "MDB",
+    "Architecte"
+   ],
+   "decl": "Avant l'offre",
+   "dep": [
+    "A01"
+   ],
+   "crit": "Critique",
+   "risque": "Projet non autorisable découvert après engagement (hauteur, emprise, stationnement, mixité sociale).",
+   "docs": [
+    "Extrait PLU",
+    "Règlement de zone",
+    "Plan des SUP"
+   ],
+   "typo": [],
+   "duree": 3,
+   "conseil": "Vérifier si une révision ou modification du PLU est en cours : un sursis à statuer peut geler le projet."
+  },
+  {
+   "id": "A15",
+   "cat": "A",
+   "sc": "Audit urbanistique",
+   "nom": "Régularité administrative de l'existant",
+   "desc": "Permis d'origine, déclarations antérieures, conformité, surfaces et changements de destination réalisés sans autorisation (combles, garage, local commercial transformé en logement), divisions antérieures.",
+   "resp": [
+    "MDB",
+    "Architecte",
+    "Notaire"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A14"
+   ],
+   "crit": "Critique",
+   "risque": "Lots invendables ou décotés : notaire et banque de l'acquéreur bloquent un logement créé sans autorisation.",
+   "docs": [
+    "Permis d'origine",
+    "Certificat de conformité",
+    "Demande de pièces en mairie"
+   ],
+   "typo": [],
+   "duree": 10,
+   "conseil": "Comparer la surface fiscale (taxe foncière) à la surface réelle : un écart signale souvent une extension non déclarée."
+  },
+  {
+   "id": "A16",
+   "cat": "A",
+   "sc": "Audit urbanistique",
+   "nom": "Droits de préemption et périmètres de contrôle",
+   "desc": "DPU simple ou renforcé, ZAD, ENS, SAFER, préemption commerciale, zone soumise à autorisation préalable de division (art. L111-6-1 CCH), permis de louer, protection patrimoniale.",
+   "resp": [
+    "Notaire",
+    "MDB"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A14"
+   ],
+   "crit": "Important",
+   "risque": "Préemption par la commune, ou division interdite sans autorisation préalable.",
+   "docs": [
+    "Note de renseignements d'urbanisme"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "A17",
+   "cat": "A",
+   "sc": "Audit technique",
+   "nom": "Audit structure et clos-couvert",
+   "desc": "Diagnostic structurel par BET : planchers, charpente, murs porteurs, fondations (indispensable en surélévation), humidité, mérule, état des réseaux communs.",
+   "resp": [
+    "BET",
+    "Architecte"
+   ],
+   "decl": "Avant la promesse ou sous CS",
+   "dep": [
+    "A02"
+   ],
+   "crit": "Critique",
+   "risque": "Reprise en sous-œuvre ou renforcement non budgété : surcoût pouvant dépasser la marge.",
+   "docs": [
+    "Rapport BET structure"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 15,
+   "conseil": "En surélévation, faire sonder les fondations avant la promesse : c'est le poste qui fait basculer le bilan."
+  },
+  {
+   "id": "A18",
+   "cat": "A",
+   "sc": "Audit technique",
+   "nom": "Analyser les diagnostics du vendeur",
+   "desc": "DPE, amiante, plomb (avant 1949), termites, électricité et gaz (plus de 15 ans), ERP de moins de 6 mois, assainissement non collectif, mérule, bruit. Vérifier dates de validité et cohérence.",
+   "resp": [
+    "MDB",
+    "Diagnostiqueur"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A06"
+   ],
+   "crit": "Important",
+   "risque": "Amiante ou plomb non anticipés en phase travaux ; DPE de sortie défavorable.",
+   "docs": [
+    "Dossier de diagnostic technique"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "A19",
+   "cat": "A",
+   "sc": "Audit technique",
+   "nom": "Chiffrage travaux préliminaire",
+   "desc": "Estimation par lot de travaux par MOE ou entreprise générale, avec hypothèses de prestations et aléas.",
+   "resp": [
+    "Architecte",
+    "Entreprises"
+   ],
+   "decl": "Après visite technique",
+   "dep": [
+    "A02"
+   ],
+   "crit": "Critique",
+   "risque": "Budget travaux sous-évalué de 20 à 30 % : cas le plus fréquent de marge détruite.",
+   "docs": [
+    "Estimation travaux par lot"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "A20",
+   "cat": "A",
+   "sc": "Audit technique",
+   "nom": "Étude de sol et risque argiles",
+   "desc": "Étude géotechnique préalable (G1) à fournir par le vendeur d'un terrain non bâti constructible en zone d'exposition moyenne ou forte au retrait-gonflement des argiles (loi ELAN, art. L112-21 CCH). G2 pour le projet.",
+   "resp": [
+    "BET",
+    "MDB"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A14"
+   ],
+   "crit": "Critique",
+   "risque": "Fondations spéciales non budgétées ; vente de terrain sans l'étude obligatoire.",
+   "docs": [
+    "Étude G1",
+    "Étude G2"
+   ],
+   "typo": [
+    "@FONCIER",
+    "SURELEVATION"
+   ],
+   "duree": 20
+  },
+  {
+   "id": "A21",
+   "cat": "A",
+   "sc": "Audit technique",
+   "nom": "Pollution des sols",
+   "desc": "Consultation CASIAS, SIS, ICPE, historique d'activité ; diagnostic de pollution si activité industrielle, garage, pressing ou cuve enterrée.",
+   "resp": [
+    "MDB",
+    "BET"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A14"
+   ],
+   "crit": "Important",
+   "risque": "Dépollution non budgétée ; responsabilité vis-à-vis des acquéreurs.",
+   "docs": [
+    "Extrait Géorisques",
+    "Diagnostic pollution"
+   ],
+   "typo": [
+    "@FONCIER",
+    "RENO_LOURDE"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "A22",
+   "cat": "A",
+   "sc": "Vérifications servitudes / réseaux",
+   "nom": "Servitudes de droit privé",
+   "desc": "Servitudes de passage, de vue, de tour d'échelle, de canalisations ; servitudes non publiées constatées sur place ; mitoyenneté.",
+   "resp": [
+    "Notaire",
+    "Géomètre"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A09"
+   ],
+   "crit": "Critique",
+   "risque": "Lot ou terrain enclavé, servitude de vue bloquant une ouverture ou une surélévation.",
+   "docs": [
+    "Actes constitutifs de servitude",
+    "Plan géomètre"
+   ],
+   "typo": [],
+   "duree": 7
+  },
+  {
+   "id": "A23",
+   "cat": "A",
+   "sc": "Vérifications servitudes / réseaux",
+   "nom": "Réseaux et viabilisation",
+   "desc": "Capacité et position des réseaux : eau, eaux usées et pluviales, électricité (puissance disponible, renforcement Enedis), gaz, télécoms. Coûts et délais de raccordement.",
+   "resp": [
+    "MDB",
+    "Géomètre"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A14"
+   ],
+   "crit": "Critique",
+   "risque": "Raccordement de plusieurs mois ou extension de réseau à la charge de l'opération ; lots livrés sans compteur.",
+   "docs": [
+    "Plans de réseaux",
+    "Pré-étude Enedis"
+   ],
+   "typo": [
+    "@FONCIER",
+    "DIV_IMMEUBLE",
+    "SURELEVATION"
+   ],
+   "duree": 10,
+   "conseil": "Demander une pré-étude de raccordement Enedis dès la promesse : le délai de raccordement dépasse souvent celui du chantier."
+  },
+  {
+   "id": "A24",
+   "cat": "A",
+   "sc": "Vérifications servitudes / réseaux",
+   "nom": "Accès et voirie",
+   "desc": "Largeur et statut de l'accès (voie privée, publique, chemin rural), défense incendie, droit de passage à créer, permission de voirie.",
+   "resp": [
+    "Géomètre",
+    "MDB"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A14"
+   ],
+   "crit": "Important",
+   "risque": "Refus de permis pour accès insuffisant ; servitude de passage à négocier avec un voisin.",
+   "docs": [
+    "Plan d'accès"
+   ],
+   "typo": [
+    "@FONCIER"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "A25",
+   "cat": "A",
+   "sc": "Audit fiscal",
+   "nom": "Déterminer le régime de TVA de l'opération",
+   "desc": "Qualifier chaque vente : TVA sur la marge, TVA sur le prix total (immeuble neuf, terrain à bâtir, travaux assimilés à une production d'immeuble neuf), exonération avec ou sans option.",
+   "resp": [
+    "Expert-comptable",
+    "Avocat"
+   ],
+   "decl": "Avant de figer le prix d'achat",
+   "dep": [
+    "A03"
+   ],
+   "crit": "Critique",
+   "risque": "Prix de vente TTC calculés sur la mauvaise base : écart pouvant représenter une large part de la marge.",
+   "docs": [
+    "Note fiscale TVA"
+   ],
+   "typo": [],
+   "duree": 5,
+   "verif": true,
+   "conseil": "Les conditions de la TVA sur la marge ont évolué avec la jurisprudence européenne et du Conseil d'État : faire valider le régime par écrit pour chaque opération."
+  },
+  {
+   "id": "A26",
+   "cat": "A",
+   "sc": "Audit fiscal",
+   "nom": "Choisir le régime de droits de mutation",
+   "desc": "Engagement de revendre dans les 5 ans (art. 1115 CGI) ou engagement de construire dans les 4 ans (art. 1594-0 G A I CGI) selon la nature de l'opération. Arbitrer en fonction du calendrier réaliste.",
+   "resp": [
+    "Notaire",
+    "Expert-comptable"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A25"
+   ],
+   "crit": "Critique",
+   "risque": "Non-respect de l'engagement : droits de droit commun, intérêts de retard et majoration.",
+   "docs": [
+    "Note notaire sur les droits"
+   ],
+   "typo": [],
+   "duree": 3,
+   "verif": true,
+   "conseil": "Faire chiffrer par le notaire les frais d'acquisition dans chaque régime : taux et conditions évoluent avec les lois de finances."
+  },
+  {
+   "id": "A27",
+   "cat": "A",
+   "sc": "Audit fiscal",
+   "nom": "Simuler la fiscalité du résultat",
+   "desc": "Impôt sur les sociétés ou BIC à l'IR, structure porteuse, remontée de dividendes, intégration fiscale éventuelle.",
+   "resp": [
+    "Expert-comptable"
+   ],
+   "decl": "Avant le montage",
+   "dep": [
+    "A03"
+   ],
+   "crit": "Important",
+   "risque": "Structure inadaptée ; une SCI qui exerce une activité commerciale bascule à l'IS.",
+   "docs": [
+    "Simulation fiscale"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "A28",
+   "cat": "A",
+   "sc": "Stratégie de sortie",
+   "nom": "Scénario de sortie principal et plan B",
+   "desc": "Sortie retenue (bloc, unité, découpe, revente en l'état, location puis vente), plan B qui rembourse la banque, prix plancher par lot.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Avant la décision",
+   "dep": [
+    "A04",
+    "A03"
+   ],
+   "crit": "Critique",
+   "risque": "Absence de repli si le marché se retourne ou si le permis est refusé.",
+   "docs": [
+    "Note de stratégie de sortie"
+   ],
+   "typo": [],
+   "duree": 2,
+   "conseil": "Tester le plan B : revente en l'état avec le permis obtenu doit couvrir au moins le prix d'achat et les frais."
+  },
+  {
+   "id": "A29",
+   "cat": "A",
+   "sc": "Stratégie de sortie",
+   "nom": "Décision GO / NO GO",
+   "desc": "Revue de tous les audits, du bilan à jour et des risques ; décision formalisée (GO, GO sous conditions, NO GO) avec les conditions à faire figurer dans la promesse.",
+   "resp": [
+    "MDB",
+    "Associés"
+   ],
+   "decl": "Audits terminés",
+   "dep": [
+    "A03",
+    "A04",
+    "A07",
+    "A10",
+    "A11",
+    "A15",
+    "A17",
+    "A19",
+    "A20",
+    "A22",
+    "A23",
+    "A25",
+    "A26",
+    "A28"
+   ],
+   "crit": "Critique",
+   "risque": "Signature par élan commercial alors qu'un audit est rouge.",
+   "docs": [
+    "Compte rendu de décision"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "B01",
+   "cat": "B",
+   "sc": "Montage sociétaire",
+   "nom": "Choisir la structure porteuse",
+   "desc": "SAS ou SARL MDB, SCCV pour la construction-vente, société ad hoc par opération ou structure existante. Fiscalité, responsabilité des associés, exigences bancaires.",
+   "resp": [
+    "Avocat",
+    "Expert-comptable"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A27"
+   ],
+   "crit": "Critique",
+   "risque": "Associés de SCCV tenus des dettes sociales ; SCI requalifiée à l'IS ; banque refusant la structure.",
+   "docs": [
+    "Note de montage"
+   ],
+   "typo": [
+    "STRUCT_SOC"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "B02",
+   "cat": "B",
+   "sc": "Montage sociétaire",
+   "nom": "Constituer la société",
+   "desc": "Statuts avec objet social couvrant l'achat-revente et la construction-vente, dépôt du capital, immatriculation, ouverture du compte bancaire, numéro de TVA.",
+   "resp": [
+    "Avocat",
+    "Expert-comptable"
+   ],
+   "decl": "Structure choisie",
+   "dep": [
+    "B01"
+   ],
+   "crit": "Critique",
+   "risque": "Société non immatriculée à la date de l'acte : substitution impossible.",
+   "docs": [
+    "Statuts",
+    "Kbis",
+    "RIB"
+   ],
+   "typo": [
+    "STRUCT_SOC"
+   ],
+   "duree": 15
+  },
+  {
+   "id": "B04",
+   "cat": "B",
+   "sc": "Pacte associés",
+   "nom": "Rédiger le pacte d'associés",
+   "desc": "Apports, comptes courants et rémunération, répartition de la marge, gouvernance, majorités, rôle de chacun, cautions personnelles, sortie anticipée, décès, blocage, clause de non-concurrence.",
+   "resp": [
+    "Avocat",
+    "Associés"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "B01"
+   ],
+   "crit": "Critique",
+   "risque": "Conflit d'associés en cours d'opération sans mécanisme de résolution : opération gelée.",
+   "docs": [
+    "Pacte d'associés"
+   ],
+   "typo": [
+    "ASSOCIES"
+   ],
+   "duree": 15,
+   "conseil": "Prévoir qui assume un dépassement de budget ou un appel de fonds supplémentaire : c'est là que les associés se fâchent."
+  },
+  {
+   "id": "B05",
+   "cat": "B",
+   "sc": "Pacte associés",
+   "nom": "Conventions de comptes courants",
+   "desc": "Conventions écrites, taux de rémunération, blocage demandé par la banque, rang de remboursement.",
+   "resp": [
+    "Expert-comptable",
+    "Associés"
+   ],
+   "decl": "Avant déblocage du prêt",
+   "dep": [
+    "B04"
+   ],
+   "crit": "Important",
+   "risque": "Associé qui retire ses fonds en cours d'opération ; intérêts non déductibles.",
+   "docs": [
+    "Conventions de compte courant"
+   ],
+   "typo": [
+    "ASSOCIES"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "B06",
+   "cat": "B",
+   "sc": "Promesse de vente",
+   "nom": "Choisir promesse unilatérale ou compromis",
+   "desc": "Promesse unilatérale (option, indemnité d'immobilisation) ou compromis synallagmatique ; forme notariée ou sous seing privé.",
+   "resp": [
+    "Notaire",
+    "MDB"
+   ],
+   "decl": "CS négociées",
+   "dep": [
+    "A08"
+   ],
+   "crit": "Important",
+   "risque": "Promesse unilatérale sous seing privé non enregistrée dans les 10 jours : nullité (art. 1589-2 C. civ.).",
+   "docs": [],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "B07",
+   "cat": "B",
+   "sc": "Promesse de vente",
+   "nom": "Rédiger et relire l'avant-contrat",
+   "desc": "Désignation précise (lots, surfaces, cadastre), conditions suspensives, délais, faculté de substitution, indemnité, servitudes, état d'occupation, autorisations d'accès pour études et dépôt de permis.",
+   "resp": [
+    "Notaire",
+    "Avocat",
+    "MDB"
+   ],
+   "decl": "Forme choisie",
+   "dep": [
+    "B06",
+    "A09"
+   ],
+   "crit": "Critique",
+   "risque": "Clause manquante (autorisation de déposer le permis, accès pour sondages) bloquant la levée des CS.",
+   "docs": [
+    "Projet d'avant-contrat"
+   ],
+   "typo": [],
+   "duree": 7,
+   "conseil": "Faire autoriser expressément le dépôt de la demande d'autorisation d'urbanisme et l'accès aux lieux pour sondages et géomètre."
+  },
+  {
+   "id": "B08",
+   "cat": "B",
+   "sc": "Promesse de vente",
+   "nom": "Signer la promesse",
+   "desc": "Signature de l'avant-contrat, remise de l'indemnité ou de la caution, transmission au notaire de l'opération.",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "GO validé",
+   "dep": [
+    "B07",
+    "A29"
+   ],
+   "crit": "Critique",
+   "risque": "Signature avant décision GO formelle.",
+   "docs": [
+    "Promesse signée"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "B10",
+   "cat": "B",
+   "sc": "Promesse de vente",
+   "nom": "Enregistrement et séquestre",
+   "desc": "Enregistrement de la promesse unilatérale dans les 10 jours si sous seing privé, versement au séquestre ou remise de la caution.",
+   "resp": [
+    "Notaire"
+   ],
+   "decl": "Promesse signée",
+   "dep": [
+    "B08"
+   ],
+   "crit": "Critique",
+   "risque": "Nullité de la promesse unilatérale non enregistrée.",
+   "docs": [
+    "Justificatif d'enregistrement",
+    "Reçu de séquestre"
+   ],
+   "typo": [],
+   "duree": 10
+  },
+  {
+   "id": "B11",
+   "cat": "B",
+   "sc": "Substitution",
+   "nom": "Exercer la faculté de substitution",
+   "desc": "Notifier la substitution au profit de la société porteuse dans les conditions de la promesse ; aligner le nom de l'emprunteur dans le dossier bancaire.",
+   "resp": [
+    "Notaire",
+    "MDB"
+   ],
+   "decl": "Société immatriculée",
+   "dep": [
+    "B08",
+    "B02"
+   ],
+   "crit": "Critique",
+   "risque": "Prêt accordé à une entité différente de l'acquéreur ; substitution non prévue ou rémunérée requalifiée en cession.",
+   "docs": [
+    "Notification de substitution"
+   ],
+   "typo": [
+    "STRUCT_SOC"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "B12",
+   "cat": "B",
+   "sc": "Garanties",
+   "nom": "Cartographier les garanties dues aux acquéreurs",
+   "desc": "Vendeur professionnel présumé connaître les vices (clause d'exclusion de garantie inopposable) ; vendeur après travaux réputé constructeur (art. 1792-1 C. civ.) : décennale, biennale, parfait achèvement.",
+   "resp": [
+    "Avocat",
+    "MDB"
+   ],
+   "decl": "Avant les travaux",
+   "dep": [
+    "B08"
+   ],
+   "crit": "Critique",
+   "risque": "Mise en cause personnelle du MDB sans assurance adaptée, plusieurs années après la vente.",
+   "docs": [
+    "Note garanties"
+   ],
+   "typo": [],
+   "duree": 3
+  },
+  {
+   "id": "B13",
+   "cat": "B",
+   "sc": "Garanties",
+   "nom": "Consentir les sûretés bancaires",
+   "desc": "Hypothèque conventionnelle ou privilège de prêteur de deniers, caution personnelle du dirigeant, nantissement de parts ou de comptes, cession Dailly.",
+   "resp": [
+    "Notaire",
+    "Banque"
+   ],
+   "decl": "Offre de prêt reçue",
+   "dep": [
+    "D04"
+   ],
+   "crit": "Important",
+   "risque": "Caution personnelle illimitée signée sans mesurer l'exposition.",
+   "docs": [
+    "Acte de caution",
+    "Inscription hypothécaire"
+   ],
+   "typo": [
+    "BANQUE"
+   ],
+   "duree": 5,
+   "conseil": "Négocier une caution limitée en montant et en durée, éteinte au remboursement du prêt."
+  },
+  {
+   "id": "B14",
+   "cat": "B",
+   "sc": "Purges",
+   "nom": "Purger le droit de préemption urbain",
+   "desc": "Envoi de la DIA dès la signature ; suivi des demandes de pièces ou de visite qui suspendent le délai de 2 mois ; renonciation expresse ou tacite.",
+   "resp": [
+    "Notaire"
+   ],
+   "decl": "Promesse signée",
+   "dep": [
+    "B08"
+   ],
+   "crit": "Critique",
+   "risque": "Retard de 2 mois minimum si la DIA part tard ; préemption.",
+   "docs": [
+    "DIA",
+    "Renonciation"
+   ],
+   "typo": [],
+   "duree": 60,
+   "conseil": "Demander au notaire d'envoyer la DIA dans la semaine de la signature, et relancer la mairie pour une renonciation expresse."
+  },
+  {
+   "id": "B15",
+   "cat": "B",
+   "sc": "Purges",
+   "nom": "Purger les autres droits de préemption",
+   "desc": "SAFER, ENS, locataire commercial (art. L145-46-1 C. com.), locataires en cas de vente en bloc de plus de cinq logements (loi du 13 juin 2006, sauf engagement de proroger les baux), indivisaires.",
+   "resp": [
+    "Notaire"
+   ],
+   "decl": "Promesse signée",
+   "dep": [
+    "B08"
+   ],
+   "crit": "Important",
+   "risque": "Nullité de la vente ou substitution d'un préempteur.",
+   "docs": [
+    "Notifications",
+    "Renonciations"
+   ],
+   "typo": [],
+   "duree": 60,
+   "verif": true
+  },
+  {
+   "id": "B16",
+   "cat": "B",
+   "sc": "Purges",
+   "nom": "Lever les conditions suspensives techniques",
+   "desc": "Résultats d'études (sol, pollution, structure), bornage, libération des lieux : constater par écrit leur réalisation ou y renoncer.",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "Résultats d'études",
+   "dep": [
+    "B08",
+    "A17",
+    "A20",
+    "A21"
+   ],
+   "crit": "Important",
+   "risque": "Renonciation implicite à une CS par comportement ; délai de CS dépassé.",
+   "docs": [
+    "Lettres de levée de CS"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "B17",
+   "cat": "B",
+   "sc": "Acte authentique",
+   "nom": "Constater la réalisation des conditions suspensives",
+   "desc": "Toutes les CS levées : préemptions purgées, prêt obtenu, autorisation d'urbanisme purgée si exigée, CS techniques levées.",
+   "resp": [
+    "Notaire",
+    "MDB"
+   ],
+   "decl": "Dernière CS levée",
+   "dep": [
+    "B14",
+    "B15",
+    "B16",
+    "C16",
+    "D04",
+    "B11"
+   ],
+   "crit": "Critique",
+   "risque": "Date butoir dépassée sans prorogation : promesse caduque.",
+   "docs": [
+    "Attestations de levée"
+   ],
+   "typo": [],
+   "duree": 2,
+   "conseil": "Signer l'avenant de prorogation avant la date butoir, jamais après."
+  },
+  {
+   "id": "B18",
+   "cat": "B",
+   "sc": "Acte authentique",
+   "nom": "Préparer l'acte authentique",
+   "desc": "Projet d'acte relu (régime fiscal MDB, engagement de revente ou de construire, désignation, servitudes), appel de fonds notaire, pouvoirs, déblocage du prêt programmé.",
+   "resp": [
+    "Notaire",
+    "MDB",
+    "Banque"
+   ],
+   "decl": "CS levées",
+   "dep": [
+    "B17"
+   ],
+   "crit": "Critique",
+   "risque": "Engagement fiscal absent de l'acte : droits de droit commun.",
+   "docs": [
+    "Projet d'acte",
+    "Décompte notaire"
+   ],
+   "typo": [],
+   "duree": 10
+  },
+  {
+   "id": "B19",
+   "cat": "B",
+   "sc": "Acte authentique",
+   "nom": "Signer l'acte authentique d'acquisition",
+   "desc": "Signature, paiement du prix et des frais, remise des clés ; point de départ des délais fiscaux d'engagement.",
+   "resp": [
+    "Notaire",
+    "MDB"
+   ],
+   "decl": "Fonds disponibles",
+   "dep": [
+    "B18",
+    "D05",
+    "D08"
+   ],
+   "crit": "Critique",
+   "risque": "Fonds non disponibles le jour J : report et pénalités.",
+   "docs": [
+    "Acte authentique",
+    "Attestation de propriété"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "B20",
+   "cat": "B",
+   "sc": "Acte authentique",
+   "nom": "Prise de possession et assurances",
+   "desc": "État des lieux, relevé des compteurs, changement des serrures, assurance propriétaire non occupant dès le jour de l'acte, sécurisation contre les intrusions.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Jour de l'acte",
+   "dep": [
+    "B19"
+   ],
+   "crit": "Critique",
+   "risque": "Sinistre ou squat non couverts entre l'acte et le chantier.",
+   "docs": [
+    "Attestation PNO",
+    "PV d'état des lieux"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "B21",
+   "cat": "B",
+   "sc": "Acte authentique",
+   "nom": "Publication et copie authentique",
+   "desc": "Publication au service de publicité foncière, réception de la copie authentique et de l'état hors formalité.",
+   "resp": [
+    "Notaire"
+   ],
+   "decl": "Après l'acte",
+   "dep": [
+    "B19"
+   ],
+   "crit": "Confort",
+   "risque": "Reventes retardées faute de titre publié.",
+   "docs": [
+    "Copie authentique publiée"
+   ],
+   "typo": [],
+   "duree": 60
+  },
+  {
+   "id": "C01",
+   "cat": "C",
+   "sc": "Analyse PLU",
+   "nom": "Étude de capacité et faisabilité",
+   "desc": "Esquisse architecte : surface de plancher, nombre et typologie de lots, stationnement, espaces verts, règles de prospect et de hauteur.",
+   "resp": [
+    "Architecte"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A14"
+   ],
+   "crit": "Critique",
+   "risque": "Programme non conforme au PLU ; chiffre d'affaires surestimé.",
+   "docs": [
+    "Étude de capacité"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 15
+  },
+  {
+   "id": "C02",
+   "cat": "C",
+   "sc": "Analyse PLU",
+   "nom": "Rendez-vous de pré-instruction",
+   "desc": "Présentation du projet au service instructeur et, si périmètre protégé, à l'Architecte des Bâtiments de France. Compte rendu écrit.",
+   "resp": [
+    "Architecte",
+    "MDB"
+   ],
+   "decl": "Esquisse prête",
+   "dep": [
+    "C01"
+   ],
+   "crit": "Important",
+   "risque": "Refus ou prescriptions lourdes découverts à l'instruction.",
+   "docs": [
+    "Compte rendu de rendez-vous"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 20
+  },
+  {
+   "id": "C03",
+   "cat": "C",
+   "sc": "Certificat d'urbanisme",
+   "nom": "Demander un certificat d'urbanisme opérationnel",
+   "desc": "CU opérationnel sur le projet précis ; il fige les règles d'urbanisme et les taxes pendant 18 mois (art. L410-1 C. urb.), sauf exceptions de sécurité ou salubrité publique.",
+   "resp": [
+    "Architecte",
+    "MDB"
+   ],
+   "decl": "Avant la promesse si possible",
+   "dep": [
+    "A14"
+   ],
+   "crit": "Important",
+   "risque": "Changement de PLU défavorable entre la promesse et le dépôt du permis.",
+   "docs": [
+    "CU opérationnel"
+   ],
+   "typo": [
+    "@FONCIER",
+    "DIV_IMMEUBLE"
+   ],
+   "duree": 60
+  },
+  {
+   "id": "C04",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Plan topographique et bornage",
+   "desc": "Lever topographique, bornage contradictoire avec les voisins, plan de division, document d'arpentage (DMPC).",
+   "resp": [
+    "Géomètre"
+   ],
+   "decl": "Promesse signée",
+   "dep": [
+    "B08"
+   ],
+   "crit": "Critique",
+   "risque": "Surface réelle inférieure à l'annonce ; conflit de limites bloquant la division.",
+   "docs": [
+    "Plan topographique",
+    "PV de bornage",
+    "DMPC"
+   ],
+   "typo": [
+    "@FONCIER",
+    "SURELEVATION"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "C05",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Déposer la déclaration préalable de division",
+   "desc": "Division foncière en vue de bâtir sans voie ni espace commun (art. L442-3 C. urb.). Instruction de droit commun : 1 mois.",
+   "resp": [
+    "Géomètre",
+    "MDB"
+   ],
+   "decl": "Plan de division établi",
+   "dep": [
+    "C04"
+   ],
+   "crit": "Critique",
+   "risque": "Division réalisée sans autorisation : terrain non constructible, vente annulable.",
+   "docs": [
+    "Cerfa DP",
+    "Plan de division"
+   ],
+   "typo": [
+    "DIV_PARCELLAIRE",
+    "TAB"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "C06",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Déposer le permis de construire",
+   "desc": "PC, PC valant division ou PC modificatif. Architecte obligatoire pour une personne morale. Instruction de droit commun : 3 mois (2 mois pour une maison individuelle), majorée en périmètre ABF.",
+   "resp": [
+    "Architecte"
+   ],
+   "decl": "Promesse signée et pré-instruction faite",
+   "dep": [
+    "C01",
+    "C02",
+    "B08"
+   ],
+   "crit": "Critique",
+   "risque": "Dossier incomplet : le délai ne court qu'à partir de la complétude.",
+   "docs": [
+    "Cerfa PC",
+    "Plans PC1 à PC8",
+    "Attestation RE2020 / thermique"
+   ],
+   "typo": [
+    "SURELEVATION",
+    "PROMO_LEGERE",
+    "DIV_IMMEUBLE",
+    "RENO_LOURDE"
+   ],
+   "duree": 90,
+   "conseil": "Déposer en main propre contre récépissé et suivre la complétude au jour près."
+  },
+  {
+   "id": "C07",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Déposer le permis d'aménager",
+   "desc": "Lotissement avec voies ou espaces communs. Recours à un architecte ou paysagiste-concepteur au-delà de 2 500 m² de terrain (art. L441-4 C. urb.). Instruction : 3 mois.",
+   "resp": [
+    "Géomètre",
+    "Architecte"
+   ],
+   "decl": "Promesse signée",
+   "dep": [
+    "C04",
+    "C01"
+   ],
+   "crit": "Critique",
+   "risque": "Lots vendus sans autorisation de lotir : nullité.",
+   "docs": [
+    "Cerfa PA",
+    "Programme et plans des travaux",
+    "Règlement du lotissement"
+   ],
+   "typo": [
+    "PA"
+   ],
+   "duree": 90
+  },
+  {
+   "id": "C08",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Déposer la déclaration préalable de travaux",
+   "desc": "Modification de façade, menuiseries, toiture, création de surface limitée, changement de destination sans modification des structures porteuses ou de la façade. Instruction : 1 mois.",
+   "resp": [
+    "Architecte",
+    "MDB"
+   ],
+   "decl": "Programme figé",
+   "dep": [
+    "C01",
+    "B08"
+   ],
+   "crit": "Important",
+   "risque": "Travaux non autorisés relevés par le notaire de l'acquéreur.",
+   "docs": [
+    "Cerfa DP"
+   ],
+   "typo": [
+    "RENO_LOURDE",
+    "DIV_IMMEUBLE"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "C09",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Autorisation préalable de division de logement",
+   "desc": "Dans les zones délimitées par la commune ou l'EPCI (art. L111-6-1-1 et s. CCH), la création de plusieurs logements dans un immeuble existant est soumise à autorisation.",
+   "resp": [
+    "MDB",
+    "Architecte"
+   ],
+   "decl": "Programme figé",
+   "dep": [
+    "A16",
+    "B08"
+   ],
+   "crit": "Critique",
+   "risque": "Sanctions et logements non conformes ; impossibilité de louer ou de vendre sereinement.",
+   "docs": [
+    "Autorisation de division"
+   ],
+   "typo": [
+    "DIV_IMMEUBLE"
+   ],
+   "duree": 30,
+   "verif": true
+  },
+  {
+   "id": "C10",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Suivre l'instruction",
+   "desc": "Récépissé, demande de pièces dans le premier mois (3 mois pour répondre), notification de majoration de délai, consultation des services, échanges avec l'instructeur.",
+   "resp": [
+    "Architecte",
+    "MDB"
+   ],
+   "decl": "Dépôt effectué",
+   "dep": [
+    "C05",
+    "C06",
+    "C07",
+    "C08",
+    "C09"
+   ],
+   "crit": "Important",
+   "risque": "Demande de pièces non traitée : rejet tacite ou décision d'opposition.",
+   "docs": [
+    "Récépissé de dépôt",
+    "Courriers de l'instructeur"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "C11",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Obtenir l'autorisation",
+   "desc": "Arrêté de permis ou de non-opposition, ou décision tacite (demander le certificat attestant l'absence d'opposition). Analyser les prescriptions et les participations exigées.",
+   "resp": [
+    "Mairie",
+    "MDB"
+   ],
+   "decl": "Fin d'instruction",
+   "dep": [
+    "C10"
+   ],
+   "crit": "Critique",
+   "risque": "Prescription non lue (ABF, participation, réserve) qui modifie le bilan.",
+   "docs": [
+    "Arrêté",
+    "Certificat de non-opposition"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 1
+  },
+  {
+   "id": "C12",
+   "cat": "C",
+   "sc": "Affichage réglementaire",
+   "nom": "Afficher sur le terrain et faire constater",
+   "desc": "Panneau conforme (art. R424-15 C. urb.) visible depuis la voie publique, affiché en continu ; trois constats de commissaire de justice (début, milieu, fin des 2 mois).",
+   "resp": [
+    "MDB",
+    "Commissaire de justice"
+   ],
+   "decl": "Le jour de la notification",
+   "dep": [
+    "C11"
+   ],
+   "crit": "Critique",
+   "risque": "Affichage incomplet ou interrompu : le délai de recours des tiers ne court pas.",
+   "docs": [
+    "Constats d'affichage",
+    "Photos datées"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 1
+  },
+  {
+   "id": "C13",
+   "cat": "C",
+   "sc": "Affichage réglementaire",
+   "nom": "Transmission au contrôle de légalité",
+   "desc": "Vérifier la date de transmission en préfecture (départ du délai de déféré préfectoral) et l'affichage en mairie.",
+   "resp": [
+    "Mairie",
+    "MDB"
+   ],
+   "decl": "Après l'arrêté",
+   "dep": [
+    "C11"
+   ],
+   "crit": "Important",
+   "risque": "Déféré préfectoral non anticipé.",
+   "docs": [
+    "Accusé de transmission"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "C14",
+   "cat": "C",
+   "sc": "Recours des tiers",
+   "nom": "Délai de recours et de retrait",
+   "desc": "Recours des tiers : 2 mois à compter du premier jour d'affichage continu. Retrait par l'administration : 3 mois à compter de la décision (art. L424-5 C. urb.). Prévoir le délai de notification du recours (art. R600-1).",
+   "resp": [
+    "MDB",
+    "Avocat"
+   ],
+   "decl": "Premier jour d'affichage",
+   "dep": [
+    "C12"
+   ],
+   "crit": "Critique",
+   "risque": "Démarrage des travaux ou acte signé avant purge : risque d'annulation du permis.",
+   "docs": [],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 92
+  },
+  {
+   "id": "C15",
+   "cat": "C",
+   "sc": "Recours des tiers",
+   "nom": "Gérer un recours éventuel",
+   "desc": "Analyse de recevabilité (intérêt à agir, notification R600-1), recours gracieux ou contentieux, permis modificatif de régularisation, transaction à enregistrer (art. L600-8), prorogation de la promesse.",
+   "resp": [
+    "Avocat",
+    "MDB"
+   ],
+   "decl": "Si recours",
+   "dep": [
+    "C14"
+   ],
+   "crit": "Important",
+   "risque": "Promesse caduque pendant le contentieux ; transaction non enregistrée réputée sans cause.",
+   "docs": [
+    "Recours",
+    "Mémoire en défense",
+    "Protocole transactionnel"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 1,
+   "conseil": "Marquer cette tâche « Terminé » sans action s'il n'y a pas de recours ; sinon elle bloque la purge."
+  },
+  {
+   "id": "C16",
+   "cat": "C",
+   "sc": "Attestations non-recours",
+   "nom": "Obtenir les attestations de non-recours et de non-retrait",
+   "desc": "Attestation de la mairie (absence de recours gracieux et de retrait) et du greffe du tribunal administratif (absence de recours contentieux).",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "Fin des délais",
+   "dep": [
+    "C14",
+    "C15",
+    "C13"
+   ],
+   "crit": "Critique",
+   "risque": "Notaire et banque refusent de signer ou débloquer sans ces attestations.",
+   "docs": [
+    "Attestation mairie",
+    "Attestation greffe TA"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "C17",
+   "cat": "C",
+   "sc": "Attestations non-recours",
+   "nom": "Déposer la DAACT",
+   "desc": "Déclaration attestant l'achèvement et la conformité des travaux, avec les attestations exigées (thermique/RE2020, accessibilité, parasismique selon le cas).",
+   "resp": [
+    "Architecte",
+    "MDB"
+   ],
+   "decl": "Réception des travaux",
+   "dep": [
+    "E13"
+   ],
+   "crit": "Important",
+   "risque": "Pas de point de départ du récolement ; acquéreurs et notaires réclament la conformité.",
+   "docs": [
+    "DAACT",
+    "Attestations"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "C18",
+   "cat": "C",
+   "sc": "Attestations non-recours",
+   "nom": "Obtenir l'attestation de non-contestation de conformité",
+   "desc": "Délai de récolement : 3 mois, porté à 5 mois dans certains cas (périmètres protégés notamment).",
+   "resp": [
+    "Mairie",
+    "MDB"
+   ],
+   "decl": "DAACT déposée",
+   "dep": [
+    "C17"
+   ],
+   "crit": "Important",
+   "risque": "Contestation de conformité découverte au moment des ventes.",
+   "docs": [
+    "Attestation de non-contestation"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 90
+  },
+  {
+   "id": "C19",
+   "cat": "C",
+   "sc": "DP / PC / PA",
+   "nom": "Vente anticipée des lots de lotissement",
+   "desc": "Autorisation de vendre avant achèvement des travaux de finition, avec garantie d'achèvement ; ou DAACT des travaux du lotissement avant toute vente.",
+   "resp": [
+    "MDB",
+    "Notaire",
+    "Banque"
+   ],
+   "decl": "Avant les premières ventes",
+   "dep": [
+    "C16"
+   ],
+   "crit": "Important",
+   "risque": "Ventes de lots impossibles avant achèvement des VRD.",
+   "docs": [
+    "Arrêté de vente anticipée",
+    "Garantie d'achèvement"
+   ],
+   "typo": [
+    "PA"
+   ],
+   "duree": 30,
+   "verif": true
+  },
+  {
+   "id": "D01",
+   "cat": "D",
+   "sc": "Business plan",
+   "nom": "Business plan détaillé",
+   "desc": "Bilan complet, trésorerie mensuelle, TRI, sensibilités (prix de sortie -10 %, travaux +15 %, délai +6 mois).",
+   "resp": [
+    "MDB",
+    "Expert-comptable"
+   ],
+   "decl": "Offre acceptée",
+   "dep": [
+    "A03",
+    "A19"
+   ],
+   "crit": "Critique",
+   "risque": "Dossier bancaire faible ; aucune visibilité sur le point mort.",
+   "docs": [
+    "Bilan prévisionnel",
+    "Plan de trésorerie"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "D02",
+   "cat": "D",
+   "sc": "Business plan",
+   "nom": "Besoin de fonds propres et trésorerie",
+   "desc": "Fonds propres exigés, frais non financés (notaire, honoraires, études, taxes, intérêts intercalaires), décalages de TVA.",
+   "resp": [
+    "MDB",
+    "Expert-comptable"
+   ],
+   "decl": "Business plan établi",
+   "dep": [
+    "D01"
+   ],
+   "crit": "Critique",
+   "risque": "Tension de trésorerie en phase chantier ; incapacité à payer la taxe d'aménagement.",
+   "docs": [
+    "Tableau des emplois et ressources"
+   ],
+   "typo": [],
+   "duree": 2
+  },
+  {
+   "id": "D03",
+   "cat": "D",
+   "sc": "Dossier bancaire",
+   "nom": "Constituer et déposer le dossier bancaire",
+   "desc": "Présentation de l'opérateur et des opérations passées, liasses, promesse signée, études, devis, bilan, stratégie de sortie, pré-commercialisation éventuelle. Consulter plusieurs banques.",
+   "resp": [
+    "MDB",
+    "Courtier"
+   ],
+   "decl": "Promesse signée",
+   "dep": [
+    "D01",
+    "B08"
+   ],
+   "crit": "Critique",
+   "risque": "Refus tardif qui fait échouer la CS de financement.",
+   "docs": [
+    "Dossier bancaire",
+    "Références d'opérations"
+   ],
+   "typo": [
+    "BANQUE"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "D04",
+   "cat": "D",
+   "sc": "Dossier bancaire",
+   "nom": "Obtenir l'offre de prêt",
+   "desc": "Négocier : montant, durée (souvent 18 à 24 mois in fine), taux, frais, fonds propres minimum, quote-part de remboursement par lot vendu (prix de mainlevée), pré-commercialisation exigée, garanties.",
+   "resp": [
+    "Banque",
+    "MDB"
+   ],
+   "decl": "Dossier déposé",
+   "dep": [
+    "D03"
+   ],
+   "crit": "Critique",
+   "risque": "Prix de mainlevée trop élevé qui empêche de vendre les premiers lots.",
+   "docs": [
+    "Offre de prêt",
+    "Accord de principe"
+   ],
+   "typo": [
+    "BANQUE"
+   ],
+   "duree": 45,
+   "conseil": "Négocier les prix de mainlevée par lot à ce stade : après la signature, la banque n'a plus de raison de céder."
+  },
+  {
+   "id": "D05",
+   "cat": "D",
+   "sc": "Garantie bancaire",
+   "nom": "Lever les conditions préalables au déblocage",
+   "desc": "Garanties signées, cautions, comptes courants bloqués, attestations d'assurance, fonds propres justifiés.",
+   "resp": [
+    "Banque",
+    "MDB"
+   ],
+   "decl": "Offre acceptée",
+   "dep": [
+    "D04",
+    "B13"
+   ],
+   "crit": "Critique",
+   "risque": "Fonds non débloqués le jour de l'acte.",
+   "docs": [
+    "Check-list de déblocage banque"
+   ],
+   "typo": [
+    "BANQUE"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "D06",
+   "cat": "D",
+   "sc": "Garantie bancaire",
+   "nom": "Garantie financière d'achèvement",
+   "desc": "Garantie extrinsèque d'achèvement obligatoire pour vendre en VEFA ; conditions de l'établissement garant (pré-commercialisation, fonds propres).",
+   "resp": [
+    "Banque",
+    "Assureur"
+   ],
+   "decl": "Avant la première VEFA",
+   "dep": [
+    "D04"
+   ],
+   "crit": "Critique",
+   "risque": "Contrats de VEFA impossibles à signer.",
+   "docs": [
+    "Attestation GFA"
+   ],
+   "typo": [
+    "PROMO_LEGERE"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "D07",
+   "cat": "D",
+   "sc": "Garantie bancaire",
+   "nom": "Caution pour l'indemnité d'immobilisation",
+   "desc": "Caution bancaire remplaçant le séquestre de l'indemnité d'immobilisation.",
+   "resp": [
+    "Banque"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A08"
+   ],
+   "crit": "Confort",
+   "risque": "Trésorerie immobilisée inutilement.",
+   "docs": [
+    "Acte de caution"
+   ],
+   "typo": [
+    "BANQUE"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "D08",
+   "cat": "D",
+   "sc": "Business plan",
+   "nom": "Mobiliser les fonds propres et justifier leur origine",
+   "desc": "Appel des apports, virement sur le compte de la société, justificatifs d'origine des fonds exigés par le notaire et la banque au titre de la lutte anti-blanchiment.",
+   "resp": [
+    "MDB",
+    "Associés"
+   ],
+   "decl": "Avant l'acte",
+   "dep": [
+    "D02"
+   ],
+   "crit": "Critique",
+   "risque": "Acte repoussé faute de justificatifs d'origine des fonds.",
+   "docs": [
+    "Relevés",
+    "Justificatifs d'origine des fonds"
+   ],
+   "typo": [],
+   "duree": 10
+  },
+  {
+   "id": "D09",
+   "cat": "D",
+   "sc": "Appels de fonds",
+   "nom": "Déblocages sur situations de travaux",
+   "desc": "Situations visées par le MOE, factures, demande de déblocage, suivi du reste à débloquer.",
+   "resp": [
+    "MDB",
+    "Architecte",
+    "Banque"
+   ],
+   "decl": "Chaque situation mensuelle",
+   "dep": [
+    "E09"
+   ],
+   "crit": "Important",
+   "risque": "Retards de paiement des entreprises et arrêt de chantier.",
+   "docs": [
+    "Situations de travaux",
+    "Demandes de déblocage"
+   ],
+   "typo": [
+    "BANQUE",
+    "@TRAVAUX"
+   ],
+   "duree": 1
+  },
+  {
+   "id": "D10",
+   "cat": "D",
+   "sc": "Suivi intérêts",
+   "nom": "Suivre intérêts, échéance et prorogation",
+   "desc": "Intérêts intercalaires, commissions de non-utilisation, date d'échéance ; demande de prorogation anticipée si les ventes glissent.",
+   "resp": [
+    "MDB",
+    "Banque"
+   ],
+   "decl": "Mensuel dès le déblocage",
+   "dep": [
+    "B19"
+   ],
+   "crit": "Critique",
+   "risque": "Prêt échu non remboursé : exigibilité, pénalités, dégradation de la relation bancaire.",
+   "docs": [
+    "Tableau de suivi du prêt"
+   ],
+   "typo": [
+    "BANQUE"
+   ],
+   "duree": 1,
+   "conseil": "Demander la prorogation au moins 3 mois avant l'échéance, avec un point de commercialisation chiffré."
+  },
+  {
+   "id": "D11",
+   "cat": "D",
+   "sc": "Mainlevées",
+   "nom": "Mainlevées partielles à chaque vente",
+   "desc": "Accord de mainlevée de la banque pour chaque lot vendu, versement de la quote-part prévue, transmission au notaire de l'acquéreur.",
+   "resp": [
+    "Banque",
+    "Notaire"
+   ],
+   "decl": "Chaque vente",
+   "dep": [
+    "H05"
+   ],
+   "crit": "Important",
+   "risque": "Vente retardée faute d'accord de mainlevée à la date de signature.",
+   "docs": [
+    "Accords de mainlevée"
+   ],
+   "typo": [
+    "BANQUE"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "D13",
+   "cat": "D",
+   "sc": "Business plan",
+   "nom": "Structurer le crédit vendeur ou la vente à terme",
+   "desc": "Échéancier, intérêts, garanties (privilège du vendeur, action résolutoire, caution), exigibilité anticipée en cas de revente, traitement fiscal.",
+   "resp": [
+    "Notaire",
+    "Avocat"
+   ],
+   "decl": "Négociation",
+   "dep": [
+    "A07"
+   ],
+   "crit": "Critique",
+   "risque": "Revente des lots impossible tant que le privilège n'est pas levé.",
+   "docs": [
+    "Clauses de crédit vendeur"
+   ],
+   "typo": [
+    "VENTE_TERME"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "E01",
+   "cat": "E",
+   "sc": "Diagnostics",
+   "nom": "Repérages amiante et plomb avant travaux",
+   "desc": "Repérage amiante avant travaux (code du travail, art. R4412-97 et s.) et constat plomb avant travaux sur les zones concernées. Obligatoire avant tous travaux sur un immeuble dont le permis est antérieur au 1er juillet 1997, même pour un simple rafraîchissement.",
+   "resp": [
+    "Diagnostiqueur",
+    "MDB"
+   ],
+   "decl": "Avant la consultation des entreprises",
+   "dep": [
+    "B19"
+   ],
+   "crit": "Critique",
+   "risque": "Arrêt de chantier, désamiantage non budgété, responsabilité pénale du donneur d'ordre.",
+   "docs": [
+    "Rapport RAT",
+    "Constat plomb"
+   ],
+   "typo": [
+    "@TRAVAUX",
+    "TRAVAUX_LEGERS"
+   ],
+   "duree": 10,
+   "conseil": "Le faire sous condition suspensive avant l'acte quand le vendeur l'autorise : le désamiantage peut coûter plus que prévu."
+  },
+  {
+   "id": "E02",
+   "cat": "E",
+   "sc": "Diagnostics",
+   "nom": "Diagnostics de vente par lot",
+   "desc": "DDT complet par lot après travaux : DPE, mesurage Carrez ou surface habitable, amiante, électricité, gaz, ERP. Audit énergétique pour les maisons ou immeubles en monopropriété concernés par les classes visées par la loi.",
+   "resp": [
+    "Diagnostiqueur"
+   ],
+   "decl": "Fin de chantier",
+   "dep": [
+    "E13"
+   ],
+   "crit": "Important",
+   "risque": "Compromis non signables ; nullité ou diminution de prix pour erreur de surface.",
+   "docs": [
+    "DDT par lot"
+   ],
+   "typo": [],
+   "duree": 10,
+   "verif": true
+  },
+  {
+   "id": "E03",
+   "cat": "E",
+   "sc": "Diagnostics",
+   "nom": "Étude thermique et DPE projeté",
+   "desc": "Fixer la classe énergétique cible par lot et les travaux nécessaires (isolation, ventilation, chauffage).",
+   "resp": [
+    "BET",
+    "Architecte"
+   ],
+   "decl": "Conception",
+   "dep": [
+    "C01"
+   ],
+   "crit": "Important",
+   "risque": "Lots classés F ou G : décote et impossibilité de mise en location selon le calendrier de la loi Climat et Résilience.",
+   "docs": [
+    "Étude thermique",
+    "DPE projeté"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 15
+  },
+  {
+   "id": "E04",
+   "cat": "E",
+   "sc": "Maîtrise d'œuvre",
+   "nom": "Contractualiser la maîtrise d'œuvre",
+   "desc": "Contrat d'architecte ou de MOE (missions, honoraires, calendrier), attestation d'assurance décennale et RC professionnelle vérifiées.",
+   "resp": [
+    "MDB",
+    "Architecte"
+   ],
+   "decl": "Avant le dépôt du permis",
+   "dep": [
+    "C01"
+   ],
+   "crit": "Critique",
+   "risque": "Mission mal définie, pas de suivi de chantier ; MOE non assuré.",
+   "docs": [
+    "Contrat de MOE",
+    "Attestations d'assurance"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "E05",
+   "cat": "E",
+   "sc": "Maîtrise d'œuvre",
+   "nom": "BET, contrôleur technique et coordonnateur SPS",
+   "desc": "BET structure et fluides, contrôle technique (souvent exigé par l'assureur DO), coordonnateur SPS obligatoire dès que plusieurs entreprises interviennent.",
+   "resp": [
+    "MDB",
+    "BET"
+   ],
+   "decl": "Conception",
+   "dep": [
+    "E04"
+   ],
+   "crit": "Important",
+   "risque": "Refus ou surprime de l'assureur DO ; infraction au code du travail.",
+   "docs": [
+    "Contrats BET, CT, CSPS"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "E06",
+   "cat": "E",
+   "sc": "Assurances chantier",
+   "nom": "Souscrire DO, CNR et TRC",
+   "desc": "Dommages-ouvrage obligatoire avant l'ouverture du chantier (art. L242-1 C. assur.), constructeur non réalisateur, tous risques chantier, RC maître d'ouvrage.",
+   "resp": [
+    "MDB",
+    "Assureur"
+   ],
+   "decl": "Avant l'ouverture du chantier",
+   "dep": [
+    "E05",
+    "E08"
+   ],
+   "crit": "Critique",
+   "risque": "Ventes décotées ou bloquées, responsabilité personnelle du dirigeant, aucune préfinancement des désordres.",
+   "docs": [
+    "Attestation DO",
+    "Attestation CNR",
+    "Police TRC"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 20,
+   "conseil": "Lancer la DO dès la consultation des entreprises : l'assureur demande le contrôle technique et les attestations de toutes les entreprises."
+  },
+  {
+   "id": "E07",
+   "cat": "E",
+   "sc": "Consultations entreprises",
+   "nom": "Consulter les entreprises",
+   "desc": "DCE par lot, au moins trois offres comparables, vérification des attestations (décennale nominative et à jour, vigilance URSSAF au-delà de 5 000 € HT, Kbis).",
+   "resp": [
+    "Architecte",
+    "MDB"
+   ],
+   "decl": "Permis obtenu ou en cours",
+   "dep": [
+    "E04",
+    "E01"
+   ],
+   "crit": "Critique",
+   "risque": "Entreprise non assurée ou travail dissimulé : solidarité financière du donneur d'ordre.",
+   "docs": [
+    "DCE",
+    "Tableau comparatif",
+    "Attestations"
+   ],
+   "typo": [
+    "@TRAVAUX",
+    "TRAVAUX_LEGERS"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "E08",
+   "cat": "E",
+   "sc": "Marchés travaux",
+   "nom": "Signer les marchés de travaux",
+   "desc": "Prix global et forfaitaire, délais et pénalités, retenue de garantie de 5 % ou caution, planning contractuel, sous-traitance déclarée, CCAP.",
+   "resp": [
+    "MDB",
+    "Entreprises",
+    "Architecte"
+   ],
+   "decl": "Consultation terminée",
+   "dep": [
+    "E07"
+   ],
+   "crit": "Critique",
+   "risque": "Dérive de prix sans base contractuelle ; aucun levier sur les retards.",
+   "docs": [
+    "Marchés signés",
+    "CCAP"
+   ],
+   "typo": [
+    "@TRAVAUX",
+    "TRAVAUX_LEGERS"
+   ],
+   "duree": 10
+  },
+  {
+   "id": "E09",
+   "cat": "E",
+   "sc": "Planning chantier",
+   "nom": "Ouvrir le chantier",
+   "desc": "Déclaration d'ouverture de chantier, DT-DICT, panneau, installation de chantier, constat avant travaux des avoisinants (référé préventif si mitoyenneté sensible).",
+   "resp": [
+    "MDB",
+    "Architecte"
+   ],
+   "decl": "Autorisations purgées et DO souscrite",
+   "dep": [
+    "E06",
+    "E08",
+    "C16"
+   ],
+   "crit": "Critique",
+   "risque": "Travaux démarrés avant purge du permis ; litiges avec les voisins sans constat initial.",
+   "docs": [
+    "DOC",
+    "Constat avant travaux"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "E10",
+   "cat": "E",
+   "sc": "Planning chantier",
+   "nom": "Piloter le chantier",
+   "desc": "Planning détaillé, réunions hebdomadaires, comptes rendus diffusés, suivi des avancements, gestion des interfaces entre lots.",
+   "resp": [
+    "Architecte",
+    "MDB",
+    "Entreprises"
+   ],
+   "decl": "Ouverture du chantier",
+   "dep": [
+    "E09"
+   ],
+   "crit": "Important",
+   "risque": "Glissement de planning qui consomme la marge par les intérêts.",
+   "docs": [
+    "Planning",
+    "Comptes rendus de chantier"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 180
+  },
+  {
+   "id": "E11",
+   "cat": "E",
+   "sc": "Planning chantier",
+   "nom": "Suivre budget et avenants",
+   "desc": "Tableau budget/engagé/payé par lot, avenants signés avant exécution, consommation de la provision pour aléas.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Mensuel",
+   "dep": [
+    "E08"
+   ],
+   "crit": "Critique",
+   "risque": "Travaux supplémentaires réclamés en fin de chantier sans accord écrit.",
+   "docs": [
+    "Tableau de suivi budgétaire",
+    "Avenants"
+   ],
+   "typo": [
+    "@TRAVAUX",
+    "TRAVAUX_LEGERS"
+   ],
+   "duree": 1
+  },
+  {
+   "id": "E12",
+   "cat": "E",
+   "sc": "Planning chantier",
+   "nom": "Raccordements et compteurs individuels",
+   "desc": "Demandes de raccordement et de compteurs individuels (électricité, eau, gaz, fibre), Consuel pour les installations nouvelles.",
+   "resp": [
+    "MDB",
+    "Entreprises"
+   ],
+   "decl": "Dès l'autorisation obtenue",
+   "dep": [
+    "C11"
+   ],
+   "crit": "Critique",
+   "risque": "Lots terminés mais non livrables, ventes repoussées de plusieurs mois.",
+   "docs": [
+    "Demandes de raccordement",
+    "Attestation Consuel"
+   ],
+   "typo": [
+    "@LOTS",
+    "@FONCIER"
+   ],
+   "duree": 120
+  },
+  {
+   "id": "E13",
+   "cat": "E",
+   "sc": "Réception travaux",
+   "nom": "OPR et réception des travaux",
+   "desc": "Opérations préalables, PV de réception avec ou sans réserves : point de départ des garanties de parfait achèvement, biennale et décennale.",
+   "resp": [
+    "MDB",
+    "Architecte",
+    "Entreprises"
+   ],
+   "decl": "Fin des travaux",
+   "dep": [
+    "E10"
+   ],
+   "crit": "Critique",
+   "risque": "Réception tacite mal datée ; réserves non consignées perdues.",
+   "docs": [
+    "PV de réception",
+    "Liste des réserves"
+   ],
+   "typo": [
+    "@TRAVAUX",
+    "TRAVAUX_LEGERS"
+   ],
+   "duree": 5
+  },
+  {
+   "id": "E14",
+   "cat": "E",
+   "sc": "Levée réserves",
+   "nom": "Lever les réserves",
+   "desc": "Suivi des réserves par entreprise, relances, PV de levée, libération de la retenue de garantie.",
+   "resp": [
+    "Architecte",
+    "Entreprises"
+   ],
+   "decl": "Après réception",
+   "dep": [
+    "E13"
+   ],
+   "crit": "Important",
+   "risque": "Acquéreurs livrés avec réserves ouvertes ; retenue libérée trop tôt.",
+   "docs": [
+    "PV de levée des réserves"
+   ],
+   "typo": [
+    "@TRAVAUX",
+    "TRAVAUX_LEGERS"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "E15",
+   "cat": "E",
+   "sc": "Levée réserves",
+   "nom": "Dossier des ouvrages exécutés",
+   "desc": "DOE, DIUO, notices, attestations Consuel et gaz, attestation thermique de fin de travaux, factures des entreprises.",
+   "resp": [
+    "Architecte",
+    "Entreprises"
+   ],
+   "decl": "Après réception",
+   "dep": [
+    "E13"
+   ],
+   "crit": "Important",
+   "risque": "Impossibilité de répondre aux acquéreurs et à l'assureur DO.",
+   "docs": [
+    "DOE",
+    "DIUO"
+   ],
+   "typo": [
+    "@TRAVAUX"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "F01",
+   "cat": "F",
+   "sc": "TVA applicable",
+   "nom": "Assujettissement et options TVA",
+   "desc": "Numéro de TVA, régime d'imposition, option éventuelle pour la TVA sur les ventes d'immeubles anciens, déduction de la TVA sur travaux selon le régime retenu.",
+   "resp": [
+    "Expert-comptable"
+   ],
+   "decl": "Constitution de la structure",
+   "dep": [
+    "A25"
+   ],
+   "crit": "Critique",
+   "risque": "TVA sur travaux non récupérée ou à reverser.",
+   "docs": [
+    "Note TVA",
+    "Option éventuelle"
+   ],
+   "typo": [],
+   "duree": 5,
+   "verif": true
+  },
+  {
+   "id": "F02",
+   "cat": "F",
+   "sc": "TVA marge / TVA immobilière",
+   "nom": "Valider l'assiette de TVA de chaque vente",
+   "desc": "Contrôler si les travaux font du bien un immeuble neuf au sens fiscal (art. 257 CGI : surélévation, atteinte majoritaire aux fondations, façades, structure, ou rénovation des deux tiers du second œuvre), ce qui impose la TVA sur le prix total.",
+   "resp": [
+    "Expert-comptable",
+    "Avocat"
+   ],
+   "decl": "Programme travaux figé",
+   "dep": [
+    "A25",
+    "C01"
+   ],
+   "crit": "Critique",
+   "risque": "Requalification en production d'immeuble neuf : TVA sur prix total et obligations de constructeur.",
+   "docs": [
+    "Note fiscale validée"
+   ],
+   "typo": [
+    "@TRAVAUX",
+    "TAB",
+    "DIV_PARCELLAIRE",
+    "PA"
+   ],
+   "duree": 10,
+   "verif": true
+  },
+  {
+   "id": "F03",
+   "cat": "F",
+   "sc": "Régime fiscal opération",
+   "nom": "Suivre l'échéance de l'engagement fiscal",
+   "desc": "Échéancier de l'engagement de revendre (5 ans) ou de construire (4 ans) à compter de l'acte ; justificatifs à conserver ; prorogation éventuelle à demander avant l'échéance.",
+   "resp": [
+    "Expert-comptable",
+    "MDB"
+   ],
+   "decl": "Acte signé",
+   "dep": [
+    "B19"
+   ],
+   "crit": "Critique",
+   "risque": "Rappel des droits de mutation avec intérêts et majoration.",
+   "docs": [
+    "Échéancier fiscal"
+   ],
+   "typo": [],
+   "duree": 1,
+   "verif": true
+  },
+  {
+   "id": "F04",
+   "cat": "F",
+   "sc": "Comptabilité opération",
+   "nom": "Comptabilité analytique de l'opération",
+   "desc": "Suivi en stock, coûts incorporables (prix, frais, travaux, frais financiers selon option), affectation des honoraires.",
+   "resp": [
+    "Expert-comptable"
+   ],
+   "decl": "Acte signé",
+   "dep": [
+    "B19"
+   ],
+   "crit": "Important",
+   "risque": "Marge réelle inconnue ; erreur de valorisation du stock.",
+   "docs": [
+    "Plan analytique"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "F05",
+   "cat": "F",
+   "sc": "Comptabilité opération",
+   "nom": "Rapprochement budget et réel mensuel",
+   "desc": "Comparer chaque mois le bilan prévisionnel et les dépenses réelles ; mettre à jour la marge attendue.",
+   "resp": [
+    "MDB",
+    "Expert-comptable"
+   ],
+   "decl": "Mensuel",
+   "dep": [
+    "F04"
+   ],
+   "crit": "Important",
+   "risque": "Dérive découverte en fin d'opération.",
+   "docs": [
+    "Tableau budget/réel"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "F06",
+   "cat": "F",
+   "sc": "Déclarations fiscales",
+   "nom": "Déclarations de TVA",
+   "desc": "Déclarations périodiques, TVA collectée sur les ventes selon le régime de chaque lot, cohérence avec les actes.",
+   "resp": [
+    "Expert-comptable"
+   ],
+   "decl": "Périodique",
+   "dep": [
+    "F01"
+   ],
+   "crit": "Important",
+   "risque": "Pénalités et intérêts de retard.",
+   "docs": [
+    "Déclarations CA3"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "F07",
+   "cat": "F",
+   "sc": "Déclarations fiscales",
+   "nom": "Déclarations foncières",
+   "desc": "Déclaration d'occupation et déclarations liées aux travaux sur l'espace « Gérer mes biens immobiliers », taxe foncière, exposition aux taxes sur les logements vacants.",
+   "resp": [
+    "MDB",
+    "Expert-comptable"
+   ],
+   "decl": "Acte signé, puis annuel",
+   "dep": [
+    "B19"
+   ],
+   "crit": "Important",
+   "risque": "Amendes déclaratives ; taxe foncière ou taxe sur la vacance non provisionnées.",
+   "docs": [
+    "Accusés de déclaration"
+   ],
+   "typo": [],
+   "duree": 5,
+   "verif": true
+  },
+  {
+   "id": "F08",
+   "cat": "F",
+   "sc": "Déclarations fiscales",
+   "nom": "CFE et liasse fiscale",
+   "desc": "Cotisation foncière des entreprises, liasse annuelle, comptes annuels.",
+   "resp": [
+    "Expert-comptable"
+   ],
+   "decl": "Annuel",
+   "dep": [
+    "F04"
+   ],
+   "crit": "Confort",
+   "risque": "Pénalités de retard.",
+   "docs": [
+    "Liasse fiscale"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "F09",
+   "cat": "F",
+   "sc": "Taxes urbanisme",
+   "nom": "Taxe d'aménagement et archéologie préventive",
+   "desc": "Estimation dès le dépôt, provision en trésorerie. Déclaration sur « Gérer mes biens immobiliers » dans les 90 jours suivant l'achèvement ; paiement après achèvement selon le montant.",
+   "resp": [
+    "MDB",
+    "Expert-comptable"
+   ],
+   "decl": "Autorisation obtenue",
+   "dep": [
+    "C11"
+   ],
+   "crit": "Critique",
+   "risque": "Montant significatif oublié du bilan et appelé en fin d'opération.",
+   "docs": [
+    "Simulation de taxe",
+    "Avis d'imposition"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 1,
+   "verif": true
+  },
+  {
+   "id": "F10",
+   "cat": "F",
+   "sc": "Taxe aménager / PFAC",
+   "nom": "PFAC et participations d'urbanisme",
+   "desc": "Participation pour le financement de l'assainissement collectif (art. L1331-7 CSP), PUP, participations ZAC, coûts d'extension de réseaux.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Autorisation obtenue",
+   "dep": [
+    "C11"
+   ],
+   "crit": "Important",
+   "risque": "Participations non budgétées, exigibles au raccordement.",
+   "docs": [
+    "Délibération PFAC",
+    "Convention PUP"
+   ],
+   "typo": [
+    "@URBA"
+   ],
+   "duree": 1
+  },
+  {
+   "id": "F11",
+   "cat": "F",
+   "sc": "Taxes urbanisme",
+   "nom": "Taxes sur terrains devenus constructibles",
+   "desc": "Vérifier l'application des taxes sur la cession de terrains nus rendus constructibles (art. 1529 et 1605 nonies CGI) et leur répartition entre vendeur et acquéreur.",
+   "resp": [
+    "Notaire"
+   ],
+   "decl": "Avant la promesse",
+   "dep": [
+    "A26"
+   ],
+   "crit": "Confort",
+   "risque": "Taxe mise à la charge de l'opération par une clause mal négociée.",
+   "docs": [],
+   "typo": [
+    "@FONCIER"
+   ],
+   "duree": 2,
+   "verif": true
+  },
+  {
+   "id": "F12",
+   "cat": "F",
+   "sc": "Déclarations fiscales",
+   "nom": "Clôture fiscale de l'opération",
+   "desc": "Justificatifs du respect de l'engagement, dernières déclarations de TVA, régularisations éventuelles.",
+   "resp": [
+    "Expert-comptable"
+   ],
+   "decl": "Dernière vente",
+   "dep": [
+    "H10",
+    "F03"
+   ],
+   "crit": "Important",
+   "risque": "Contrôle fiscal sans pièces justificatives.",
+   "docs": [
+    "Dossier de clôture fiscale"
+   ],
+   "typo": [],
+   "duree": 15
+  },
+  {
+   "id": "G01",
+   "cat": "G",
+   "sc": "Stratégie prix",
+   "nom": "Grille de prix par lot",
+   "desc": "Prix par lot (surface, étage, exposition, extérieur, DPE, stationnement), prix plancher compatible avec les prix de mainlevée bancaires, marge de négociation.",
+   "resp": [
+    "MDB",
+    "Agent immobilier"
+   ],
+   "decl": "Programme figé",
+   "dep": [
+    "A04",
+    "C01"
+   ],
+   "crit": "Critique",
+   "risque": "Lots les plus faciles vendus trop vite et trop bas ; derniers lots invendables.",
+   "docs": [
+    "Grille de prix"
+   ],
+   "typo": [],
+   "duree": 3,
+   "conseil": "Commencer par vendre les lots les moins liquides tant que l'opération a de l'attrait."
+  },
+  {
+   "id": "G02",
+   "cat": "G",
+   "sc": "Mise en copropriété",
+   "nom": "Plans, mesurages et tantièmes",
+   "desc": "Mission géomètre : plans des lots, mesurage Carrez ou Boutin, calcul des tantièmes de charges générales et spéciales.",
+   "resp": [
+    "Géomètre"
+   ],
+   "decl": "Plans figés",
+   "dep": [
+    "C11"
+   ],
+   "crit": "Critique",
+   "risque": "Erreur de surface supérieure à 5 % : action en diminution du prix.",
+   "docs": [
+    "Plans de lots",
+    "Certificats de mesurage",
+    "Tableau des tantièmes"
+   ],
+   "typo": [
+    "@LOTS"
+   ],
+   "duree": 20
+  },
+  {
+   "id": "G03",
+   "cat": "G",
+   "sc": "Mise en copropriété",
+   "nom": "Diagnostic technique global avant mise en copropriété",
+   "desc": "DTG obligatoire pour la mise en copropriété d'un immeuble construit depuis plus de 10 ans (art. L731-4 CCH).",
+   "resp": [
+    "Diagnostiqueur"
+   ],
+   "decl": "Avant l'EDD-RCP",
+   "dep": [
+    "B19"
+   ],
+   "crit": "Critique",
+   "risque": "Mise en copropriété irrégulière ; acquéreurs mal informés.",
+   "docs": [
+    "DTG"
+   ],
+   "typo": [
+    "COPRO",
+    "DIV_IMMEUBLE"
+   ],
+   "duree": 20
+  },
+  {
+   "id": "G04",
+   "cat": "G",
+   "sc": "RCP + EDD",
+   "nom": "Rédiger l'état descriptif de division et le règlement de copropriété",
+   "desc": "Lots, parties communes et privatives, charges, destination de l'immeuble, usages (activité, location meublée de courte durée), servitudes internes, lots annexes.",
+   "resp": [
+    "Notaire",
+    "Géomètre"
+   ],
+   "decl": "Mesurages faits",
+   "dep": [
+    "G02",
+    "G03"
+   ],
+   "crit": "Critique",
+   "risque": "Règlement mal rédigé : contentieux entre copropriétaires et dévalorisation des lots.",
+   "docs": [
+    "EDD-RCP"
+   ],
+   "typo": [
+    "@LOTS"
+   ],
+   "duree": 20
+  },
+  {
+   "id": "G05",
+   "cat": "G",
+   "sc": "RCP + EDD",
+   "nom": "Publier et organiser la copropriété",
+   "desc": "Publication de l'EDD-RCP, immatriculation au registre des copropriétés, syndic désigné, compte bancaire séparé, assurance de l'immeuble, budget prévisionnel.",
+   "resp": [
+    "Notaire",
+    "Syndic",
+    "MDB"
+   ],
+   "decl": "EDD-RCP signé",
+   "dep": [
+    "G04"
+   ],
+   "crit": "Critique",
+   "risque": "Premières ventes impossibles avant publication.",
+   "docs": [
+    "EDD-RCP publié",
+    "Contrat de syndic",
+    "Attestation d'assurance"
+   ],
+   "typo": [
+    "@LOTS"
+   ],
+   "duree": 45
+  },
+  {
+   "id": "G06",
+   "cat": "G",
+   "sc": "Mise en copropriété",
+   "nom": "Règlement de lotissement et ASL",
+   "desc": "Règlement ou cahier des charges, statuts de l'association syndicale libre pour les voies et réseaux communs, rétrocession éventuelle à la commune.",
+   "resp": [
+    "Notaire",
+    "Géomètre"
+   ],
+   "decl": "Autorisation obtenue",
+   "dep": [
+    "C11"
+   ],
+   "crit": "Important",
+   "risque": "Voies communes sans gestionnaire ; acquéreurs et banques réticents.",
+   "docs": [
+    "Statuts d'ASL",
+    "Cahier des charges"
+   ],
+   "typo": [
+    "PA",
+    "DIV_PARCELLAIRE"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "G07",
+   "cat": "G",
+   "sc": "Mandats",
+   "nom": "Mandats de commercialisation",
+   "desc": "Choix vente directe ou mandats (exclusif ou simple), honoraires et charge, durée, carte professionnelle de l'agent. Le MDB qui vend ses propres biens n'a pas besoin de carte T.",
+   "resp": [
+    "MDB",
+    "Agent immobilier"
+   ],
+   "decl": "Grille de prix arrêtée",
+   "dep": [
+    "G01"
+   ],
+   "crit": "Important",
+   "risque": "Double commission, mandat nul (registre, mentions obligatoires).",
+   "docs": [
+    "Mandats signés"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "G08",
+   "cat": "G",
+   "sc": "Marketing",
+   "nom": "Plan marketing",
+   "desc": "Photos professionnelles, home staging, visites virtuelles, plaquette, annonces, plan de diffusion.",
+   "resp": [
+    "MDB",
+    "Agent immobilier"
+   ],
+   "decl": "Avant le lancement",
+   "dep": [
+    "G07"
+   ],
+   "crit": "Confort",
+   "risque": "Délai d'écoulement allongé.",
+   "docs": [
+    "Plaquette",
+    "Annonces"
+   ],
+   "typo": [],
+   "duree": 10
+  },
+  {
+   "id": "G09",
+   "cat": "G",
+   "sc": "Marketing",
+   "nom": "Dossier acquéreur type",
+   "desc": "Data room par lot : titre, diagnostics, autorisations et attestations de non-recours, PV de réception, attestation DO, plans, EDD-RCP, budget de copropriété, garanties.",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "Avant le lancement",
+   "dep": [
+    "G01"
+   ],
+   "crit": "Critique",
+   "risque": "Compromis retardés par les demandes de pièces du notaire de l'acquéreur.",
+   "docs": [
+    "Dossier acquéreur"
+   ],
+   "typo": [],
+   "duree": 10,
+   "conseil": "Un dossier complet dès la première visite raccourcit le délai compromis-acte de plusieurs semaines."
+  },
+  {
+   "id": "G10",
+   "cat": "G",
+   "sc": "Pré-commercialisation",
+   "nom": "Pré-commercialisation et réservations",
+   "desc": "Contrats de réservation en VEFA (dépôt de garantie plafonné selon le délai de réalisation, art. R261-28 CCH), ou lettres d'intention en vente classique.",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "Permis obtenu",
+   "dep": [
+    "G01",
+    "C11"
+   ],
+   "crit": "Important",
+   "risque": "Pré-commercialisation exigée par la banque ou le garant non atteinte.",
+   "docs": [
+    "Contrats de réservation"
+   ],
+   "typo": [
+    "PROMO_LEGERE",
+    "@LOTS"
+   ],
+   "duree": 60
+  },
+  {
+   "id": "G11",
+   "cat": "G",
+   "sc": "Pré-commercialisation",
+   "nom": "Lancer la commercialisation",
+   "desc": "Mise en ligne, premières visites, suivi hebdomadaire des contacts, visites et offres.",
+   "resp": [
+    "MDB",
+    "Agent immobilier"
+   ],
+   "decl": "Grille et dossier prêts",
+   "dep": [
+    "G08",
+    "G09"
+   ],
+   "crit": "Important",
+   "risque": "Lancement tardif qui allonge le portage.",
+   "docs": [
+    "Tableau de suivi commercial"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "G12",
+   "cat": "G",
+   "sc": "Compromis acquéreurs",
+   "nom": "Signer les avant-contrats acquéreurs",
+   "desc": "Qualification financière préalable de l'acquéreur, avant-contrat, notification du délai de rétractation de 10 jours à l'acquéreur non professionnel d'un logement (art. L271-1 CCH).",
+   "resp": [
+    "MDB",
+    "Notaire",
+    "Agent immobilier"
+   ],
+   "decl": "Offre acceptée",
+   "dep": [
+    "G11",
+    "G05",
+    "G14"
+   ],
+   "crit": "Critique",
+   "risque": "Notification irrégulière : le délai de rétractation ne court pas.",
+   "docs": [
+    "Avant-contrats",
+    "Preuves de notification"
+   ],
+   "typo": [],
+   "duree": 30
+  },
+  {
+   "id": "G13",
+   "cat": "G",
+   "sc": "Compromis acquéreurs",
+   "nom": "Vente en bloc à un investisseur",
+   "desc": "Data room investisseur, lettre d'intention, négociation de la décote de bloc, purge des droits des locataires en cas de vente de plus de cinq logements.",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "Stratégie bloc retenue",
+   "dep": [
+    "G09"
+   ],
+   "crit": "Important",
+   "risque": "Décote non anticipée dans le bilan ; droits des locataires ignorés.",
+   "docs": [
+    "Data room",
+    "Lettre d'intention"
+   ],
+   "typo": [
+    "VENTE_BLOC"
+   ],
+   "duree": 45,
+   "verif": true
+  },
+  {
+   "id": "G14",
+   "cat": "G",
+   "sc": "Compromis acquéreurs",
+   "nom": "Droits des locataires en place",
+   "desc": "Première vente après division : offre de vente au locataire (art. 10 loi du 31 décembre 1975). Congé pour vente à l'échéance du bail (art. 15 loi du 6 juillet 1989), avec les restrictions applicables après acquisition d'un logement occupé.",
+   "resp": [
+    "Avocat",
+    "Notaire"
+   ],
+   "decl": "Avant toute vente d'un lot occupé",
+   "dep": [
+    "A11"
+   ],
+   "crit": "Critique",
+   "risque": "Vente annulable ; congé nul qui prolonge le bail de plusieurs années.",
+   "docs": [
+    "Offres de vente notifiées",
+    "Congés"
+   ],
+   "typo": [
+    "OCCUPE"
+   ],
+   "duree": 60,
+   "verif": true,
+   "conseil": "Faire valider chaque congé par un avocat : délais, forme et protection des locataires âgés à faibles ressources sont la première source de nullité."
+  },
+  {
+   "id": "H01",
+   "cat": "H",
+   "sc": "Financements acquéreurs",
+   "nom": "Suivre le financement des acquéreurs",
+   "desc": "Attestation du courtier ou de la banque, dépôt des demandes dans le délai prévu, offres de prêt, délai de la CS de prêt (au moins un mois), relances.",
+   "resp": [
+    "MDB",
+    "Courtier"
+   ],
+   "decl": "Avant-contrat signé",
+   "dep": [
+    "G12"
+   ],
+   "crit": "Critique",
+   "risque": "Ventes qui tombent tardivement ; lot immobilisé plusieurs mois.",
+   "docs": [
+    "Attestations de financement",
+    "Offres de prêt"
+   ],
+   "typo": [],
+   "duree": 45
+  },
+  {
+   "id": "H02",
+   "cat": "H",
+   "sc": "Suivi notarial",
+   "nom": "Suivi notarial des ventes",
+   "desc": "Pièces au notaire de l'acquéreur, pré-état daté et état daté, purge du DPU sur les lots (copropriété de moins de 10 ans), questionnaire, projet d'acte.",
+   "resp": [
+    "Notaire",
+    "Syndic"
+   ],
+   "decl": "Avant-contrat signé",
+   "dep": [
+    "G12"
+   ],
+   "crit": "Important",
+   "risque": "Retard d'acte de plusieurs semaines faute de pièce.",
+   "docs": [
+    "Pré-état daté",
+    "État daté",
+    "DIA"
+   ],
+   "typo": [],
+   "duree": 60
+  },
+  {
+   "id": "H03",
+   "cat": "H",
+   "sc": "Appels de fonds",
+   "nom": "Appels de fonds VEFA",
+   "desc": "Appels selon l'échelonnement plafonné (art. R261-14 CCH : 35 % à l'achèvement des fondations, 70 % au hors d'eau, 95 % à l'achèvement), attestations de l'architecte.",
+   "resp": [
+    "MDB",
+    "Notaire",
+    "Architecte"
+   ],
+   "decl": "Chaque stade",
+   "dep": [
+    "G12",
+    "E10"
+   ],
+   "crit": "Important",
+   "risque": "Appel non conforme : contestation et retard de paiement.",
+   "docs": [
+    "Attestations d'avancement",
+    "Appels de fonds"
+   ],
+   "typo": [
+    "PROMO_LEGERE"
+   ],
+   "duree": 1
+  },
+  {
+   "id": "H05",
+   "cat": "H",
+   "sc": "Réitérations",
+   "nom": "Signer les premiers actes de vente",
+   "desc": "Réitération par acte authentique, encaissement, mainlevée, remise des clés si le lot est livré.",
+   "resp": [
+    "Notaire",
+    "MDB"
+   ],
+   "decl": "CS acquéreur levées",
+   "dep": [
+    "H01",
+    "H02",
+    "E02",
+    "E14"
+   ],
+   "crit": "Critique",
+   "risque": "Acte reporté pour pièce manquante ou mainlevée absente.",
+   "docs": [
+    "Actes de vente"
+   ],
+   "typo": [],
+   "duree": 1
+  },
+  {
+   "id": "H06",
+   "cat": "H",
+   "sc": "Réitérations",
+   "nom": "Suivre une vente à terme",
+   "desc": "Échéancier, indexation, garanties, relances, levée du privilège au paiement complet.",
+   "resp": [
+    "MDB",
+    "Notaire"
+   ],
+   "decl": "Vente à terme signée",
+   "dep": [
+    "H05"
+   ],
+   "crit": "Important",
+   "risque": "Impayés sans mise en œuvre rapide de la clause résolutoire.",
+   "docs": [
+    "Échéancier"
+   ],
+   "typo": [
+    "VENTE_TERME"
+   ],
+   "duree": 1
+  },
+  {
+   "id": "H08",
+   "cat": "H",
+   "sc": "Livraison lots",
+   "nom": "Livrer les lots",
+   "desc": "Remise des clés, PV de livraison, réserves de l'acquéreur, notices et garanties remises, relevés de compteurs. En VEFA : dénonciation des vices apparents dans le mois suivant la prise de possession.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Acte signé",
+   "dep": [
+    "H05"
+   ],
+   "crit": "Important",
+   "risque": "Réserves non documentées qui se transforment en litige.",
+   "docs": [
+    "PV de livraison"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "H09",
+   "cat": "H",
+   "sc": "Livraison lots",
+   "nom": "Service après-vente et garanties",
+   "desc": "Registre des réclamations, transmission aux entreprises (parfait achèvement), déclaration DO si nécessaire.",
+   "resp": [
+    "MDB",
+    "Entreprises",
+    "Assureur"
+   ],
+   "decl": "Après livraison",
+   "dep": [
+    "H08"
+   ],
+   "crit": "Important",
+   "risque": "Mise en cause directe du MDB par les acquéreurs.",
+   "docs": [
+    "Registre SAV"
+   ],
+   "typo": [],
+   "duree": 365
+  },
+  {
+   "id": "H10",
+   "cat": "H",
+   "sc": "Réitérations",
+   "nom": "Vendre le dernier lot",
+   "desc": "Dernier acte de vente signé ; fin de la commercialisation.",
+   "resp": [
+    "Notaire",
+    "MDB"
+   ],
+   "decl": "Dernier compromis",
+   "dep": [
+    "H05"
+   ],
+   "crit": "Critique",
+   "risque": "Dernier lot qui porte toute la marge et le reste à rembourser.",
+   "docs": [
+    "Dernier acte de vente"
+   ],
+   "typo": [],
+   "duree": 120
+  },
+  {
+   "id": "I01",
+   "cat": "I",
+   "sc": "Calcul marge réelle",
+   "nom": "Bilan de clôture réel",
+   "desc": "Marge réelle, TRI, durée de portage, écarts par poste avec le prévisionnel et causes.",
+   "resp": [
+    "MDB",
+    "Expert-comptable"
+   ],
+   "decl": "Dernière vente",
+   "dep": [
+    "H10",
+    "F05"
+   ],
+   "crit": "Critique",
+   "risque": "Leçons perdues ; distribution sur une marge erronée.",
+   "docs": [
+    "Bilan de clôture"
+   ],
+   "typo": [],
+   "duree": 15
+  },
+  {
+   "id": "I02",
+   "cat": "I",
+   "sc": "Clôture bancaire",
+   "nom": "Clôture bancaire",
+   "desc": "Mainlevée générale des inscriptions, libération des cautions personnelles et nantissements, clôture des comptes dédiés.",
+   "resp": [
+    "Banque",
+    "Notaire",
+    "MDB"
+   ],
+   "decl": "Crédit remboursé",
+   "dep": [
+    "I03"
+   ],
+   "crit": "Important",
+   "risque": "Caution personnelle toujours active après remboursement.",
+   "docs": [
+    "Mainlevée générale",
+    "Lettre de libération de caution"
+   ],
+   "typo": [
+    "BANQUE"
+   ],
+   "duree": 30
+  },
+  {
+   "id": "I03",
+   "cat": "I",
+   "sc": "Remboursement financements",
+   "nom": "Rembourser les financements",
+   "desc": "Solde du prêt bancaire, remboursement des comptes courants et des financements participatifs ou obligataires selon leur rang.",
+   "resp": [
+    "MDB",
+    "Banque"
+   ],
+   "decl": "Ventes suffisantes ou échéance du financement",
+   "dep": [
+    "D11",
+    "H05"
+   ],
+   "crit": "Critique",
+   "risque": "Intérêts qui continuent de courir ; ordre de remboursement contraire aux conventions.",
+   "docs": [
+    "Attestation de remboursement"
+   ],
+   "typo": [],
+   "duree": 10
+  },
+  {
+   "id": "I04",
+   "cat": "I",
+   "sc": "Distribution résultats",
+   "nom": "Distribuer le résultat",
+   "desc": "Approbation des comptes, affectation du résultat, dividendes, fiscalité de la distribution, répartition prévue au pacte.",
+   "resp": [
+    "Expert-comptable",
+    "Associés"
+   ],
+   "decl": "Comptes arrêtés",
+   "dep": [
+    "I01",
+    "I03"
+   ],
+   "crit": "Important",
+   "risque": "Distribution avant constitution d'une réserve pour SAV ou litiges.",
+   "docs": [
+    "PV d'AG",
+    "Tableau de répartition"
+   ],
+   "typo": [
+    "ASSOCIES",
+    "STRUCT_SOC"
+   ],
+   "duree": 30,
+   "conseil": "Conserver une réserve pour la garantie de parfait achèvement et les litiges en cours avant de distribuer."
+  },
+  {
+   "id": "I05",
+   "cat": "I",
+   "sc": "Distribution résultats",
+   "nom": "Sort de la société dédiée",
+   "desc": "Dissolution-liquidation ou mise en sommeil. Les associés d'une SCCV restent tenus des dettes sociales : mesurer l'exposition aux garanties décennales avant de liquider.",
+   "resp": [
+    "Avocat",
+    "Expert-comptable"
+   ],
+   "decl": "Après distribution",
+   "dep": [
+    "I04"
+   ],
+   "crit": "Confort",
+   "risque": "Liquidation prématurée alors que des recours en garantie restent possibles.",
+   "docs": [
+    "Décision de dissolution"
+   ],
+   "typo": [
+    "STRUCT_SOC"
+   ],
+   "duree": 60
+  },
+  {
+   "id": "I06",
+   "cat": "I",
+   "sc": "Archivage dossier",
+   "nom": "Archiver le dossier",
+   "desc": "Archivage structuré au moins 10 ans (décennale) : actes, autorisations, marchés, PV de réception, DO, DOE, attestations, correspondances, pièces fiscales.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Dernière vente",
+   "dep": [
+    "H10"
+   ],
+   "crit": "Important",
+   "risque": "Impossibilité de se défendre dans un litige décennal ou un contrôle.",
+   "docs": [
+    "Index d'archivage"
+   ],
+   "typo": [],
+   "duree": 10
+  },
+  {
+   "id": "I07",
+   "cat": "I",
+   "sc": "Retour d'expérience opération",
+   "nom": "Retour d'expérience",
+   "desc": "Écarts de délais et de coûts, partenaires à conserver ou écarter, points de la checklist à enrichir pour les opérations suivantes.",
+   "resp": [
+    "MDB",
+    "Associés"
+   ],
+   "decl": "Bilan de clôture fait",
+   "dep": [
+    "I01"
+   ],
+   "crit": "Confort",
+   "risque": "Les mêmes erreurs se répètent.",
+   "docs": [
+    "Note de retour d'expérience"
+   ],
+   "typo": [],
+   "duree": 5
+  },
+  {
+   "id": "I08",
+   "cat": "I",
+   "sc": "Retour d'expérience opération",
+   "nom": "Clôturer l'opération",
+   "desc": "Toutes les tâches terminées et validées ; opération archivée.",
+   "resp": [
+    "MDB"
+   ],
+   "decl": "Toutes tâches validées",
+   "dep": [
+    "I01",
+    "I02",
+    "I03",
+    "I04",
+    "I05",
+    "I06",
+    "I07",
+    "F12"
+   ],
+   "crit": "Critique",
+   "risque": "Opération jamais formellement close.",
+   "docs": [],
+   "typo": [],
+   "duree": 1
+  }
+ ]
 }

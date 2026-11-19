@@ -4,9 +4,10 @@ COPRO_EXISTANTE,Bien situé en copropriété existante,Nature de l'opération,mu
 DIV_PARCELLAIRE,Division parcellaire,Nature de l'opération,multiple,24
 TAB,Détachement de terrain à bâtir,Nature de l'opération,multiple,23
 DIV_IMMEUBLE,Division d'immeuble,Nature de l'opération,multiple,41
-COPRO,Mise en copropriété,Nature de l'opération,multiple,31
+COPRO,Mise en copropriété,Nature de l'opération,multiple,6
 RENO_LOURDE,Rénovation lourde,Nature de l'opération,multiple,33
 SURELEVATION,Surélévation,Nature de l'opération,multiple,34
+TRAVAUX_LEGERS,Travaux de rafraîchissement (sans structure),Nature de l'opération,multiple,6
 PROMO_LEGERE,Promotion immobilière légère,Nature de l'opération,multiple,45
 PA,Opération avec permis d'aménager,Nature de l'opération,multiple,25
 STRUCT_SOC,Portage via SCI / SCCV / SAS dédiée,Structuration,multiple,5
