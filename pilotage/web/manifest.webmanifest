@@ -1,0 +1,16 @@
+{
+  "name": "Pilotage MDB",
+  "short_name": "Pilotage MDB",
+  "description": "Suivi des opérations de marchand de biens : checklist, jalons, alertes.",
+  "lang": "fr",
+  "start_url": "/pilotage",
+  "scope": "/pilotage",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f9",
+  "theme_color": "#23508f",
+  "icons": [
+    {"src": "/pilotage/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/pilotage/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

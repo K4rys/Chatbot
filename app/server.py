@@ -13,12 +13,14 @@ from pydantic import BaseModel
 
 from . import config
 from .agent import Assistant, LimiteurDebit
+from .pilotage_routes import router as pilotage_router
 
 STATIC = config.ROOT / "app" / "static"
 
 app = FastAPI(title="Assistant SGO IMMO", docs_url=None, redoc_url=None)
 app.state.assistant = Assistant()
 app.state.limiteur = LimiteurDebit(config.MESSAGES_PAR_HEURE_PAR_IP)
+app.include_router(pilotage_router)  # accès en ligne au pilotage MDB (comptes, données, appli mobile)
 
 
 class ChatRequest(BaseModel):
@@ -33,12 +35,6 @@ def _sse(evt: dict) -> str:
 @app.get("/")
 async def index():
     return FileResponse(STATIC / "index.html")
-
-
-@app.get("/pilotage")
-async def pilotage():
-    """Checklist de pilotage d'opération MDB (application autonome, générée par pilotage/build.py)."""
-    return FileResponse(config.ROOT / "pilotage" / "index.html")
 
 
 @app.get("/api/config")

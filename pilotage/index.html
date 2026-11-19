@@ -235,9 +235,9 @@ table.pf { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 8
 .pf td { padding: 9px 6px; border-bottom: 1px solid var(--line); text-align: center; vertical-align: middle; font-variant-numeric: tabular-nums; }
 .pf tr:last-child td { border-bottom: 0; }
 .pf tfoot td { border-top: 1px solid var(--line-strong); font-weight: 600; color: var(--fg-2); }
-.pf .opn { all: unset; cursor: pointer; font-weight: 600; display: block; }
-.pf .opn:hover { color: var(--accent); text-decoration: underline; }
-.pf .opn:focus-visible { outline: 2px solid var(--accent); }
+.pf .opn, .pf-card .opn { all: unset; cursor: pointer; font-weight: 600; display: block; }
+.pf .opn:hover, .pf-card .opn:hover { color: var(--accent); text-decoration: underline; }
+.pf .opn:focus-visible, .pf-card .opn:focus-visible { outline: 2px solid var(--accent); }
 .pf .sub { font-size: 12px; color: var(--fg-3); display: block; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pf .pct { display: grid; gap: 4px; min-width: 120px; text-align: left; }
 .pf .pct b { font-family: var(--f-display); font-size: 17px; }
@@ -255,6 +255,21 @@ table.pf { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 8
 .pf .ms-next span { display: block; font-family: var(--f-mono); font-size: 12px; color: var(--fg-3); }
 .legend-cats { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--fg-2); }
 .legend-cats b { font-family: var(--f-mono); color: var(--accent); font-weight: 500; margin-right: 4px; }
+
+
+.pf-cards { display: none; gap: 10px; }
+.pf-card { border: 1px solid var(--line); border-radius: var(--r); padding: 12px; display: grid; gap: 8px; background: var(--surface); }
+.pf-card .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.pf-card .cats { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 4px; }
+.pf-card .cats .cell { min-width: 0; width: 100%; height: 34px; display: grid; grid-template-rows: auto auto; font-size: 12px; line-height: 1.1; }
+.pf-card .cats .cell small { font-size: 9.5px; color: var(--fg-3); }
+.pf-card .foot { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12.5px; color: var(--fg-2); align-items: center; }
+@media (max-width: 700px) {
+  .pf-wrap { display: none; } .pf-cards { display: grid; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi { padding: 10px 12px; } .kpi .v { font-size: 24px; }
+  .top-row { padding-block: 8px; } .brand h1 { font-size: 17px; }
+}
 
 /* Panneau de détail */
 .scrim { position: fixed; inset: 0; background: rgba(10, 15, 25, .35); z-index: 40; }
@@ -289,6 +304,7 @@ footer.foot { font-size: 12px; color: var(--fg-3); padding-block: 0 30px; max-wi
       <label class="lbl" for="opSelect" style="position:absolute;left:-9999px">Opération</label>
       <select class="inp" id="opSelect" aria-label="Opération"></select>
       <span class="save-state" id="saveState"></span>
+      <span id="userBox"></span>
     </div>
   </div>
   <nav class="tabs wrap" id="tabs" aria-label="Vues">
@@ -328,13 +344,28 @@ const uid = () => "op" + Math.random().toString(36).slice(2, 9);
 const $ = s => document.querySelector(s);
 
 /* ---------- état ---------- */
+/* Deux modes : page autonome (données dans ce navigateur) ou accès en ligne (window.PILOTAGE_SERVEUR) :
+   données sur le serveur par utilisateur, copie locale pour le hors-ligne, fusion tâche par tâche. */
+const SERVEUR = !!window.PILOTAGE_SERVEUR;
+const MOI = window.PILOTAGE_UTILISATEUR || null;
+const KEY_DATA = KEY + (MOI ? ":" + MOI.login.toLowerCase() : "");
+const SRV = { version: 0, pending: false, statut: SERVEUR ? "chargement" : "local", timer: null, enCours: false };
 let storageOk = true;
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) return JSON.parse(raw); } catch (e) { storageOk = false; }
+  try { const raw = localStorage.getItem(KEY_DATA); if (raw) return JSON.parse(raw); } catch (e) { storageOk = false; }
   return null;
 }
+function ecrireLocal() {
+  try {
+    localStorage.setItem(KEY_DATA, JSON.stringify(S));
+    if (SERVEUR) localStorage.setItem(KEY_DATA + ":meta", JSON.stringify({ version: SRV.version, pending: SRV.pending }));
+    storageOk = true;
+  } catch (e) { storageOk = false; }
+}
 function save() {
-  try { localStorage.setItem(KEY, JSON.stringify(S)); storageOk = true; } catch (e) { storageOk = false; }
+  if (S.current && S.ops[S.current]) S.ops[S.current].modif = Date.now();
+  if (SERVEUR) { SRV.pending = true; SRV.statut = "attente"; planifierEnvoi(300); }
+  ecrireLocal();
   renderSaveState();
 }
 function exampleOp() {
@@ -355,29 +386,101 @@ function exampleOp() {
 function blankOp(nom) {
   return { id: uid(), nom: nom || "Nouvelle opération", adresse: "", debut: todayIso(), typos: ["ACHAT_REVENTE","BANQUE","LIBRE","VENTE_UNITE"], taches: {}, custom: [] };
 }
+
+/* Fusion de deux états : union des opérations, champs de l'opération modifiée le plus récemment,
+   et pour chaque tâche la version modifiée le plus récemment (horodatage ts). */
+function fusion(a, b) {
+  if (!a) return b; if (!b) return a;
+  const sup = Object.assign({}, b.supprimes || {}, a.supprimes || {});
+  const out = { ops: {}, current: a.current || b.current, supprimes: sup };
+  new Set([...Object.keys(a.ops || {}), ...Object.keys(b.ops || {})]).forEach(id => {
+    const x = (a.ops || {})[id], y = (b.ops || {})[id];
+    let o;
+    if (!x || !y) o = JSON.parse(JSON.stringify(x || y));
+    else {
+      const [rec, anc] = (x.modif || 0) >= (y.modif || 0) ? [x, y] : [y, x];
+      o = JSON.parse(JSON.stringify(rec));
+      Object.entries(anc.taches || {}).forEach(([tid, t]) => { const r = o.taches[tid]; if (!r || (t.ts || 0) > (r.ts || 0)) o.taches[tid] = t; });
+      const ids = new Set((o.custom || []).map(t => t.id));
+      (anc.custom || []).forEach(t => { if (!ids.has(t.id)) o.custom = (o.custom || []).concat([t]); });
+    }
+    if (sup[id] && sup[id] > (o.modif || 0)) return;
+    out.ops[id] = o;
+  });
+  if (!out.ops[out.current]) out.current = Object.keys(out.ops)[0] || null;
+  return out;
+}
+/* Opérations issues du Drive : ajoute les nouvelles, met à jour les autres sans écraser
+   les tâches modifiées à la main (marquées « manuel ») ni les typologies retouchées. */
+let SYNC_MAJ = "";
+function appliquerSync(liste) {
+  let change = false;
+  (liste || []).forEach(src => {
+    const o = JSON.parse(JSON.stringify(src));
+    if ((o.maj || "") > SYNC_MAJ) SYNC_MAJ = o.maj;
+    (o.remplace || []).forEach(old => { if (S.ops[old]) { if (!S.ops[o.id]) S.ops[o.id] = Object.assign(S.ops[old], { id: o.id }); delete S.ops[old]; change = true; } if (S.current === old) S.current = o.id; });
+    if ((S.supprimes || {})[o.id]) return;
+    const cur = S.ops[o.id];
+    if (!cur) { o.syncMaj = o.maj; S.ops[o.id] = o; if (!S.current) S.current = o.id; change = true; return; }
+    if ((o.maj || "") <= (cur.syncMaj || "")) return;
+    ["nom", "adresse", "etape", "dossier", "source", "debut", "replan"].forEach(k => { if (o[k] !== undefined) cur[k] = o[k]; });
+    if (!cur.typosManuel) cur.typos = o.typos;
+    Object.entries(o.taches || {}).forEach(([id, t]) => { if (!(cur.taches[id] && cur.taches[id].manuel)) cur.taches[id] = t; });
+    const ids = new Set((cur.custom || []).map(t => t.id));
+    (o.custom || []).forEach(t => { if (!ids.has(t.id)) cur.custom = (cur.custom || []).concat([t]); else cur.custom = cur.custom.map(x => x.id === t.id && x.drive ? t : x); });
+    cur.syncMaj = o.maj; cur.modif = Date.now(); change = true;
+  });
+  if (!S.current || !S.ops[S.current]) S.current = Object.keys(S.ops)[0] || null;
+  return change;
+}
 let S = load();
 if (!S || !S.ops || !Object.keys(S.ops).length) {
-  if (SEED_OPS.length) S = { ops: {}, current: null };
+  if (SEED_OPS.length || SERVEUR) S = { ops: {}, current: null };
   else { const ex = exampleOp(); S = { ops: { [ex.id]: ex }, current: ex.id }; }
 }
-/* Synchronisation Drive : ajoute les opérations nouvelles, met à jour les autres sans écraser
-   les tâches modifiées à la main (marquées « manuel ») ni les typologies retouchées. */
-SEED_OPS.forEach(src => {
-  const o = JSON.parse(JSON.stringify(src));
-  (o.remplace || []).forEach(old => { if (S.ops[old] && !S.ops[o.id]) { S.ops[o.id] = Object.assign(S.ops[old], { id: o.id }); } delete S.ops[old]; if (S.current === old) S.current = o.id; });
-  const cur = S.ops[o.id];
-  if (!cur) { o.syncMaj = o.maj; S.ops[o.id] = o; if (!S.current) S.current = o.id; return; }
-  if ((o.maj || "") <= (cur.syncMaj || "")) return;
-  ["nom", "adresse", "etape", "dossier", "source", "debut", "replan"].forEach(k => { if (o[k] !== undefined) cur[k] = o[k]; });
-  if (!cur.typosManuel) cur.typos = o.typos;
-  Object.entries(o.taches || {}).forEach(([id, t]) => { if (!(cur.taches[id] && cur.taches[id].manuel)) cur.taches[id] = t; });
-  const ids = new Set((cur.custom || []).map(t => t.id));
-  (o.custom || []).forEach(t => { if (!ids.has(t.id)) cur.custom = (cur.custom || []).concat([t]); else cur.custom = cur.custom.map(x => x.id === t.id && x.drive ? t : x); });
-  cur.syncMaj = o.maj;
-});
-if (!S.current || !S.ops[S.current]) S.current = Object.keys(S.ops)[0];
-const SYNC_MAJ = SEED_OPS.reduce((m, o) => (o.maj || "") > m ? o.maj : m, "");
-if (SEED_OPS.length) { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { storageOk = false; } }
+if (SERVEUR) { try { const m = JSON.parse(localStorage.getItem(KEY_DATA + ":meta") || "{}"); SRV.version = m.version || 0; SRV.pending = !!m.pending; } catch (e) { /* sans copie locale */ } }
+if (appliquerSync(SEED_OPS)) ecrireLocal();
+
+/* ---------- échanges avec le serveur ---------- */
+const API = "/api/pilotage";
+function versConnexion() { location.replace("/pilotage/connexion"); }
+function planifierEnvoi(ms) { clearTimeout(SRV.timer); SRV.timer = setTimeout(envoyer, ms); }
+async function envoyer() {
+  if (!SERVEUR || !SRV.pending || SRV.enCours) return;
+  if (!navigator.onLine) { SRV.statut = "hors-ligne"; renderSaveState(); return; }
+  SRV.enCours = true;
+  try {
+    const r = await fetch(API + "/etat", { method: "PUT", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Pilotage": "1" }, body: JSON.stringify({ etat: S, version: SRV.version }) });
+    if (r.status === 401) return versConnexion();
+    if (r.status === 409) { SRV.enCours = false; await charger(true); return; }
+    if (!r.ok) throw new Error(String(r.status));
+    SRV.version = (await r.json()).version; SRV.pending = false; SRV.statut = "ok";
+  } catch (e) { SRV.statut = navigator.onLine ? "erreur" : "hors-ligne"; planifierEnvoi(30000); }
+  SRV.enCours = false; ecrireLocal(); renderSaveState();
+}
+async function charger(apresConflit) {
+  try {
+    const r = await fetch(API + "/etat", { credentials: "same-origin", cache: "no-store" });
+    if (r.status === 401) return versConnexion();
+    if (!r.ok) throw new Error(String(r.status));
+    const d = await r.json();
+    const local = S;
+    if (d.etat) S = SRV.pending ? fusion(local, d.etat) : d.etat;
+    else if (!Object.keys(S.ops).length && !(d.operations_sync || []).length) { const ex = exampleOp(); S = { ops: { [ex.id]: ex }, current: ex.id }; SRV.pending = true; }
+    else SRV.pending = true;
+    S.ops = S.ops || {};
+    SRV.version = d.version;
+    if (appliquerSync(d.operations_sync)) SRV.pending = true;
+    SRV.statut = SRV.pending ? "attente" : "ok";
+    ecrireLocal(); refresh();
+    if (SRV.pending) envoyer();
+  } catch (e) { SRV.statut = "hors-ligne"; renderSaveState(); if (!apresConflit) setTimeout(() => charger(false), 30000); }
+}
+if (SERVEUR) {
+  window.addEventListener("online", () => { if (SRV.pending) envoyer(); else charger(false); });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !SRV.pending) charger(false); });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/pilotage/sw.js", { scope: "/pilotage" }).catch(() => {});
+}
 const UI = { view: "operations", showClosed: false, f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false, toValidate: false }, open: null };
 const op = () => S.ops[S.current];
 
@@ -452,11 +555,21 @@ function compute(o) {
 
 /* ---------- rendu commun ---------- */
 let C = null;
-function refresh() { C = compute(op()); render(); }
+function refresh() {
+  if (!op()) {
+    if (SERVEUR && SRV.statut === "chargement") { renderSaveState(); $("#view").innerHTML = `<div class="empty">Chargement de vos opérations…</div>`; return; }
+    const n = blankOp(); S.ops[n.id] = n; S.current = n.id; save();
+  }
+  C = compute(op()); render();
+}
 function renderSaveState() {
   const el = $("#saveState");
-  el.textContent = storageOk ? "Enregistré dans ce navigateur" : "Stockage indisponible : exportez votre sauvegarde";
-  el.classList.toggle("bad", !storageOk);
+  const msgs = { chargement: "Chargement…", ok: "Synchronisé", attente: "Enregistrement…", "hors-ligne": "Hors ligne : modifications gardées sur l'appareil", erreur: "Erreur de synchronisation, nouvel essai bientôt" };
+  el.textContent = SERVEUR ? msgs[SRV.statut] : (storageOk ? "Enregistré dans ce navigateur" : "Stockage indisponible : exportez votre sauvegarde");
+  el.classList.toggle("bad", SERVEUR ? ["hors-ligne", "erreur"].includes(SRV.statut) : !storageOk);
+  const ub = $("#userBox");
+  if (ub && MOI && !ub.dataset.ok) { ub.dataset.ok = "1"; ub.innerHTML = `<span class="hint">${esc(MOI.login)}</span> <button class="btn small" id="logout">Déconnexion</button>`;
+    $("#logout").addEventListener("click", async () => { if (SRV.pending) await envoyer(); await fetch(API + "/deconnexion", { method: "POST", credentials: "same-origin" }).catch(() => {}); versConnexion(); }); }
 }
 function renderHeader() {
   const o = op();
@@ -506,6 +619,21 @@ function opStats(o) {
     toValidate: c.active.filter(t => i[t.id].statut === "Terminé" && !i[t.id].s.valide).length,
     fin: i.I08 ? toIso(i.I08.cible) : null };
 }
+function carteOp(x) {
+  const j = x.nextJ;
+  const cats = REF.categories.map(k => {
+    const v = x.cats[k.code];
+    if (!v.total) return `<span class="cell zero"><small>${k.code}</small>·</span>`;
+    const cls = v.open === 0 ? "zero" : v.hot ? "hot" : "";
+    return `<button class="cell ${cls} ${v.blk ? "blk" : ""}" data-goop="${x.o.id}" data-gocat="${k.code}" aria-label="${esc(k.nom)} : ${v.open} ouverte(s)"><small>${k.code}</small>${v.open === 0 ? "✓" : v.open}</button>`;
+  }).join("");
+  return `<div class="pf-card">
+    <div class="top"><button class="opn" data-goop="${x.o.id}">${esc(x.o.nom)}</button><b class="mono">${x.pct} %</b></div>
+    <div class="progress"><i style="width:${x.pct}%"></i></div>
+    <div class="cats">${cats}</div>
+    <div class="foot">${x.etape ? `<span class="pill ${x.out ? "muted" : "info"}">${esc(x.etape)}</span>` : ""}${x.blocked ? `<span class="pill crit">${x.blocked} bloquée(s)</span>` : ""}${x.critLate ? `<span class="pill crit">${x.critLate} crit. en retard</span>` : ""}<span>${x.out ? "Abandonnée" : x.closed ? "Clôturée" : j ? `${j.code} ${esc(j.nom)} · ${fmt(toIso(x.c.info[j.tache].cible))}` : ""}</span></div>
+  </div>`;
+}
 function viewPortfolio() {
   const all = Object.values(S.ops).map(opStats).sort((a, b) => a.closed - b.closed || b.critLate - a.critLate || a.pct - b.pct);
   const list = all.filter(x => UI.showClosed || !x.closed);
@@ -544,6 +672,7 @@ function viewPortfolio() {
   <section class="panel"><div class="ph"><h2>Opérations</h2><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${SYNC_MAJ ? `<span class="hint">Drive MS PROJETS synchronisé le ${fmt(SYNC_MAJ)}</span>` : ""}<label class="chk"><input type="checkbox" id="showClosed" ${UI.showClosed ? "checked" : ""}> Afficher clôturées et abandonnées</label><button class="btn small primary" id="pfNew">Nouvelle opération</button></div></div>
     <div class="pb" style="display:grid;gap:10px">
       <span class="hint">Colonnes A à I : nombre de tâches ouvertes par catégorie. Rouge : au moins une tâche critique en retard ; point rouge : tâche bloquée ; ✓ : catégorie terminée ; · : sans objet. Cliquer un chiffre ouvre la checklist filtrée.</span>
+      <div class="pf-cards">${list.map(carteOp).join("") || `<span class="empty">Aucune opération en cours.</span>`}</div>
       <div class="pf-wrap"><table class="pf"><thead><tr><th class="l">Opération</th><th class="l">Avancement</th>${catHead}<th>Ouvertes</th><th>Bloquées</th><th>Retards</th><th class="l">Prochain jalon</th></tr></thead><tbody>${rows || `<tr><td colspan="16" class="l empty">Aucune opération en cours.</td></tr>`}</tbody>${foot}</table></div>
       <div class="legend-cats">${REF.categories.map(c => `<span><b>${c.code}</b>${esc(c.nom)}</span>`).join("")}</div>
     </div></section>`;
@@ -748,6 +877,23 @@ function viewSettings() {
       <span class="lbl">Importer une sauvegarde JSON</span>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input type="file" id="importFile" accept=".json,application/json"><button class="btn" id="importPaste">Importer le texte collé ci-dessus</button><span class="hint" id="importMsg"></span></div>
     </div></section>
+    ${MOI ? `<section class="panel"><div class="ph"><h2>Mon compte</h2><span class="hint">${esc(MOI.login)}${MOI.role === "admin" ? " · administrateur" : ""}</span></div><div class="pb" style="display:grid;gap:10px">
+      <form id="pwForm" style="display:grid;gap:10px">
+        <label class="fld">Mot de passe actuel<input class="inp" type="password" id="pw-old" autocomplete="current-password" required></label>
+        <label class="fld">Nouveau mot de passe<input class="inp" type="password" id="pw-new" autocomplete="new-password" minlength="10" required></label>
+        <span class="hint">10 caractères minimum, avec majuscules, minuscules et chiffres. Les autres appareils devront se reconnecter.</span>
+        <div><button class="btn primary" type="submit">Changer le mot de passe</button> <span class="hint" id="pw-msg"></span></div>
+      </form></div></section>` : ""}
+    ${MOI && MOI.role === "admin" ? `<section class="panel"><div class="ph"><h2>Utilisateurs</h2><span class="hint">un accès et des données séparés par personne</span></div><div class="pb" style="display:grid;gap:10px">
+      <div class="ops-list" id="userList"><span class="hint">Chargement…</span></div>
+      <form id="userForm" class="form-grid">
+        <label class="fld">Identifiant<input class="inp" id="nu-login" autocapitalize="none" autocomplete="off" required></label>
+        <label class="fld">Mot de passe provisoire<input class="inp" type="text" id="nu-mdp" autocomplete="off" required></label>
+        <label class="fld">Rôle<select class="inp" id="nu-role"><option value="utilisateur">Utilisateur</option><option value="admin">Administrateur</option></select></label>
+        <div style="align-self:end"><button class="btn primary" type="submit">Créer l'accès</button></div>
+      </form>
+      <span class="hint" id="nu-msg">Transmettez le mot de passe provisoire hors de cet outil ; la personne le change dans « Mon compte ».</span>
+    </div></section>` : ""}
   </div>`;
 }
 
@@ -794,7 +940,7 @@ function renderDrawer() {
 /* ---------- interactions ---------- */
 function setTask(id, patch) {
   const o = op(); const cur = o.taches[id] || {};
-  const next = Object.assign({}, cur, patch, { manuel: true });
+  const next = Object.assign({}, cur, patch, { manuel: true, ts: Date.now() });
   if (patch.statut === "Terminé" && !next.reelle) next.reelle = todayIso();
   if (patch.statut && patch.statut !== "Terminé") next.valide = false;
   Object.keys(next).forEach(k => (next[k] === "" || next[k] === undefined) && delete next[k]);
@@ -854,7 +1000,39 @@ function buildCsv() {
   return "﻿" + lines.join("\n");
 }
 let lastExport = { name: "", type: "", text: "" };
+async function appelCompte(url, corps) {
+  const r = await fetch(url, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Pilotage": "1" }, body: JSON.stringify(corps) });
+  if (r.status === 401) versConnexion();
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || "Action impossible.");
+  return d;
+}
+function afficherUtilisateurs(liste) {
+  const el = $("#userList"); if (!el) return;
+  el.innerHTML = liste.map(u => `<div class="op-item"><div class="t"><b>${esc(u.login)}</b><span>${u.role === "admin" ? "administrateur" : "utilisateur"} · ${u.actif ? "actif" : "désactivé"}</span></div>${u.login.toLowerCase() === MOI.login.toLowerCase() ? `<span class="hint">vous</span>` : `<button class="btn small ${u.actif ? "danger" : ""}" data-uact="${u.actif ? "desactiver" : "activer"}" data-ulogin="${esc(u.login)}">${u.actif ? "Désactiver" : "Réactiver"}</button>`}</div>`).join("");
+  el.querySelectorAll("[data-uact]").forEach(b => b.addEventListener("click", async () => {
+    try { afficherUtilisateurs((await appelCompte(API + "/utilisateurs", { action: b.dataset.uact, login: b.dataset.ulogin })).utilisateurs); } catch (e) { toast(e.message); }
+  }));
+}
+function bindCompte() {
+  const pw = $("#pwForm");
+  if (pw) pw.addEventListener("submit", async e => {
+    e.preventDefault(); const msg = $("#pw-msg");
+    try { await appelCompte(API + "/mdp", { ancien: $("#pw-old").value, nouveau: $("#pw-new").value }); pw.reset(); msg.textContent = "Mot de passe changé."; }
+    catch (x) { msg.textContent = x.message; }
+  });
+  const uf = $("#userForm");
+  if (uf) {
+    fetch(API + "/utilisateurs", { credentials: "same-origin" }).then(r => r.ok ? r.json() : null).then(d => d && afficherUtilisateurs(d.utilisateurs)).catch(() => {});
+    uf.addEventListener("submit", async e => {
+      e.preventDefault();
+      try { afficherUtilisateurs((await appelCompte(API + "/utilisateurs", { login: $("#nu-login").value, mdp: $("#nu-mdp").value, role: $("#nu-role").value })).utilisateurs); uf.reset(); $("#nu-msg").textContent = "Accès créé."; }
+      catch (x) { $("#nu-msg").textContent = x.message; }
+    });
+  }
+}
 function bindSettings() {
+  bindCompte();
   const o = op(), g = s => document.querySelector(s);
   g("#s-nom").addEventListener("change", e => { o.nom = e.target.value || "Opération"; o.exemple = false; save(); refresh(); });
   g("#s-adr").addEventListener("change", e => { o.adresse = e.target.value; save(); refresh(); });
@@ -873,7 +1051,7 @@ function bindSettings() {
   g("#replan").addEventListener("click", () => { o.replan = todayIso(); save(); refresh(); toast("Tâches non terminées replanifiées à partir d'aujourd'hui"); });
   const up = g("#unplan"); if (up) up.addEventListener("click", () => { delete o.replan; save(); refresh(); });
   const del = g("#delOp"); if (del) del.addEventListener("click", () => { confirmDel = true; render(); });
-  const yes = g("#delYes"); if (yes) yes.addEventListener("click", () => { delete S.ops[o.id]; S.current = Object.keys(S.ops)[0]; confirmDel = false; save(); refresh(); toast("Opération supprimée"); });
+  const yes = g("#delYes"); if (yes) yes.addEventListener("click", () => { S.supprimes = Object.assign(S.supprimes || {}, { [o.id]: Date.now() }); delete S.ops[o.id]; S.current = Object.keys(S.ops)[0]; confirmDel = false; save(); refresh(); toast("Opération supprimée"); });
   const no = g("#delNo"); if (no) no.addEventListener("click", () => { confirmDel = false; render(); });
   g("#addTask").addEventListener("click", () => {
     const nom = g("#c-nom").value.trim(); if (!nom) { g("#c-msg").textContent = "Donnez un nom à la tâche."; return; }
@@ -920,6 +1098,7 @@ $("#opSelect").addEventListener("change", e => { S.current = e.target.value; UI.
 function route() { const h = location.hash.replace("#", ""); UI.view = ["operations","tableau","checklist","planning","kanban","parametrage"].includes(h) ? h : "operations"; refresh(); window.scrollTo(0, 0); }
 window.addEventListener("hashchange", route);
 route();
+if (SERVEUR) charger(false);
 })();
 </script>
 

@@ -74,3 +74,26 @@ Champs d'une tâche : `id`, `cat`, `sc` (sous-catégorie), `nom`, `desc`, `resp`
 - Les références légales et délais sont ceux connus à la date du référentiel. Les tâches marquées « à vérifier » portent sur
   des règles susceptibles d'évoluer (lois de finances, TVA immobilière, droits des locataires) et doivent être confirmées
   par le notaire, l'avocat ou l'expert-comptable de l'opération.
+
+## Accès en ligne (comptes) et application mobile
+Servi par le serveur FastAPI du dépôt sur `/pilotage` (`app/pilotage_routes.py`, `app/pilotage_comptes.py`).
+
+- **Un compte par personne** (identifiant + mot de passe), données séparées par compte, stockées sur le serveur
+  (SQLite, variable `PILOTAGE_DB`). Mots de passe hachés (scrypt), sessions de 30 jours en cookie HttpOnly,
+  Secure, SameSite=Strict ; 8 essais ratés bloquent 15 minutes ; changer son mot de passe ferme les autres sessions.
+- **Premier administrateur** : renseigner `PILOTAGE_ADMIN_LOGIN` et `PILOTAGE_ADMIN_MDP` au premier démarrage
+  (puis les retirer), ou en ligne de commande :
+  ```bash
+  python -m app.pilotage_admin ajouter seb --admin
+  ```
+  Ensuite l'administrateur crée les autres accès dans Paramétrage → Utilisateurs (ou `python -m app.pilotage_admin`).
+- **Téléphone** : ouvrir l'adresse `/pilotage` puis « Ajouter à l'écran d'accueil » (Safari : bouton Partager ;
+  Chrome Android : menu ⋮ → Installer l'application). L'outil s'ouvre en plein écran comme une application, reste
+  consultable hors réseau et renvoie les modifications au retour du réseau.
+- **Plusieurs appareils** : les modifications faites en même temps sur le téléphone et l'ordinateur sont fusionnées
+  tâche par tâche (la plus récente l'emporte).
+- **Synchronisation Drive** : la tâche quotidienne envoie les opérations avec
+  `POST /api/pilotage/sync` (en-tête `Authorization: Bearer <PILOTAGE_SYNC_TOKEN>`, corps `{"login": "...", "operations": [...]}`).
+
+**Mise en ligne** : l'hébergeur doit fournir le HTTPS et un **disque persistant** pour `PILOTAGE_DB`
+(sinon comptes et données disparaissent à chaque redéploiement). Sauvegarder ce fichier régulièrement.

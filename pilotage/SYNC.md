@@ -41,6 +41,9 @@ ni dans ce dépôt. **Les données des opérations ne sont jamais commitées.**
    - Une nouvelle opération sans journal garde la tâche X90 « Compléter la fiche de l'opération ».
 5. `python pilotage/build.py --operation ops_maj.json --sortie <page>` puis `Artifact` publish de ce fichier
    avec `url` = l'URL ci-dessus.
+   Si l'accès en ligne est déployé (variables `PILOTAGE_URL` et `PILOTAGE_SYNC_TOKEN` disponibles), envoyer aussi
+   `ops_maj.json` : `POST $PILOTAGE_URL/api/pilotage/sync` avec `Authorization: Bearer $PILOTAGE_SYNC_TOKEN` et le corps
+   `{"login": "<compte MS PROJETS>", "operations": <contenu de ops_maj.json>}`.
 6. Compte rendu final (3 à 8 lignes) : opérations créées, changements d'étape, nouvelles alertes critiques,
    échéances des 7 prochains jours.
 
