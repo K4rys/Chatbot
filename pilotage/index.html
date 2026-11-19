@@ -271,6 +271,98 @@ table.pf { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 8
   .top-row { padding-block: 8px; } .brand h1 { font-size: 17px; }
 }
 
+
+/* Ma semaine */
+.wk { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; }
+.wk-col { display: grid; gap: 14px; min-width: 0; }
+.wk-title { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.wk-title h2 { font-size: 28px; }
+.wk-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.wk-pills .pill { font-size: 12.5px; padding: 5px 11px; }
+.wk-list { overflow: hidden; }
+.wk-head { padding: 9px 16px; font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--fg-3); border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.wk-head.crit { color: var(--crit); background: var(--crit-soft); }
+.wk-row { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 82px minmax(0, 1fr) 190px; gap: 14px; align-items: center; padding: 11px 16px; border-bottom: 1px solid var(--line); width: 100%; }
+.wk-row:hover { background: var(--surface-2); }
+.wk-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.wk-date { font-family: var(--f-mono); font-size: 13px; font-weight: 500; }
+.wk-row.crit .wk-date { color: var(--crit); }
+.wk-main { min-width: 0; display: grid; gap: 2px; }
+.wk-main b { font-weight: 600; }
+.wk-comm { font-size: 12.5px; color: var(--fg-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wk-op { font-size: 13px; color: var(--fg-2); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wk-empty { padding: 12px 16px; color: var(--fg-3); font-size: 13px; border-bottom: 1px solid var(--line); }
+.wk-more summary { padding: 10px 16px; cursor: pointer; color: var(--accent); font-size: 13px; }
+.wk-side { display: grid; gap: 10px; }
+.wk-side h2 { font-size: 17px; margin-top: 6px; }
+.wk-op-card { all: unset; box-sizing: border-box; cursor: pointer; display: grid; gap: 5px; padding: 11px 13px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.wk-op-card:hover { border-color: var(--accent); }
+.wk-op-card:focus-visible { outline: 2px solid var(--accent); }
+.wk-op-card .t { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.wk-op-card .t b { font-weight: 600; }
+.wk-op-card .s { font-size: 12.5px; color: var(--fg-3); }
+/* Opérations : frise des jalons */
+.pf-title { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pf-title h2 { font-size: 26px; margin-right: auto; }
+.pf-tools { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--r); overflow: hidden; }
+.seg button { all: unset; cursor: pointer; padding: 6px 12px; font-size: 13px; font-weight: 500; color: var(--fg-2); }
+.seg button.on { background: var(--accent); color: var(--accent-fg); }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.fr { overflow: hidden; }
+.fr-row { display: grid; grid-template-columns: 270px minmax(0, 1fr) 250px; gap: 18px; align-items: center; padding: 13px 18px; border-bottom: 1px solid var(--line); }
+.fr-row:last-child { border-bottom: 0; }
+.fr-hd { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-3); padding-block: 10px; }
+.fr-heads { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 2px; text-align: center; }
+.fr-heads span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fr-name { display: grid; gap: 5px; min-width: 0; }
+.fr-name .opn { all: unset; cursor: pointer; font-weight: 600; }
+.fr-name .opn:hover { color: var(--accent); text-decoration: underline; }
+.fr-name .opn:focus-visible { outline: 2px solid var(--accent); }
+.fr-track { position: relative; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); align-items: center; }
+.fr-track::before { content: ""; position: absolute; left: 6%; right: 6%; top: 50%; height: 2px; background: var(--line); }
+.fr-dot { all: unset; position: relative; justify-self: center; cursor: pointer; width: 28px; height: 28px; display: grid; place-items: center; }
+.fr-dot span { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 600; box-sizing: border-box; background: var(--surface); border: 2px solid var(--line-strong); }
+.fr-dot.f span { background: var(--ok); border-color: var(--ok); color: #fff; }
+.fr-dot.c span { border: 4px solid var(--accent); }
+.fr-dot.b span { background: var(--crit); border-color: var(--crit); color: #fff; }
+.fr-dot.n { cursor: default; } .fr-dot.n span { border: 0; background: transparent; color: var(--line-strong); font-size: 16px; }
+.fr-dot:focus-visible span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.fr-suite { display: grid; gap: 2px; font-size: 13px; min-width: 0; }
+.fr-next { color: var(--fg-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lg { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; box-sizing: border-box; border: 2px solid var(--line-strong); }
+.lg.f { background: var(--ok); border-color: var(--ok); } .lg.c { border: 3px solid var(--accent); } .lg.b { background: var(--crit); border-color: var(--crit); }
+/* Opérations : pipeline */
+.pipe { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; align-items: start; }
+.pipe-col { background: var(--surface-2); border-radius: var(--r); padding: 10px; display: grid; gap: 8px; }
+.pipe-col h3 { font-size: 14px; display: flex; justify-content: space-between; }
+.pipe-col h3 span { font-family: var(--f-mono); color: var(--fg-3); font-weight: 400; }
+.pipe-card { all: unset; box-sizing: border-box; cursor: pointer; display: grid; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px; }
+.pipe-card:hover { border-color: var(--accent); }
+.pipe-card .fr-dot { width: 20px; height: 20px; } .pipe-card .fr-dot span { width: 12px; height: 12px; font-size: 0; }
+.pipe-card .fr-dot.c span { border-width: 3px; }
+.pipe-s { display: grid; font-size: 12.5px; }
+.pipe-empty { font-size: 12.5px; color: var(--fg-3); padding: 8px 2px; }
+/* Navigation téléphone */
+nav.tabs-m { display: none; }
+@media (max-width: 860px) {
+  .wk { grid-template-columns: 1fr; }
+  .fr-hd { display: none; }
+  .fr-row { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (max-width: 700px) {
+  nav.tabs { display: none; }
+  nav.tabs-m { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: var(--surface); border-top: 1px solid var(--line);
+    padding: 4px max(4px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) max(4px, env(safe-area-inset-left, 0px)); }
+  nav.tabs-m a { text-align: center; padding: 10px 2px; font-size: 12px; font-weight: 500; color: var(--fg-2); text-decoration: none; border-radius: var(--r); min-height: 44px; box-sizing: border-box; display: grid; place-items: center; }
+  nav.tabs-m a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+  main { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+  footer.foot { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+  .wk-row { grid-template-columns: 70px minmax(0, 1fr); }
+  .wk-op { grid-column: 2; text-align: left; font-size: 12px; }
+  .wk-title h2, .pf-title h2 { font-size: 22px; }
+}
+
 /* Panneau de détail */
 .scrim { position: fixed; inset: 0; background: rgba(10, 15, 25, .35); z-index: 40; }
 aside.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--surface); z-index: 41; border-left: 1px solid var(--line); display: grid; grid-template-rows: auto 1fr; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
@@ -308,8 +400,9 @@ footer.foot { font-size: 12px; color: var(--fg-3); padding-block: 0 30px; max-wi
     </div>
   </div>
   <nav class="tabs wrap" id="tabs" aria-label="Vues">
+    <a href="#semaine" data-v="semaine">Ma semaine</a>
     <a href="#operations" data-v="operations">Opérations</a>
-    <a href="#tableau" data-v="tableau">Tableau de bord</a>
+    <a href="#tableau" data-v="tableau">Fiche opération</a>
     <a href="#checklist" data-v="checklist">Checklist</a>
     <a href="#planning" data-v="planning">Planning</a>
     <a href="#kanban" data-v="kanban">Kanban</a>
@@ -317,6 +410,13 @@ footer.foot { font-size: 12px; color: var(--fg-3); padding-block: 0 30px; max-wi
   </nav>
 </header>
 <main class="wrap" id="view"></main>
+<nav class="tabs-m" id="tabsMobile" aria-label="Vues">
+  <a href="#semaine" data-v="semaine">Semaine</a>
+  <a href="#operations" data-v="operations">Opérations</a>
+  <a href="#tableau" data-v="tableau">Fiche</a>
+  <a href="#checklist" data-v="checklist">Checklist</a>
+  <a href="#parametrage" data-v="parametrage">Réglages</a>
+</nav>
 <footer class="wrap foot" id="foot"></footer>
 <div id="overlay"></div>
 <script type="application/json" id="seed-ops">[]</script>
@@ -481,7 +581,7 @@ if (SERVEUR) {
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !SRV.pending) charger(false); });
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("/pilotage/sw.js", { scope: "/pilotage" }).catch(() => {});
 }
-const UI = { view: "operations", showClosed: false, f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false, toValidate: false }, open: null };
+const UI = { view: "semaine", showClosed: false, pfVue: "jalons", f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false, toValidate: false }, open: null };
 const op = () => S.ops[S.current];
 
 /* ---------- moteur ---------- */
@@ -574,12 +674,14 @@ function renderSaveState() {
 function renderHeader() {
   const o = op();
   $("#opSelect").innerHTML = Object.values(S.ops).map(x => `<option value="${x.id}" ${x.id === o.id ? "selected" : ""}>${esc(x.nom)}</option>`).join("");
-  $("#opMeta").textContent = UI.view === "operations" ? `Portefeuille · ${Object.keys(S.ops).length} opération(s)` : [o.adresse, "démarrage " + fmt(o.debut), o.typos.map(c => TYPO[c] ? TYPO[c].nom : c).join(" · ")].filter(Boolean).join(" — ");
-  document.querySelectorAll("#tabs a").forEach(a => {
+  const transverse = ["semaine", "operations"].includes(UI.view);
+  $("#opSelect").hidden = transverse;
+  $("#opMeta").textContent = transverse ? "" : [o.adresse, "démarrage " + fmt(o.debut), o.typos.map(c => TYPO[c] ? TYPO[c].nom : c).join(" · ")].filter(Boolean).join(" — ");
+  document.querySelectorAll("#tabs a, #tabsMobile a").forEach(a => {
     a.setAttribute("aria-current", a.dataset.v === UI.view ? "page" : "false");
-    if (a.dataset.v === "tableau") {
+    if (a.dataset.v === "tableau" && a.closest("#tabs")) {
       const n = C.alerts.filter(x => x.lvl === "crit").length;
-      a.innerHTML = "Tableau de bord" + (n ? `<span class="count">${n}</span>` : "");
+      a.innerHTML = "Fiche opération" + (n ? `<span class="count">${n}</span>` : "");
     }
   });
   $("#foot").textContent = REF.avertissement + " Référentiel v" + REF.version + ".";
@@ -587,8 +689,8 @@ function renderHeader() {
 function render() {
   renderHeader(); renderSaveState();
   const v = $("#view");
-  const views = { operations: viewPortfolio, tableau: viewDash, checklist: viewChecklist, planning: viewPlanning, kanban: viewKanban, parametrage: viewSettings };
-  v.innerHTML = (op().exemple && UI.view !== "operations" ? `<div class="example-note">Opération d'exemple, avec des statuts fictifs pour montrer l'outil. Créez votre opération dans Paramétrage.</div>` : "") + views[UI.view]();
+  const views = { semaine: viewSemaine, operations: viewPortfolio, tableau: viewDash, checklist: viewChecklist, planning: viewPlanning, kanban: viewKanban, parametrage: viewSettings };
+  v.innerHTML = (op().exemple && !["semaine", "operations"].includes(UI.view) ? `<div class="example-note">Opération d'exemple, avec des statuts fictifs pour montrer l'outil. Créez votre opération dans Paramétrage.</div>` : "") + views[UI.view]();
   bindView();
   renderDrawer();
 }
@@ -597,85 +699,113 @@ function statusSelect(id, cls) {
   return `<select class="inp st ${cls || ""}" data-status="${id}" data-s="${esc(s)}" aria-label="Statut de ${id}">${STATUTS.map(x => `<option ${x === s ? "selected" : ""}>${x}</option>`).join("")}</select>`;
 }
 
-/* ---------- portefeuille d'opérations ---------- */
+/* ---------- vues transverses : Ma semaine et Opérations ---------- */
+const JOURS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
+const jourCourt = n => `${JOURS[new Date(n * DAY).getUTCDay()]} ${fmt(toIso(n)).slice(0, 5)}`;
 function opStats(o) {
   const c = o.id === S.current && C ? C : compute(o), i = c.info;
-  const done = c.active.filter(t => i[t.id].statut === "Terminé").length;
-  const cats = {};
-  REF.categories.forEach(k => {
-    const ts = c.active.filter(t => t.cat === k.code), open = ts.filter(t => i[t.id].statut !== "Terminé");
-    cats[k.code] = { total: ts.length, open: open.length,
-      hot: open.filter(t => i[t.id].late && t.crit === "Critique").length,
-      blk: open.filter(t => i[t.id].statut === "Bloqué").length };
-  });
-  const nextJ = REF.jalons.find(j => i[j.tache] && i[j.tache].statut !== "Terminé");
-  const reached = REF.jalons.filter(j => i[j.tache] && i[j.tache].statut === "Terminé").length;
   const etape = o.etape || "";
   const out = /^06/.test(etape), closed = out || /^05/.test(etape) || !!(i.I08 && i.I08.statut === "Terminé");
-  return { o, c, done, total: c.active.length, pct: c.active.length ? Math.round(done / c.active.length * 100) : 0, cats, nextJ, reached,
-    nbJ: REF.jalons.filter(j => i[j.tache]).length, closed, out, etape,
-    open: c.active.length - done, blocked: c.active.filter(t => i[t.id].statut === "Bloqué").length,
-    late: c.active.filter(t => i[t.id].late).length, critLate: c.active.filter(t => i[t.id].late && t.crit === "Critique").length,
-    toValidate: c.active.filter(t => i[t.id].statut === "Terminé" && !i[t.id].s.valide).length,
-    fin: i.I08 ? toIso(i.I08.cible) : null };
+  const jalons = REF.jalons.map(j => {
+    const x = i[j.tache];
+    const etat = !x ? "n" : x.statut === "Terminé" ? "f" : x.statut === "Bloqué" ? "b" : ["En cours", "En validation"].includes(x.statut) ? "c" : "t";
+    return { j, etat, date: x ? (x.statut === "Terminé" && x.s.reelle ? x.s.reelle : toIso(x.cible)) : null };
+  });
+  const ouvertes = c.active.filter(t => i[t.id].statut !== "Terminé");
+  const datees = ouvertes.filter(t => i[t.id].s.cible).sort((a, b) => toN(i[a.id].s.cible) - toN(i[b.id].s.cible));
+  const nj = jalons.find(x => x.etat !== "f" && x.etat !== "n");
+  const suite = datees.length ? { date: i[datees[0].id].s.cible, nom: datees[0].nom, id: datees[0].id }
+    : nj ? { date: nj.date, nom: nj.j.nom, id: nj.j.tache, prevu: true } : null;
+  return { o, c, etape, out, closed, jalons, suite,
+    reached: jalons.filter(x => x.etat === "f").length, nbJ: jalons.filter(x => x.etat !== "n").length,
+    blocked: ouvertes.filter(t => i[t.id].statut === "Bloqué").length,
+    retard: datees.filter(t => toN(i[t.id].s.cible) < C.today).length };
 }
-function carteOp(x) {
-  const j = x.nextJ;
-  const cats = REF.categories.map(k => {
-    const v = x.cats[k.code];
-    if (!v.total) return `<span class="cell zero"><small>${k.code}</small>·</span>`;
-    const cls = v.open === 0 ? "zero" : v.hot ? "hot" : "";
-    return `<button class="cell ${cls} ${v.blk ? "blk" : ""}" data-goop="${x.o.id}" data-gocat="${k.code}" aria-label="${esc(k.nom)} : ${v.open} ouverte(s)"><small>${k.code}</small>${v.open === 0 ? "✓" : v.open}</button>`;
-  }).join("");
-  return `<div class="pf-card">
-    <div class="top"><button class="opn" data-goop="${x.o.id}">${esc(x.o.nom)}</button><b class="mono">${x.pct} %</b></div>
-    <div class="progress"><i style="width:${x.pct}%"></i></div>
-    <div class="cats">${cats}</div>
-    <div class="foot">${x.etape ? `<span class="pill ${x.out ? "muted" : "info"}">${esc(x.etape)}</span>` : ""}${x.blocked ? `<span class="pill crit">${x.blocked} bloquée(s)</span>` : ""}${x.critLate ? `<span class="pill crit">${x.critLate} crit. en retard</span>` : ""}<span>${x.out ? "Abandonnée" : x.closed ? "Clôturée" : j ? `${j.code} ${esc(j.nom)} · ${fmt(toIso(x.c.info[j.tache].cible))}` : ""}</span></div>
+function portefeuille() {
+  return Object.values(S.ops).map(opStats).sort((a, b) => a.closed - b.closed || b.blocked - a.blocked
+    || (a.suite && b.suite ? toN(a.suite.date) - toN(b.suite.date) : a.suite ? -1 : b.suite ? 1 : 0));
+}
+const pillEtape = x => x.etape ? `<span class="pill info">${esc(x.etape)}</span>` : "";
+function ligneAction(r, cls) {
+  const comm = r.i.s.comm || r.t.desc || "";
+  return `<button class="wk-row ${cls || ""}" data-goop="${r.o.id}" data-gotask="${r.t.id}">
+    <span class="wk-date">${r.n === undefined ? "—" : jourCourt(r.n)}</span>
+    <span class="wk-main"><b>${esc(r.t.nom)}</b><span class="wk-comm">${esc(comm)}</span></span>
+    <span class="wk-op">${esc(r.o.nom)}</span></button>`;
+}
+function viewSemaine() {
+  const today = C.today, ops = portefeuille().filter(x => !x.closed);
+  const bloq = [], dat = [];
+  ops.forEach(x => x.c.active.forEach(t => {
+    const i = x.c.info[t.id];
+    if (i.statut === "Terminé") return;
+    if (i.statut === "Bloqué") bloq.push({ o: x.o, t, i, n: i.s.cible ? toN(i.s.cible) : undefined });
+    else if (i.s.cible) dat.push({ o: x.o, t, i, n: toN(i.s.cible) });
+  }));
+  dat.sort((a, b) => a.n - b.n);
+  const retard = dat.filter(r => r.n < today), s1 = dat.filter(r => r.n >= today && r.n <= today + 7),
+    s2 = dat.filter(r => r.n > today + 7 && r.n <= today + 14), plus = dat.filter(r => r.n > today + 14);
+  const bloc = (titre, rows, cls, vide) => rows.length || vide ? `<div class="wk-head ${cls || ""}">${titre}</div>${rows.map(r => ligneAction(r, cls)).join("") || `<div class="wk-empty">${vide}</div>`}` : "";
+  return `
+  <div class="wk">
+    <section class="wk-col">
+      <div class="wk-title"><h2>Cette semaine</h2><span class="hint">${esc(new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))}</span></div>
+      <div class="wk-pills">
+        <span class="pill ${bloq.length ? "crit" : "muted"}">${bloq.length} bloquée${bloq.length > 1 ? "s" : ""}</span>
+        <span class="pill ${retard.length ? "crit" : "muted"}">${retard.length} en retard</span>
+        <span class="pill muted">${s1.length + s2.length} échéance${s1.length + s2.length > 1 ? "s" : ""} sous 15 jours</span>
+      </div>
+      <div class="panel wk-list">
+        ${bloc("Bloqué : à débloquer en premier", bloq, "crit")}
+        ${bloc("En retard", retard, "crit")}
+        ${bloc(`D'ici au ${fmt(toIso(today + 7)).slice(0, 5)}`, s1, "", "Rien de daté cette semaine.")}
+        ${bloc("Semaine suivante", s2, "")}
+        ${plus.length ? `<details class="wk-more"><summary>${plus.length} autre${plus.length > 1 ? "s" : ""} échéance${plus.length > 1 ? "s" : ""} plus tard</summary>${plus.map(r => ligneAction(r)).join("")}</details>` : ""}
+      </div>
+      <p class="hint">Ici n'apparaissent que les tâches bloquées et celles qui ont une date cible fixée (par vous ou par la synchronisation du Drive). Pour suivre une tâche, fixez sa date cible dans sa fiche.</p>
+    </section>
+    <aside class="wk-side">
+      <h2>Mes opérations</h2>
+      ${ops.map(x => `<button class="wk-op-card" data-goop="${x.o.id}">
+        <span class="t"><b>${esc(x.o.nom)}</b>${pillEtape(x)}</span>
+        <span class="s">${x.blocked ? `<span class="pill crit">${x.blocked} bloquée${x.blocked > 1 ? "s" : ""}</span> ` : ""}${x.suite ? `${x.suite.prevu ? "prévu " : ""}${fmt(x.suite.date).slice(0, 5)} · ${esc(x.suite.nom)}` : "Aucune échéance"}</span>
+      </button>`).join("") || `<span class="hint">Aucune opération en cours.</span>`}
+    </aside>
   </div>`;
 }
+function friseHtml(x, statique) {
+  if (statique) return `<span class="fr-track" role="img" aria-label="${x.reached} jalons atteints sur ${x.nbJ}">${x.jalons.map(z =>
+    `<span class="fr-dot ${z.etat}"><span>${z.etat === "n" ? "·" : ""}</span></span>`).join("")}</span>`;
+  return `<div class="fr-track" role="group" aria-label="${x.reached} jalons atteints sur ${x.nbJ}">${x.jalons.map(z =>
+    `<button class="fr-dot ${z.etat}" data-goop="${x.o.id}" data-gotask="${z.j.tache}" title="${esc(z.j.nom)}${z.date ? " · " + fmt(z.date) : ""}" ${z.etat === "n" ? "disabled" : ""}><span>${z.etat === "f" ? "✓" : z.etat === "b" ? "!" : z.etat === "n" ? "·" : ""}</span></button>`).join("")}</div>`;
+}
 function viewPortfolio() {
-  const all = Object.values(S.ops).map(opStats).sort((a, b) => a.closed - b.closed || b.critLate - a.critLate || a.pct - b.pct);
-  const list = all.filter(x => UI.showClosed || !x.closed);
-  const enCours = all.filter(x => !x.closed && !x.o.exemple);
-  const sum = k => list.reduce((n, x) => n + x[k], 0);
-  const catHead = REF.categories.map(c => `<th title="${esc(c.nom)}">${c.code}</th>`).join("");
-  const rows = list.map(x => {
-    const cells = REF.categories.map(k => {
-      const v = x.cats[k.code];
-      if (!v.total) return `<td><span class="cell zero" title="Sans objet pour cette typologie">·</span></td>`;
-      const cls = v.open === 0 ? "zero" : v.hot ? "hot" : "";
-      const tip = `${k.nom} : ${v.open} ouverte(s) sur ${v.total}` + (v.hot ? `, ${v.hot} critique(s) en retard` : "") + (v.blk ? `, ${v.blk} bloquée(s)` : "");
-      return `<td><button class="cell ${cls} ${v.blk ? "blk" : ""}" data-goop="${x.o.id}" data-gocat="${k.code}" title="${esc(tip)}" aria-label="${esc(tip)}">${v.open === 0 ? "✓" : v.open}</button></td>`;
-    }).join("");
-    const j = x.nextJ;
-    return `<tr>
-      <td class="l"><button class="opn" data-goop="${x.o.id}">${esc(x.o.nom)}</button><span class="sub">${x.etape ? `<span class="pill ${x.out ? "muted" : "info"}" style="margin-right:6px">${esc(x.etape)}</span>` : ""}${esc(x.o.adresse || "")}${x.o.exemple ? " · exemple" : ""}</span></td>
-      <td class="l"><div class="pct"><b>${x.pct} %</b><div class="progress"><i style="width:${x.pct}%"></i></div><span>${x.done}/${x.total} tâches · ${x.reached}/${x.nbJ} jalons</span></div></td>
-      ${cells}
-      <td>${x.open}</td>
-      <td>${x.blocked ? `<span class="pill crit">${x.blocked}</span>` : `<span class="pill muted">0</span>`}</td>
-      <td>${x.critLate ? `<span class="pill crit">${x.critLate} crit.</span>` : x.late ? `<span class="pill muted">${x.late}</span>` : `<span class="pill ok">0</span>`}</td>
-      <td class="ms-next">${x.out ? `<span class="pill muted">Abandonnée</span>` : x.closed ? `<span class="pill ok">Clôturée</span>` : j ? `${j.code} · ${esc(j.nom)}<span>${fmt(toIso(x.c.info[j.tache].cible))}</span>` : "—"}</td>
-    </tr>`;
-  }).join("");
-  const foot = list.length > 1 ? `<tfoot><tr><td class="l">Total (${list.length})</td><td class="l"></td>${REF.categories.map(k => `<td>${list.reduce((n, x) => n + x.cats[k.code].open, 0)}</td>`).join("")}<td>${sum("open")}</td><td>${sum("blocked")}</td><td>${sum("critLate")}</td><td></td></tr></tfoot>` : "";
-  const nClosed = all.filter(x => x.closed).length;
-  return `
-  <section class="kpis" aria-label="Portefeuille">
-    <div class="kpi"><span class="lbl">Opérations en cours</span><span class="v">${enCours.length}</span><span class="s">hors exemple${nClosed ? ` · ${nClosed} clôturée(s)` : ""}</span></div>
-    <div class="kpi"><span class="lbl">Tâches ouvertes</span><span class="v">${enCours.reduce((n, x) => n + x.open, 0)}</span><span class="s">sur les opérations en cours</span></div>
-    <div class="kpi ${enCours.some(x => x.critLate) ? "alert" : ""}"><span class="lbl">Critiques en retard</span><span class="v">${enCours.reduce((n, x) => n + x.critLate, 0)}</span><span class="s">toutes opérations</span></div>
-    <div class="kpi ${enCours.some(x => x.blocked) ? "alert" : ""}"><span class="lbl">Bloquées</span><span class="v">${enCours.reduce((n, x) => n + x.blocked, 0)}</span><span class="s">tâches</span></div>
-    <div class="kpi"><span class="lbl">À valider</span><span class="v">${enCours.reduce((n, x) => n + x.toValidate, 0)}</span><span class="s">terminées, validation finale à cocher</span></div>
+  const all = portefeuille(), list = all.filter(x => UI.showClosed || !x.closed), nClos = all.length - all.filter(x => !x.closed).length;
+  const vue = UI.pfVue || "jalons";
+  const outils = `<div class="pf-tools">
+    <div class="seg" role="group" aria-label="Affichage"><button class="${vue === "jalons" ? "on" : ""}" data-pfvue="jalons">Jalons</button><button class="${vue === "pipeline" ? "on" : ""}" data-pfvue="pipeline">Pipeline</button></div>
+    ${SYNC_MAJ ? `<span class="hint">Drive synchronisé le ${fmt(SYNC_MAJ)}</span>` : ""}
+    ${nClos ? `<label class="chk"><input type="checkbox" id="showClosed" ${UI.showClosed ? "checked" : ""}> ${nClos} clôturée(s) ou abandonnée(s)</label>` : ""}
+    <button class="btn small primary" id="pfNew">Nouvelle opération</button></div>`;
+  const suite = x => x.out ? `<span class="pill muted">Abandonnée</span>` : x.closed ? `<span class="pill ok">Clôturée</span>`
+    : x.suite ? `<span class="mono">${x.suite.prevu ? "prévu " : ""}${fmt(x.suite.date)}</span><span class="fr-next">${esc(x.suite.nom)}</span>` : `<span class="hint">Aucune échéance</span>`;
+  if (vue === "pipeline") {
+    const cols = ["02 - OFFRE ENVOYEE", "02B - OFFRE ACCEPTEE", "03 - PV SIGNEE", "04 - AAE SIGNEE", "05 - ACHEVES"];
+    const sans = list.filter(x => !cols.includes(x.etape) && !x.out);
+    const colonnes = cols.map(c => [c, list.filter(x => x.etape === c)]).concat(sans.length ? [["Sans étape Drive", sans]] : []);
+    return `<div class="pf-title"><h2>Opérations</h2>${outils}</div><div class="pipe">${colonnes.map(([c, xs]) => `<section class="pipe-col"><h3>${esc(c.replace(" - ", " "))}<span>${xs.length}</span></h3>${xs.map(x => `<button class="pipe-card" data-goop="${x.o.id}"><b>${esc(x.o.nom)}</b>${friseHtml(x, true)}<span class="pipe-s">${suite(x)}</span>${x.blocked ? `<span class="pill crit">${x.blocked} bloquée${x.blocked > 1 ? "s" : ""}</span>` : ""}</button>`).join("") || `<span class="pipe-empty">Aucune</span>`}</section>`).join("")}</div>`;
+  }
+  const heads = REF.jalons.map(j => `<span title="${esc(j.nom)}">${esc(j.nom.replace("Fin des conditions suspensives", "Fin des CS").replace("Autorisations purgées", "Purge").replace("Début de commercialisation", "Commerc.").replace("Remboursement du crédit", "Rembours.").replace("Clôture de l'opération", "Clôture").replace("Premières ventes", "1res ventes").replace("Promesse signée", "Promesse"))}</span>`).join("");
+  return `<div class="pf-title"><h2>Opérations</h2>${outils}</div>
+  <section class="panel fr">
+    <div class="fr-row fr-hd"><span>Opération</span><div class="fr-heads">${heads}</div><span>Prochaine échéance</span></div>
+    ${list.map(x => `<div class="fr-row">
+      <div class="fr-name"><button class="opn" data-goop="${x.o.id}">${esc(x.o.nom)}</button><span>${pillEtape(x)}${x.blocked ? ` <span class="pill crit">${x.blocked} bloquée${x.blocked > 1 ? "s" : ""}</span>` : ""}${x.retard ? ` <span class="pill crit">${x.retard} en retard</span>` : ""}</span></div>
+      ${friseHtml(x)}
+      <div class="fr-suite">${suite(x)}</div>
+    </div>`).join("") || `<div class="empty" style="padding:14px">Aucune opération en cours.</div>`}
   </section>
-  <section class="panel"><div class="ph"><h2>Opérations</h2><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${SYNC_MAJ ? `<span class="hint">Drive MS PROJETS synchronisé le ${fmt(SYNC_MAJ)}</span>` : ""}<label class="chk"><input type="checkbox" id="showClosed" ${UI.showClosed ? "checked" : ""}> Afficher clôturées et abandonnées</label><button class="btn small primary" id="pfNew">Nouvelle opération</button></div></div>
-    <div class="pb" style="display:grid;gap:10px">
-      <span class="hint">Colonnes A à I : nombre de tâches ouvertes par catégorie. Rouge : au moins une tâche critique en retard ; point rouge : tâche bloquée ; ✓ : catégorie terminée ; · : sans objet. Cliquer un chiffre ouvre la checklist filtrée.</span>
-      <div class="pf-cards">${list.map(carteOp).join("") || `<span class="empty">Aucune opération en cours.</span>`}</div>
-      <div class="pf-wrap"><table class="pf"><thead><tr><th class="l">Opération</th><th class="l">Avancement</th>${catHead}<th>Ouvertes</th><th>Bloquées</th><th>Retards</th><th class="l">Prochain jalon</th></tr></thead><tbody>${rows || `<tr><td colspan="16" class="l empty">Aucune opération en cours.</td></tr>`}</tbody>${foot}</table></div>
-      <div class="legend-cats">${REF.categories.map(c => `<span><b>${c.code}</b>${esc(c.nom)}</span>`).join("")}</div>
-    </div></section>`;
+  <div class="legend"><span><i class="lg f"></i>atteint</span><span><i class="lg c"></i>en cours</span><span><i class="lg b"></i>bloqué</span><span><i class="lg t"></i>à venir</span><span>· sans objet</span><span>Cliquer un jalon ouvre la tâche ; le détail par catégorie est dans la fiche de l'opération.</span></div>`;
 }
 
 /* ---------- tableau de bord ---------- */
@@ -966,10 +1096,12 @@ function bindView() {
   });
   if (UI.view === "parametrage") bindSettings();
   v.querySelectorAll("[data-goop]").forEach(el => el.addEventListener("click", () => {
-    S.current = el.dataset.goop; UI.open = null; save();
+    S.current = el.dataset.goop; UI.open = null; ecrireLocal();
+    if (el.dataset.gotask) { refresh(); UI.open = el.dataset.gotask; renderDrawer(); return; }
     if (el.dataset.gocat) { Object.assign(UI.f, { cat: el.dataset.gocat, statut: "", crit: "", resp: "", q: "", hideDone: true, ready: false, alertsOnly: false, toValidate: false }); location.hash = "checklist"; }
     else location.hash = "tableau";
   }));
+  v.querySelectorAll("[data-pfvue]").forEach(b => b.addEventListener("click", () => { UI.pfVue = b.dataset.pfvue; render(); }));
   const sc = $("#showClosed"); if (sc) sc.addEventListener("change", () => { UI.showClosed = sc.checked; render(); });
   const pn = $("#pfNew"); if (pn) pn.addEventListener("click", () => { const n = blankOp(); S.ops[n.id] = n; S.current = n.id; save(); location.hash = "parametrage"; });
 }
@@ -1095,7 +1227,7 @@ function bindSettings() {
 }
 
 $("#opSelect").addEventListener("change", e => { S.current = e.target.value; UI.open = null; save(); refresh(); });
-function route() { const h = location.hash.replace("#", ""); UI.view = ["operations","tableau","checklist","planning","kanban","parametrage"].includes(h) ? h : "operations"; refresh(); window.scrollTo(0, 0); }
+function route() { const h = location.hash.replace("#", ""); UI.view = ["semaine","operations","tableau","checklist","planning","kanban","parametrage"].includes(h) ? h : "semaine"; refresh(); window.scrollTo(0, 0); }
 window.addEventListener("hashchange", route);
 route();
 if (SERVEUR) charger(false);
