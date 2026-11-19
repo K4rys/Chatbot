@@ -19,7 +19,7 @@ GABARIT = ICI / "app.html"
 SORTIE_HTML = ICI / "index.html"
 EXPORT = ICI / "export"
 MARQUEUR = "/*__REFERENTIEL__*/null"
-MARQUEUR_OPS = "/*__OPERATIONS__*/[]"
+MARQUEUR_OPS = "<!--__OPERATIONS__-->"
 
 CHAMPS_OBLIGATOIRES = ("id", "cat", "sc", "nom", "desc", "resp", "dep", "crit", "risque", "typo", "duree")
 
@@ -93,7 +93,9 @@ def construire_html(ref: dict, operations: list[dict] | None = None) -> str:
     gabarit = GABARIT.read_text(encoding="utf-8")
     if MARQUEUR not in gabarit or MARQUEUR_OPS not in gabarit:
         raise ValueError("Marqueur absent du gabarit")
-    return gabarit.replace(MARQUEUR, _js(ref)).replace(MARQUEUR_OPS, _js(operations or []))
+    page = gabarit.replace(MARQUEUR, _js(ref))
+    bloc = '<script type="application/json" id="seed-ops">' + _js(operations or []) + "</script>"
+    return page.replace(MARQUEUR_OPS, bloc)
 
 
 def page_autonome(fragment: str) -> str:
@@ -165,7 +167,10 @@ def main() -> None:
     if args.operation:
         if not args.sortie:
             raise SystemExit("--sortie est obligatoire avec --operation")
-        ops = [json.loads(Path(f).read_text(encoding="utf-8")) for f in args.operation]
+        ops = []
+        for f in args.operation:
+            d = json.loads(Path(f).read_text(encoding="utf-8"))
+            ops.extend(d if isinstance(d, list) else [d])
         Path(args.sortie).write_text(construire_html(ref, ops), encoding="utf-8")
         print(f"{len(ops)} opération(s) préchargée(s) → {args.sortie}")
         return

@@ -241,6 +241,7 @@ table.pf { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 8
 .cell.hot { background: var(--crit-soft); color: var(--crit); font-weight: 600; }
 .cell.blk::after { content: ""; position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--crit); }
 .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.pill.info { background: var(--info-soft); color: var(--info); font-family: var(--f-mono); font-weight: 500; }
 .pill.crit { background: var(--crit-soft); color: var(--crit); } .pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.muted { background: var(--muted-soft); color: var(--fg-3); }
 .pf .ms-next { text-align: left; font-size: 12.5px; white-space: nowrap; }
 .pf .ms-next span { display: block; font-family: var(--f-mono); font-size: 12px; color: var(--fg-3); }
@@ -294,10 +295,12 @@ footer.foot { font-size: 12px; color: var(--fg-3); padding-block: 0 30px; max-wi
 <main class="wrap" id="view"></main>
 <footer class="wrap foot" id="foot"></footer>
 <div id="overlay"></div>
+<!--__OPERATIONS__-->
 
 <script>
 const REF = /*__REFERENTIEL__*/null;
-const SEED_OPS = /*__OPERATIONS__*/[];
+let SEED_OPS = [];
+try { const el = document.getElementById("seed-ops"); if (el) SEED_OPS = JSON.parse(el.textContent || "[]"); } catch (e) { SEED_OPS = []; }
 (function () {
 "use strict";
 const STATUTS = REF.statuts, CRITS = REF.criticites;
@@ -345,8 +348,28 @@ function blankOp(nom) {
   return { id: uid(), nom: nom || "Nouvelle opération", adresse: "", debut: todayIso(), typos: ["ACHAT_REVENTE","BANQUE","LIBRE","VENTE_UNITE"], taches: {}, custom: [] };
 }
 let S = load();
-if (!S || !S.ops || !Object.keys(S.ops).length) { const ex = exampleOp(); S = { ops: { [ex.id]: ex }, current: ex.id }; }
-SEED_OPS.forEach(o => { if (!S.ops[o.id]) { S.ops[o.id] = JSON.parse(JSON.stringify(o)); S.current = o.id; } });
+if (!S || !S.ops || !Object.keys(S.ops).length) {
+  if (SEED_OPS.length) S = { ops: {}, current: null };
+  else { const ex = exampleOp(); S = { ops: { [ex.id]: ex }, current: ex.id }; }
+}
+/* Synchronisation Drive : ajoute les opérations nouvelles, met à jour les autres sans écraser
+   les tâches modifiées à la main (marquées « manuel ») ni les typologies retouchées. */
+SEED_OPS.forEach(src => {
+  const o = JSON.parse(JSON.stringify(src));
+  (o.remplace || []).forEach(old => { if (S.ops[old] && !S.ops[o.id]) { S.ops[o.id] = Object.assign(S.ops[old], { id: o.id }); } delete S.ops[old]; if (S.current === old) S.current = o.id; });
+  const cur = S.ops[o.id];
+  if (!cur) { o.syncMaj = o.maj; S.ops[o.id] = o; if (!S.current) S.current = o.id; return; }
+  if ((o.maj || "") <= (cur.syncMaj || "")) return;
+  ["nom", "adresse", "etape", "dossier", "source", "debut", "replan"].forEach(k => { if (o[k] !== undefined) cur[k] = o[k]; });
+  if (!cur.typosManuel) cur.typos = o.typos;
+  Object.entries(o.taches || {}).forEach(([id, t]) => { if (!(cur.taches[id] && cur.taches[id].manuel)) cur.taches[id] = t; });
+  const ids = new Set((cur.custom || []).map(t => t.id));
+  (o.custom || []).forEach(t => { if (!ids.has(t.id)) cur.custom = (cur.custom || []).concat([t]); else cur.custom = cur.custom.map(x => x.id === t.id && x.drive ? t : x); });
+  cur.syncMaj = o.maj;
+});
+if (!S.current || !S.ops[S.current]) S.current = Object.keys(S.ops)[0];
+const SYNC_MAJ = SEED_OPS.reduce((m, o) => (o.maj || "") > m ? o.maj : m, "");
+if (SEED_OPS.length) { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { storageOk = false; } }
 const UI = { view: "operations", showClosed: false, f: { cat: "", statut: "", crit: "", resp: "", q: "", hideDone: false, ready: false, alertsOnly: false, toValidate: false }, open: null };
 const op = () => S.ops[S.current];
 
@@ -466,9 +489,10 @@ function opStats(o) {
   });
   const nextJ = REF.jalons.find(j => i[j.tache] && i[j.tache].statut !== "Terminé");
   const reached = REF.jalons.filter(j => i[j.tache] && i[j.tache].statut === "Terminé").length;
-  const closed = !!(i.I08 && i.I08.statut === "Terminé");
+  const etape = o.etape || "";
+  const out = /^06/.test(etape), closed = out || /^05/.test(etape) || !!(i.I08 && i.I08.statut === "Terminé");
   return { o, c, done, total: c.active.length, pct: c.active.length ? Math.round(done / c.active.length * 100) : 0, cats, nextJ, reached,
-    nbJ: REF.jalons.filter(j => i[j.tache]).length, closed,
+    nbJ: REF.jalons.filter(j => i[j.tache]).length, closed, out, etape,
     open: c.active.length - done, blocked: c.active.filter(t => i[t.id].statut === "Bloqué").length,
     late: c.active.filter(t => i[t.id].late).length, critLate: c.active.filter(t => i[t.id].late && t.crit === "Critique").length,
     toValidate: c.active.filter(t => i[t.id].statut === "Terminé" && !i[t.id].s.valide).length,
@@ -490,13 +514,13 @@ function viewPortfolio() {
     }).join("");
     const j = x.nextJ;
     return `<tr>
-      <td class="l"><button class="opn" data-goop="${x.o.id}">${esc(x.o.nom)}</button><span class="sub">${esc(x.o.adresse || "")}${x.o.exemple ? " · exemple" : ""}</span></td>
+      <td class="l"><button class="opn" data-goop="${x.o.id}">${esc(x.o.nom)}</button><span class="sub">${x.etape ? `<span class="pill ${x.out ? "muted" : "info"}" style="margin-right:6px">${esc(x.etape)}</span>` : ""}${esc(x.o.adresse || "")}${x.o.exemple ? " · exemple" : ""}</span></td>
       <td class="l"><div class="pct"><b>${x.pct} %</b><div class="progress"><i style="width:${x.pct}%"></i></div><span>${x.done}/${x.total} tâches · ${x.reached}/${x.nbJ} jalons</span></div></td>
       ${cells}
       <td>${x.open}</td>
       <td>${x.blocked ? `<span class="pill crit">${x.blocked}</span>` : `<span class="pill muted">0</span>`}</td>
       <td>${x.critLate ? `<span class="pill crit">${x.critLate} crit.</span>` : x.late ? `<span class="pill muted">${x.late}</span>` : `<span class="pill ok">0</span>`}</td>
-      <td class="ms-next">${x.closed ? `<span class="pill ok">Clôturée</span>` : j ? `${j.code} · ${esc(j.nom)}<span>${fmt(toIso(x.c.info[j.tache].cible))}</span>` : "—"}</td>
+      <td class="ms-next">${x.out ? `<span class="pill muted">Abandonnée</span>` : x.closed ? `<span class="pill ok">Clôturée</span>` : j ? `${j.code} · ${esc(j.nom)}<span>${fmt(toIso(x.c.info[j.tache].cible))}</span>` : "—"}</td>
     </tr>`;
   }).join("");
   const foot = list.length > 1 ? `<tfoot><tr><td class="l">Total (${list.length})</td><td class="l"></td>${REF.categories.map(k => `<td>${list.reduce((n, x) => n + x.cats[k.code].open, 0)}</td>`).join("")}<td>${sum("open")}</td><td>${sum("blocked")}</td><td>${sum("critLate")}</td><td></td></tr></tfoot>` : "";
@@ -509,7 +533,7 @@ function viewPortfolio() {
     <div class="kpi ${enCours.some(x => x.blocked) ? "alert" : ""}"><span class="lbl">Bloquées</span><span class="v">${enCours.reduce((n, x) => n + x.blocked, 0)}</span><span class="s">tâches</span></div>
     <div class="kpi"><span class="lbl">À valider</span><span class="v">${enCours.reduce((n, x) => n + x.toValidate, 0)}</span><span class="s">terminées, validation finale à cocher</span></div>
   </section>
-  <section class="panel"><div class="ph"><h2>Opérations</h2><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><label class="chk"><input type="checkbox" id="showClosed" ${UI.showClosed ? "checked" : ""}> Afficher les clôturées</label><button class="btn small primary" id="pfNew">Nouvelle opération</button></div></div>
+  <section class="panel"><div class="ph"><h2>Opérations</h2><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${SYNC_MAJ ? `<span class="hint">Drive MS PROJETS synchronisé le ${fmt(SYNC_MAJ)}</span>` : ""}<label class="chk"><input type="checkbox" id="showClosed" ${UI.showClosed ? "checked" : ""}> Afficher clôturées et abandonnées</label><button class="btn small primary" id="pfNew">Nouvelle opération</button></div></div>
     <div class="pb" style="display:grid;gap:10px">
       <span class="hint">Colonnes A à I : nombre de tâches ouvertes par catégorie. Rouge : au moins une tâche critique en retard ; point rouge : tâche bloquée ; ✓ : catégorie terminée ; · : sans objet. Cliquer un chiffre ouvre la checklist filtrée.</span>
       <div class="pf-wrap"><table class="pf"><thead><tr><th class="l">Opération</th><th class="l">Avancement</th>${catHead}<th>Ouvertes</th><th>Bloquées</th><th>Retards</th><th class="l">Prochain jalon</th></tr></thead><tbody>${rows || `<tr><td colspan="16" class="l empty">Aucune opération en cours.</td></tr>`}</tbody>${foot}</table></div>
@@ -762,7 +786,7 @@ function renderDrawer() {
 /* ---------- interactions ---------- */
 function setTask(id, patch) {
   const o = op(); const cur = o.taches[id] || {};
-  const next = Object.assign({}, cur, patch);
+  const next = Object.assign({}, cur, patch, { manuel: true });
   if (patch.statut === "Terminé" && !next.reelle) next.reelle = todayIso();
   if (patch.statut && patch.statut !== "Terminé") next.valide = false;
   Object.keys(next).forEach(k => (next[k] === "" || next[k] === undefined) && delete next[k]);
@@ -833,7 +857,7 @@ function bindSettings() {
     let list = o.typos.slice();
     if (gdef.choix === "unique") list = list.filter(c => TYPO[c] && TYPO[c].groupe !== grp);
     list = list.filter(c => c !== code); if (el.checked) list.push(code);
-    o.typos = list; save(); refresh();
+    o.typos = list; o.typosManuel = true; save(); refresh();
   }));
   document.querySelectorAll("[data-switch]").forEach(el => el.addEventListener("click", () => { S.current = el.dataset.switch; confirmDel = false; save(); refresh(); }));
   g("#newOp").addEventListener("click", () => { const n = blankOp(); S.ops[n.id] = n; S.current = n.id; save(); refresh(); toast("Opération créée"); });
