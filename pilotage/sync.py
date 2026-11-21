@@ -10,7 +10,7 @@ dossiers d'opération avec le connecteur Google Drive et lui passe le résultat.
         pipeline.json = [{"dossier": "<id dossier Drive>", "nom": "25.03 MONTMORENCY - GRETRY",
                           "etape": "03 - PV SIGNEE"}, ...]
         - opération connue : met à jour son étape (déplacement de dossier) ;
-        - nouveau dossier à partir de 02 - OFFRE ENVOYEE : crée l'opération avec les tâches
+        - nouveau dossier en 02, 02B, 03 ou 04 : crée l'opération avec les tâches
           que son étape implique (statut déduit, sans validation finale) ;
         - dossier passé en 06 - OUT : l'opération est marquée abandonnée.
 """
@@ -25,7 +25,8 @@ from pathlib import Path
 
 ETAPES = ["01 - A L'ETUDE", "02 - OFFRE ENVOYEE", "02B - OFFRE ACCEPTEE", "03 - PV SIGNEE",
           "04 - AAE SIGNEE", "05 - ACHEVES", "06 - OUT"]
-ETAPES_SUIVIES = ETAPES[1:]          # création à partir de 02 - OFFRE ENVOYEE
+ETAPES_SUIVIES = ETAPES[1:]          # étapes suivies (changements d'étape)
+ETAPES_CREATION = ETAPES[1:5]        # création d'opération : 02 à 04 seulement (05 et 06 = dossiers clos)
 
 # Tâches réputées faites en arrivant à chaque étape (cumulatif).
 FAIT_A = {
@@ -98,7 +99,7 @@ def appliquer(ops: list[dict], pipeline: list[dict], jour: str) -> tuple[list[di
         etape = norm_etape(d["etape"])
         o = par_dossier.get(d["dossier"])
         if o is None:
-            if etape not in ETAPES_SUIVIES or etape == "06 - OUT":
+            if etape not in ETAPES_CREATION:
                 continue
             o = nouvelle_operation(d, jour)
             ops.append(o)

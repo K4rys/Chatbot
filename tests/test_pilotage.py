@@ -64,7 +64,8 @@ def test_sync_cree_les_nouvelles_operations_a_partir_de_02():
     sync = _sync()
     pipeline = [{"dossier": "A1", "nom": "26.11 NOGENT - TEST", "etape": "02 - OFFRE ENVOYEE"},
                 {"dossier": "A2", "nom": "26.11 VIEUX", "etape": "06 - OUT"},
-                {"dossier": "A3", "nom": "26.11 PV", "etape": "03 - PV SIGNEE"}]
+                {"dossier": "A3", "nom": "26.11 PV", "etape": "03 - PV SIGNEE"},
+                {"dossier": "A4", "nom": "23.04 ANCIEN", "etape": "05 - ACHEVES"}]
     ops, journal = sync.appliquer([], pipeline, "2026-11-20")
     ids = {o["id"] for o in ops}
     assert ids == {"drv-A1", "drv-A3"}
